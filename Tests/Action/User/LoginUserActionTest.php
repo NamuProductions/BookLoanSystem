@@ -15,8 +15,8 @@ class LoginUserActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $userRepository = $this->createMock(UserRepository::class);
-        $this->sut = new LoginUserAction($userRepository);
+        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->sut = new LoginUserAction($this->userRepository);
     }
 
     public function it_should_login_a_registered_User(): void
@@ -30,7 +30,7 @@ class LoginUserActionTest extends TestCase
 
         $this->userRepository
             ->expects($this->once())
-            ->methode('findByUserName')
+            ->method('findByUserName')
             ->with($userName)
             ->willReturn($user);
 
