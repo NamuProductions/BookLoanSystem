@@ -7,6 +7,7 @@ use App\Action\User\LoginUserAction;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Model\User;
 
+
 class LoginUserActionTest extends TestCase
 {
     private LoginUserAction $sut;
@@ -19,7 +20,7 @@ class LoginUserActionTest extends TestCase
         $this->sut = new LoginUserAction($this->userRepository);
     }
 
-    public function it_should_login_a_registered_User(): void
+    public function test_it_should_login_a_registered_User(): void
     {
         $userName = 'testUser';
         $password = 'testPassword';
