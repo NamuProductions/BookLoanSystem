@@ -2,4 +2,4 @@ vendor
 composer.lock
 .phpunit.result.cache
 .gitignore
-BookLoanSystem.iml
+BookLoanSystem.iml/vendor/
