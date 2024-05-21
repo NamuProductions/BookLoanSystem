@@ -34,6 +34,9 @@ class LoginUserActionTest extends TestCase
             ->willReturn($user);
 
         // when
+        $result = $this->sut->__invoke($userName, $password);
+
+        // then
 
 
     }
