@@ -24,7 +24,7 @@ class LoginUserActionTest extends TestCase
         // given
         $userName = 'testUser';
         $password = 'testPassword';
-        $userPassword = user_password($password, PASSWORD_DEFAULT); // todo: pensar un mejor nombre por que puede inducir a error
+        $userPassword = password_hash($password, PASSWORD_DEFAULT); // todo: pensar un mejor nombre por que puede inducir a error
 
         $user = new User($userName, 'testUser@example.com', $userPassword);
 
