@@ -1,10 +1,11 @@
 <?php
+
 namespace App\Action\User;
 
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
 
-class RegisterUserAction
+readonly class RegisterUserAction
 {
     public function __construct(private UserRepository $userRepository)
     {
@@ -15,7 +16,7 @@ class RegisterUserAction
         $user = new User(
             $userData['username'],
             $userData['email'],
-            $userData['password']
+            password_hash($userData['password'], PASSWORD_DEFAULT)
         );
 
         $this->userRepository->save($user);
