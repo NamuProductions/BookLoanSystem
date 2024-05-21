@@ -1,0 +1,1 @@
+{"version":1,"defects":{"Tests\\Action\\User\\RegisterUserActionTest::testRegisterUser":4},"times":{"Tests\\Action\\User\\RegisterUserActionTest::testRegisterUser":0.127,"Action\\User\\RegisterUserActionTest::testRegisterUser":0.115}}
