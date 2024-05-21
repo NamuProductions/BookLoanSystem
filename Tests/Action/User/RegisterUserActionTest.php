@@ -31,7 +31,7 @@ class RegisterUserActionTest extends TestCase
             ->expects($this->once())
             ->method('save')
             ->with($this->callback(function (User $user) use ($userData) {
-                return $user->getUsername() === $userData['username'] &&
+                return $user->getUserName() === $userData['username'] &&
                     $user->getEmail() === $userData['email'] &&
                     password_verify($userData['password'], $user->getPassword());
             }));
