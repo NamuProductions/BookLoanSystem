@@ -19,7 +19,7 @@ class RegisterUserActionTest extends TestCase
         $this->sut = new RegisterUserAction($this->userRepository);
     }
 
-    public function testRegisterUser(): void
+    public function it_should_Register_a_new_User(): void
     {
         $userData = [
             'username' => 'testUser',
