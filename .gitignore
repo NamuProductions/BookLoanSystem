@@ -2,6 +2,5 @@ vendor
 composer.lock
 .phpunit.result.cache
 .gitignore
-BookLoanSystem.iml/vendor/
 BookLoanSystem.iml
-composer.lock
+/.idea/
