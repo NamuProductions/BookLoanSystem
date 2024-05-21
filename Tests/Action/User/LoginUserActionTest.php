@@ -10,6 +10,7 @@ use App\Domain\Model\User;
 class LoginUserActionTest extends TestCase
 {
     private LoginUserAction $sut;
+    private UserRepository $userRepository;
 
     protected function setUp(): void
     {
@@ -33,12 +34,16 @@ class LoginUserActionTest extends TestCase
             ->with($userName)
             ->willReturn($user);
 
+        // then
+        $this->userRepository
+
+
+
         // when
         $result = $this->sut->__invoke($userName, $password);
 
         // then
-
-
+        $this->assertTrue($result);
     }
 
 }
