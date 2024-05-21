@@ -21,7 +21,6 @@ class LoginUserActionTest extends TestCase
 
     public function it_should_login_a_registered_User(): void
     {
-        // given
         $userName = 'testUser';
         $password = 'testPassword';
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
@@ -34,10 +33,8 @@ class LoginUserActionTest extends TestCase
             ->with($userName)
             ->willReturn($user);
 
-        // when
         $result = $this->sut->__invoke($userName, $password);
 
-        // then
         $this->assertTrue($result);
     }
 
