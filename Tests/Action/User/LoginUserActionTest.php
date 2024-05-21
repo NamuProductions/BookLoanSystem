@@ -24,9 +24,9 @@ class LoginUserActionTest extends TestCase
         // given
         $userName = 'testUser';
         $password = 'testPassword';
-        $userPassword = password_hash($password, PASSWORD_DEFAULT); // todo: pensar un mejor nombre por que puede inducir a error
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-        $user = new User($userName, 'testUser@example.com', $userPassword);
+        $user = new User($userName, 'testUser@example.com', $password_hash);
 
         $this->userRepository
             ->expects($this->once())
