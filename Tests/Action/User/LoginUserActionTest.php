@@ -34,11 +34,6 @@ class LoginUserActionTest extends TestCase
             ->with($userName)
             ->willReturn($user);
 
-        // then
-        $this->userRepository
-
-
-
         // when
         $result = $this->sut->__invoke($userName, $password);
 
