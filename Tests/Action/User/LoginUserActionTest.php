@@ -2,6 +2,7 @@
 
 namespace Action\User;
 
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use App\Action\User\LoginUserAction;
 use App\Domain\Repository\UserRepository;
@@ -16,7 +17,10 @@ class LoginUserActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->userRepository = $this->createMock(UserRepository::class);
+        try {
+            $this->userRepository = $this->createMock(UserRepository::class);
+        } catch (Exception $e) {
+        }
         $this->sut = new LoginUserAction($this->userRepository);
     }
 

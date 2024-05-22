@@ -5,7 +5,7 @@ namespace App\Action\User;
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
 
-readonly class RegisterUserAction
+class RegisterUserAction
 {
     public function __construct(private UserRepository $userRepository)
     {

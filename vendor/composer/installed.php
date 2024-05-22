@@ -3,7 +3,7 @@
         'name' => 'namuproductions/book-loan-system',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'ad286a8cb84ffee4604e80bd5be562d415bbdc75',
+        'reference' => 'd312b93bfd7808c6f203d5a608248b9b8b6e5ee5',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -130,7 +130,7 @@
         'namuproductions/book-loan-system' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ad286a8cb84ffee4604e80bd5be562d415bbdc75',
+            'reference' => 'd312b93bfd7808c6f203d5a608248b9b8b6e5ee5',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -2,7 +2,7 @@
 
 namespace App\Domain\Model;
 
-readonly class User
+class User
 {
     public function __construct(
         private string $userName,
