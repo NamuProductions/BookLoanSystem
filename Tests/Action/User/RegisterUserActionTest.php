@@ -2,11 +2,13 @@
 
 namespace Action\User;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use App\Action\User\RegisterUserAction;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Model\User;
-
+#[CoversClass(RegisterUserAction::class)]
 class RegisterUserActionTest extends TestCase
 {
     private UserRepository $userRepository;
@@ -18,7 +20,7 @@ class RegisterUserActionTest extends TestCase
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->sut = new RegisterUserAction($this->userRepository);
     }
-
+    #[Test]
     public function it_should_Register_a_new_User(): void
     {
         $userData = [
