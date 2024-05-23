@@ -43,4 +43,19 @@ class LoginUserActionTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function test_it_should_return_false_if_user_not_found(): void
+    {
+        $userName = 'notAUser';
+        $password = 'password';
+
+        $this->userRepository
+            ->expects($this->once())
+            ->method('findByUserName')
+            ->with($userName)
+            ->willReturn(null);
+
+        $result = $this->sut->__invoke($userName, $password);
+
+        $this->assertFalse($result);
+    }
 }

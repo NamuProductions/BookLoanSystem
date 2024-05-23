@@ -23,11 +23,11 @@ class RegisterUserActionTest extends TestCase
         $this->sut = new RegisterUserAction($this->userRepository);
     }
 
-    public function test_it_should_Register_a_new_User(): void
+    public function test_it_should_register_a_user(): void
     {
         $userData = [
-            'username' => 'testUser',
-            'email' => 'testUser@example.com',
+            'userName' => 'testUser',
+            'email' => 'correct@email.com',
             'password' => 'testPassword'
         ];
 
@@ -35,7 +35,7 @@ class RegisterUserActionTest extends TestCase
             ->expects($this->once())
             ->method('save')
             ->with($this->callback(function (User $user) use ($userData) {
-                return $user->getUserName() === $userData['username'] &&
+                return $user->getUserName() === $userData['userName'] &&
                     $user->getEmail() === $userData['email'] &&
                     password_verify($userData['password'], $user->getPassword());
             }));

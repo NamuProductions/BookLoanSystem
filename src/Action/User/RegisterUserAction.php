@@ -18,7 +18,7 @@ readonly class RegisterUserAction
         }
 
         $user = new User(
-            $userData['username'],
+            $userData['userName'],
             $userData['email'],
             password_hash($userData['password'], PASSWORD_DEFAULT)
         );
