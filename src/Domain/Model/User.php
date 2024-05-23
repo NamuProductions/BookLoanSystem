@@ -7,7 +7,8 @@ readonly class User
     public function __construct(
         private string $userName,
         private string $email,
-        private string $password
+        private string $password,
+        private string $role
     ) {}
 
     public function getUserName(): string
@@ -23,5 +24,10 @@ readonly class User
     public function getPassword(): string
     {
         return $this->password;
+    }
+
+    public function getRole(): string
+    {
+        return $this->role;
     }
 }
