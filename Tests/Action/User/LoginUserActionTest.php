@@ -2,12 +2,13 @@
 
 namespace Action\User;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use App\Action\User\LoginUserAction;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Model\User;
 
-
+#[CoversClass(LoginUserAction::class)]
 class LoginUserActionTest extends TestCase
 {
     private LoginUserAction $sut;
