@@ -58,4 +58,23 @@ class LoginUserActionTest extends TestCase
 
         $this->assertFalse($result);
     }
+
+    public function test_it_should_return_false_if_password_is_incorrect(): void
+    {
+        $userName = 'testUser';
+        $password = 'wrongPassword';
+        $password_hash = password_hash('correctPassword', PASSWORD_DEFAULT);
+
+        $user = new User($userName, 'correct@email.com', $password_hash);
+
+        $this->userRepository
+            ->expects($this->once())
+            ->method('findByUserName')
+            ->with($userName)
+            ->willReturn($user);
+
+        $result = $this->sut->__invoke($userName, $password);
+
+        $this->assertFalse($result);
+    }
 }
