@@ -2,7 +2,7 @@
 
 namespace App\Action\Admin;
 
-class AdminLoginAction
+readonly class AdminLoginAction
 {
 
 }
