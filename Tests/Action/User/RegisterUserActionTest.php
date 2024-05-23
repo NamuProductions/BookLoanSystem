@@ -28,7 +28,8 @@ class RegisterUserActionTest extends TestCase
         $userData = [
             'userName' => 'testUser',
             'email' => 'correct@email.com',
-            'password' => 'testPassword'
+            'password' => 'testPassword',
+
         ];
 
         $this->userRepository

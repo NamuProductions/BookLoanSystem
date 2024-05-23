@@ -4,6 +4,7 @@ namespace App\Action\User;
 
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
+use InvalidArgumentException;
 
 readonly class RegisterUserAction
 {
@@ -14,13 +15,14 @@ readonly class RegisterUserAction
     public function __invoke(array $userData): void
     {
         if (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
-            throw new \InvalidArgumentException('Invalid email address.');
+            throw new InvalidArgumentException('Invalid email address.');
         }
 
         $user = new User(
             $userData['userName'],
             $userData['email'],
-            password_hash($userData['password'], PASSWORD_DEFAULT)
+            password_hash($userData['password'], PASSWORD_DEFAULT),
+            'user'
         );
 
         $this->userRepository->save($user);

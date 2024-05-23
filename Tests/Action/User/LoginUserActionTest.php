@@ -30,7 +30,7 @@ class LoginUserActionTest extends TestCase
         $password = 'testPassword';
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-        $user = new User($userName, 'testUser@example.com', $password_hash);
+        $user = new User($userName, 'testUser@example.com', $password_hash, 'user');
 
         $this->userRepository
             ->expects($this->once())
@@ -65,7 +65,7 @@ class LoginUserActionTest extends TestCase
         $password = 'wrongPassword';
         $password_hash = password_hash('correctPassword', PASSWORD_DEFAULT);
 
-        $user = new User($userName, 'correct@email.com', $password_hash);
+        $user = new User($userName, 'correct@email.com', $password_hash, 'user');
 
         $this->userRepository
             ->expects($this->once())
