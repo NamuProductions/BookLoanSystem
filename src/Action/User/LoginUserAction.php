@@ -5,7 +5,7 @@ namespace App\Action\User;
 
 use App\Domain\Repository\UserRepository;
 
-class LoginUserAction
+readonly class LoginUserAction
 {
 
     public function __construct(private UserRepository $userRepository)

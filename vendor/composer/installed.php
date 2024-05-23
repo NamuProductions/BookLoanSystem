@@ -3,7 +3,7 @@
         'name' => 'namuproductions/book-loan-system',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'd312b93bfd7808c6f203d5a608248b9b8b6e5ee5',
+        'reference' => '24eabd1f7bc73b14356682241e2ba31baf2ae2f2',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -130,7 +130,7 @@
         'namuproductions/book-loan-system' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'd312b93bfd7808c6f203d5a608248b9b8b6e5ee5',
+            'reference' => '24eabd1f7bc73b14356682241e2ba31baf2ae2f2',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -218,9 +218,9 @@
             'dev_requirement' => true,
         ),
         'phpunit/phpunit' => array(
-            'pretty_version' => '11.1.0',
-            'version' => '11.1.0.0',
-            'reference' => '882c5bf7aa85328d1010da2a76f4bb10c43778c6',
+            'pretty_version' => '11.1.3',
+            'version' => '11.1.3.0',
+            'reference' => 'd475be032238173ca3b0a516f5cc291d174708ae',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpunit/phpunit',
             'aliases' => array(),
@@ -292,8 +292,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0.0 || 2.0.0 || 3.0.0',
-                1 => '1.0|2.0|3.0',
+                0 => '1.0|2.0|3.0',
+                1 => '1.0.0 || 2.0.0 || 3.0.0',
             ),
         ),
         'sebastian/cli-parser' => array(

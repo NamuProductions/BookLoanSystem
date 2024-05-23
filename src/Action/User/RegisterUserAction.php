@@ -5,7 +5,7 @@ namespace App\Action\User;
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
 
-class RegisterUserAction
+readonly class RegisterUserAction
 {
     public function __construct(private UserRepository $userRepository)
     {
@@ -13,6 +13,10 @@ class RegisterUserAction
 
     public function __invoke(array $userData): void
     {
+        if (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException('Invalid email address.');
+        }
+
         $user = new User(
             $userData['username'],
             $userData['email'],
