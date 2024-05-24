@@ -49,4 +49,20 @@ class AdminLoginActionTest extends TestCase
 
         $this->assertTrue($result);
     }
+
+    public function test_it_should_return_false_if_credentials_are_invalid(): void
+    {
+        $userName = 'adminUser';
+        $password = 'wrongPassword';
+
+        $this->userRepository
+            ->expects($this->once())
+            ->method('findByUserName')
+            ->with($userName)
+            ->willReturn(null);
+
+        $result = $this->sut->__invoke($userName, $password);
+
+        $this->assertFalse($result);
+    }
 }
