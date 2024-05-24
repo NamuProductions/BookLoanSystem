@@ -2,7 +2,7 @@
 
 namespace Action\User;
 
-use App\Service\SessionManager;
+use App\Service\SessionManagerInterface;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -14,14 +14,14 @@ class RegisterUserActionTest extends TestCase
 {
     private UserRepository $userRepository;
     private RegisterUserAction $sut;
-    private SessionManager $sessionManager;
+    private SessionManagerInterface $sessionManager;
 
     protected function setUp(): void
     {
         parent::setUp();
         try {
             $this->userRepository = $this->createMock(UserRepository::class);
-            $this->sessionManager = $this->createMock(SessionManager::class);
+            $this->sessionManager = $this->createMock(SessionManagerInterface::class);
         } catch (Exception) {
         }
         $this->sut = new RegisterUserAction($this->userRepository, $this->sessionManager);
