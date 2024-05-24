@@ -2,6 +2,7 @@
 
 namespace Action\User;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use App\Action\User\RegisterUserAction;
@@ -40,4 +41,17 @@ class RegisterUserActionTest extends TestCase
 
         $this->sut->__invoke($userName, $email, $password);
     }
+
+    public function test_it_should_throw_exception_for_invalid_email(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid email address.');
+
+        $userName = 'testUser';
+        $invalidEmail = 'invalid-email';
+        $password = 'testPassword';
+
+        $this->sut->__invoke($userName, $invalidEmail, $password);
+    }
+
 }

@@ -12,7 +12,7 @@ readonly class RegisterUserAction
     {
     }
 
-    public function __invoke(string $userName, $email, $password): void
+    public function __invoke(string $userName, string $email, string $password): void
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException('Invalid email address.');
