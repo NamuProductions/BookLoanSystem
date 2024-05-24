@@ -4,11 +4,15 @@ namespace App\Action\User;
 
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
+use App\Service\SessionManager;
 use InvalidArgumentException;
 
 readonly class RegisterUserAction
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(
+        private UserRepository $userRepository,
+        private SessionManager $sessionManager
+    )
     {
     }
 
@@ -26,6 +30,7 @@ readonly class RegisterUserAction
         );
 
         $this->userRepository->save($user);
+        $this->sessionManager->startSession($user);
     }
 }
 
