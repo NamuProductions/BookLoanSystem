@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 class AddNewBookActionTest extends TestCase
 {
 
+    private BookRepository $bookRepository;
+    private AddNewBookAction $sut;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -26,6 +29,7 @@ class AddNewBookActionTest extends TestCase
         $author = 'Test Author';
         $year = '2000';
         $idNumber = '0123456789';
+
 
     }
 
