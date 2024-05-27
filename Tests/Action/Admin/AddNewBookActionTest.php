@@ -3,6 +3,7 @@
 namespace Action\Admin;
 
 use App\Action\Admin\AddNewBookAction;
+use PHPUnit\Event\InvalidArgumentException;
 use PHPUnit\Framework\MockObject\Exception;
 use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
@@ -44,4 +45,11 @@ class AddNewBookActionTest extends TestCase
         $this->sut->__invoke($title, $author, $year, $idNumber);
     }
 
+    public function test_it_should_throw_an_exception_when_one_parameter_is_missing(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Title, author, year and idNumber are required');
+
+        $this->sut->__invoke('', 'Test Author', 2000, '0123456789');
+    }
 }
