@@ -8,6 +8,7 @@ use App\Action\User\LoginUserAction;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Model\User;
 use App\Service\SessionManagerInterface;
+use Psr\Log\InvalidArgumentException;
 
 class LoginUserActionTest extends TestCase
 {
@@ -48,8 +49,11 @@ class LoginUserActionTest extends TestCase
         $this->sut->__invoke($userName, $password);
     }
 
-    public function test_it_should_return_false_if_user_not_found(): void
+    public function test_it_should_throw_exception_if_user_not_found(): void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid username or password');
+
         $userName = 'notAUser';
         $password = 'password';
 
@@ -66,8 +70,11 @@ class LoginUserActionTest extends TestCase
         $this->sut->__invoke($userName, $password);
     }
 
-    public function test_it_should_return_false_if_password_is_incorrect(): void
+    public function test_it_should_throw_exception_if_password_is_incorrect(): void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid username or password');
+
         $userName = 'testUser';
         $password = 'testPassword';
         $wrongPassword = 'wrongPassword';
