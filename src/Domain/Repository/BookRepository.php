@@ -2,10 +2,12 @@
 
 namespace App\Domain\Repository;
 
+use App\Domain\Model\Book;
+
 class BookRepository
 {
 
-    public function save(\App\Domain\Model\Book $book)
+    public function save(Book $book)
     {
 
     }
