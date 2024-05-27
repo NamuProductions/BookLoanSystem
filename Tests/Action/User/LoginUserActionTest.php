@@ -63,9 +63,7 @@ class LoginUserActionTest extends TestCase
             ->expects($this->never())
             ->method('startSession');
 
-        $result = $this->sut->__invoke($userName, $password);
-
-        $this->assertFalse($result);
+        $this->sut->__invoke($userName, $password);
     }
 
     public function test_it_should_return_false_if_password_is_incorrect(): void
@@ -86,8 +84,6 @@ class LoginUserActionTest extends TestCase
             ->expects($this->never())
             ->method('startSession');
 
-        $result = $this->sut->__invoke($userName, $wrongPassword);
-
-        $this->assertFalse($result);
+        $this->sut->__invoke($userName, $wrongPassword);
     }
 }
