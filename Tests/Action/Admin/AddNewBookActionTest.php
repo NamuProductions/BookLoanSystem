@@ -3,6 +3,7 @@
 namespace Action\Admin;
 
 use App\Action\Admin\AddNewBookAction;
+use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
 use PHPUnit\Exception;
 use PHPUnit\Framework\TestCase;
