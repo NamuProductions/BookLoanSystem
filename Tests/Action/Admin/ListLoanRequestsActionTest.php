@@ -11,6 +11,8 @@ use PHPUnit\Framework\MockObject\Exception;
 
 class ListLoanRequestsActionTest extends TestCase
 {
+    Private LoanRepository $loanRepository;
+    Private ListLoanRequestsAction $sut;
 
     protected function setUp(): void
     {
