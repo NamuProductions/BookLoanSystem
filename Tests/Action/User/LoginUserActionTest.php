@@ -8,7 +8,7 @@ use App\Action\User\LoginUserAction;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Model\User;
 use App\Service\SessionManagerInterface;
-use Psr\Log\InvalidArgumentException;
+use InvalidArgumentException;
 
 class LoginUserActionTest extends TestCase
 {
