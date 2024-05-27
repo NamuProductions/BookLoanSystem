@@ -3,21 +3,42 @@
 namespace Action\Admin;
 
 
-use App\Domain\Repository\LoanRepository;
-use PHPUnit\Framework\TestCase;
 use App\Action\Admin\ListLoanRequestsAction;
+use App\Domain\Model\Loan;
+use App\Domain\Repository\LoanRepository;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\TestCase;
 
 
 class ListLoanRequestsActionTest extends TestCase
 {
-    Private LoanRepository $loanRepository;
-    Private ListLoanRequestsAction $sut;
+    private LoanRepository $loanRepository;
+    private ListLoanRequestsAction $sut;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->LoanRepository = $this->createMock(LoanRepository::class);
-        $this->sut = new ListLoanRequestsAction($this->LoanRepository);
+        try {
+            $this->loanRepository = $this->createMock(LoanRepository::class);
+        } catch (Exception) {
+        }
+        $this->sut = new ListLoanRequestsAction($this->loanRepository);
+    }
+
+    public function test_it_should_list_all_loan_requests(): void
+    {
+        $loanRequests = [
+            new Loan('user1', 'book1', '2024-05-20', '2024-05-30'),
+            new Loan('user2', 'book2', '2024-05-19', '2024-05-29')
+        ];
+
+        $this->loanRepository
+            ->expects($this->once())
+            ->method('findAllLoanRequests')
+            ->willReturn($loanRequests);
+
+        $result = $this->sut->__invoke();
+
+        $this->assertSame($loanRequests, $result);
     }
 }
