@@ -2,7 +2,7 @@
 
 namespace App\Domain\Model;
 
-class Loan
+readonly class Loan
 {
     public function __construct(
         private string $userName,
