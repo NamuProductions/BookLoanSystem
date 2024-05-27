@@ -17,18 +17,14 @@ private SessionManagerInterface $sessionManager;
         $this->sessionManager = $sessionManager;
     }
 
-    public function __invoke(string $username, string $password): bool
+    public function __invoke(string $username, string $password): void
     {
         $user = $this->userRepository->findByUserName($username);
-        if (!$user) {
-            return false;
-        }
 
-        if (!password_verify($password, $user->getPassword())) {
-            return false;
+        if (!$user || !password_verify($password, $user->getPassword())) {
+            throw new \InvalidArgumentException('Invalid username or password');
         }
 
         $this->sessionManager->startSession($user);
-        return true;
     }
 }
