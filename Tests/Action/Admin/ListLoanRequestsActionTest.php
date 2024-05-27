@@ -25,6 +25,9 @@ class ListLoanRequestsActionTest extends TestCase
         $this->sut = new ListLoanRequestsAction($this->loanRepository);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function test_it_should_list_all_loan_requests(): void
     {
         $loanRequests = [
