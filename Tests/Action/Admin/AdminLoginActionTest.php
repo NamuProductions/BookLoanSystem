@@ -52,7 +52,7 @@ class AdminLoginActionTest extends TestCase
     public function test_it_should_throw_exception_if_credentials_are_invalid(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid Username or password');
+        $this->expectExceptionMessage('Invalid username or password');
 
         $userName = 'adminUser';
         $password = 'wrongPassword';
