@@ -6,6 +6,7 @@ use App\Action\Admin\AdminLoginAction;
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
 use App\Service\SessionManagerInterface;
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -48,8 +49,11 @@ class AdminLoginActionTest extends TestCase
         $this->sut->__invoke($userName, $password);
     }
 
-    public function test_it_should_return_false_if_credentials_are_invalid(): void
+    public function test_it_should_throw_exception_if_credentials_are_invalid(): void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid Username or password');
+
         $userName = 'adminUser';
         $password = 'wrongPassword';
 
