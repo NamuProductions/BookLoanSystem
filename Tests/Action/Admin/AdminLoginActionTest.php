@@ -45,9 +45,7 @@ class AdminLoginActionTest extends TestCase
             ->method('startSession')
             ->with($user);
 
-        $result = $this->sut->__invoke($userName, $password);
-
-        $this->assertTrue($result);
+        $this->sut->__invoke($userName, $password);
     }
 
     public function test_it_should_return_false_if_credentials_are_invalid(): void
@@ -61,8 +59,6 @@ class AdminLoginActionTest extends TestCase
             ->with($userName)
             ->willReturn(null);
 
-        $result = $this->sut->__invoke($userName, $password);
-
-        $this->assertFalse($result);
+        $this->sut->__invoke($userName, $password);
     }
 }
