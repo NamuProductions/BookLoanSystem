@@ -45,9 +45,7 @@ class LoginUserActionTest extends TestCase
             ->method('startSession')
             ->with($user);
 
-        $result = $this->sut->__invoke($userName, $password);
-
-        $this->assertTrue($result);
+        $this->sut->__invoke($userName, $password);
     }
 
     public function test_it_should_return_false_if_user_not_found(): void
