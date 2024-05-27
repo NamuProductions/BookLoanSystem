@@ -41,4 +41,16 @@ class ListLoanRequestsActionTest extends TestCase
 
         $this->assertSame($loanRequests, $result);
     }
+
+    public function test_it_should_handle_null_when_listing_loan_requests(): void
+    {
+        $this->loanRepository
+            ->expects($this->once())
+            ->method('findAllLoanRequests')
+            ->willReturn(null);
+
+        $result = $this->sut->__invoke();
+
+        $this->assertNull($result);
+    }
 }
