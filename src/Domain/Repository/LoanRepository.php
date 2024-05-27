@@ -2,10 +2,7 @@
 
 namespace App\Domain\Repository;
 
-class LoanRepository
+interface LoanRepository
 {
-
-    public function findAllLoanRequests()
-    {
-    }
+    public function findAllLoanRequests(): array;
 }
