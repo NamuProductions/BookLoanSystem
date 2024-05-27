@@ -20,4 +20,13 @@ class AddNewBookActionTest extends TestCase
         $this->sut = new AddNewBookAction($this->bookRepository);
     }
 
+    public function test_it_should_add_a_new_book(): void
+    {
+        $title = 'Test Book';
+        $author = 'Test Author';
+        $year = '2000';
+        $idNumber = '0123456789';
+
+    }
+
 }
