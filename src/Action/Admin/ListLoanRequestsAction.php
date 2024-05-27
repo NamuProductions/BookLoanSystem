@@ -3,6 +3,7 @@
 namespace App\Action\Admin;
 
 use App\Domain\Repository\LoanRepository;
+use Exception;
 
 readonly class ListLoanRequestsAction
 {
@@ -10,8 +11,15 @@ readonly class ListLoanRequestsAction
     {
     }
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(): array
     {
-        return $this->loanRepository->findAllLoanRequests();
+        try {
+            return $this->loanRepository->findAllLoanRequests();
+        } catch (Exception $e) {
+            throw new Exception('Error retrieving loan requests', 0, $e);
+        }
     }
 }
