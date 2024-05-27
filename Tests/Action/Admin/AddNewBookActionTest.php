@@ -30,7 +30,17 @@ class AddNewBookActionTest extends TestCase
         $year = '2000';
         $idNumber = '0123456789';
 
+        $this->bookRepository
+            ->expects($this->once())
+            ->method('save')
+            ->with($this->callback(function (Book $book) use ($title, $author, $year, $idNumber) {
+                return $book->getTitle() === $title &&
+                    $book->getAuthor() === $author &&
+                    $book->getYear() === $year &&
+                    $book->getIdNumber() === $idNumber;
+            }));
 
+        $this->sut->__invoke($title, $author, $year, $idNumber);
     }
 
 }
