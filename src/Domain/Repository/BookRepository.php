@@ -7,4 +7,6 @@ use App\Domain\Model\Book;
 interface BookRepository
 {
     public function save(Book $book): void;
+
+    public function findAvailableBooks(): array;
 }
