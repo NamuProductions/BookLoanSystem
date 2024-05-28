@@ -3,10 +3,9 @@
 namespace Action\Admin;
 
 use App\Action\Admin\AddNewBookAction;
-use PHPUnit\Event\InvalidArgumentException;
-use PHPUnit\Framework\MockObject\Exception;
 use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
+use PHPUnit\Event\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class AddNewBookActionTest extends TestCase
@@ -14,16 +13,6 @@ class AddNewBookActionTest extends TestCase
 
     private BookRepository $bookRepository;
     private AddNewBookAction $sut;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        try{
-            $this->bookRepository = $this->createMock(BookRepository::class);
-        } catch (Exception) {
-        }
-        $this->sut = new AddNewBookAction($this->bookRepository);
-    }
 
     public function test_it_should_add_a_new_book(): void
     {
@@ -51,5 +40,13 @@ class AddNewBookActionTest extends TestCase
         $this->expectExceptionMessage('Title, author, year and idNumber are required');
 
         $this->sut->__invoke('', 'Test Author', 2000, '0123456789');
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->bookRepository = $this->createMock(BookRepository::class);
+        $this->sut = new AddNewBookAction($this->bookRepository);
     }
 }

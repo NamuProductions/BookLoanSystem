@@ -2,30 +2,18 @@
 
 namespace Action;
 
-use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
 use App\Action\LoginAction;
+use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
 use App\Service\SessionManagerInterface;
-use App\Domain\Model\User;
 use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 
 class LoginActionTest extends TestCase
 {
     private UserRepository $userRepository;
     private SessionManagerInterface $sessionManager;
     private LoginAction $sut;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        try {
-            $this->userRepository = $this->createMock(UserRepository::class);
-            $this->sessionManager = $this->createMock(SessionManagerInterface::class);
-        } catch (Exception) {
-        }
-        $this->sut = new LoginAction($this->userRepository, $this->sessionManager);
-    }
 
     public function test_it_should_login_a_registered_user(): void
     {
@@ -84,5 +72,14 @@ class LoginActionTest extends TestCase
             ->willReturn(null);
 
         $this->sut->__invoke($userName, $password);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->sessionManager = $this->createMock(SessionManagerInterface::class);
+        $this->sut = new LoginAction($this->userRepository, $this->sessionManager);
     }
 }

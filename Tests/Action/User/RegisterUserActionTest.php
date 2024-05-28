@@ -2,13 +2,12 @@
 
 namespace Action\User;
 
+use App\Action\User\RegisterUserAction;
+use App\Domain\Model\User;
+use App\Domain\Repository\UserRepository;
 use App\Service\SessionManagerInterface;
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use App\Action\User\RegisterUserAction;
-use App\Domain\Repository\UserRepository;
-use App\Domain\Model\User;
 
 class RegisterUserActionTest extends TestCase
 {
@@ -16,22 +15,11 @@ class RegisterUserActionTest extends TestCase
     private RegisterUserAction $sut;
     private SessionManagerInterface $sessionManager;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        try {
-            $this->userRepository = $this->createMock(UserRepository::class);
-            $this->sessionManager = $this->createMock(SessionManagerInterface::class);
-        } catch (Exception) {
-        }
-        $this->sut = new RegisterUserAction($this->userRepository, $this->sessionManager);
-    }
-
     public function test_it_should_register_a_user(): void
     {
-            $userName = 'testUser';
-            $email = 'correct@email.com';
-            $password = 'testPassword';
+        $userName = 'testUser';
+        $email = 'correct@email.com';
+        $password = 'testPassword';
 
         $this->userRepository
             ->expects($this->once())
@@ -63,6 +51,15 @@ class RegisterUserActionTest extends TestCase
         $password = 'testPassword';
 
         $this->sut->__invoke($userName, $invalidEmail, $password);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->sessionManager = $this->createMock(SessionManagerInterface::class);
+        $this->sut = new RegisterUserAction($this->userRepository, $this->sessionManager);
     }
 
 }
