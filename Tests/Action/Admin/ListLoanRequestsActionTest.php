@@ -6,6 +6,7 @@ namespace Action\Admin;
 use App\Action\Admin\ListLoanRequestsAction;
 use App\Domain\Model\Loan;
 use App\Domain\Repository\LoanRepository;
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 
@@ -36,9 +37,9 @@ class ListLoanRequestsActionTest extends TestCase
         $this->loanRepository
             ->expects($this->once())
             ->method('findAllLoanRequests')
-            ->will($this->throwException(new \Exception('Error retrieving loan requests')));
+            ->will($this->throwException(new Exception('Error retrieving loan requests')));
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Error retrieving loan requests');
 
         $this->sut->__invoke();
