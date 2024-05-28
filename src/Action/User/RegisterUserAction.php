@@ -18,6 +18,10 @@ readonly class RegisterUserAction
 
     public function __invoke(string $userName, string $email, string $password): void
     {
+        if(empty($userName) || empty($password)) {
+            throw new InvalidArgumentException('Username and password cannot be empty');
+        }
+
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException('Invalid email address.');
         }
