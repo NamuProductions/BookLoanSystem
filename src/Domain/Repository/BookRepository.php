@@ -4,11 +4,7 @@ namespace App\Domain\Repository;
 
 use App\Domain\Model\Book;
 
-class BookRepository
+interface BookRepository
 {
-
-    public function save(Book $book)
-    {
-
-    }
+    public function save(Book $book): void;
 }
