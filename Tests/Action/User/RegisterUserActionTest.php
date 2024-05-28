@@ -53,6 +53,32 @@ class RegisterUserActionTest extends TestCase
         $this->sut->__invoke($userName, $invalidEmail, $password);
     }
 
+    public function test_does_it_care_about_stuff(): void
+    {
+        $userName = '';
+        $email = 'correct@email.com';
+        $password = '';
+
+        $this->userRepository
+            ->expects($this->once())
+            ->method('save')
+            ->with($this->callback(function (User $user) use ($userName, $email, $password) {
+                return $user->getUserName() === $userName &&
+                    $user->getEmail() === $email &&
+                    password_verify($password, $user->getPassword());
+            }));
+
+        $this->sessionManager
+            ->expects($this->once())
+            ->method('startSession')
+            ->with($this->callback(function (User $user) use ($userName, $email) {
+                return $user->getUserName() === $userName &&
+                    $user->getEmail() === $email;
+            }));
+
+        $this->sut->__invoke($userName, $email, $password);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
