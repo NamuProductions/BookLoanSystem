@@ -6,7 +6,6 @@ namespace Action\Admin;
 use App\Action\Admin\ListLoanRequestsAction;
 use App\Domain\Model\Loan;
 use App\Domain\Repository\LoanRepository;
-use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 
@@ -15,19 +14,6 @@ class ListLoanRequestsActionTest extends TestCase
     private LoanRepository $loanRepository;
     private ListLoanRequestsAction $sut;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        try {
-            $this->loanRepository = $this->createMock(LoanRepository::class);
-        } catch (Exception) {
-        }
-        $this->sut = new ListLoanRequestsAction($this->loanRepository);
-    }
-
-    /**
-     * @throws \Exception
-     */
     public function test_it_should_list_all_loan_requests(): void
     {
         $loanRequests = [
@@ -56,5 +42,13 @@ class ListLoanRequestsActionTest extends TestCase
         $this->expectExceptionMessage('Error retrieving loan requests');
 
         $this->sut->__invoke();
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->loanRepository = $this->createMock(LoanRepository::class);
+        $this->sut = new ListLoanRequestsAction($this->loanRepository);
     }
 }

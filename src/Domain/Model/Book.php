@@ -9,31 +9,27 @@ readonly class Book
         private string $author,
         private string $year,
         private string $idNumber
-)
-{
-}
+    )
+    {
+    }
 
-public
-function getTitle(): string
-{
-    return $this->title;
-}
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
 
-public
-function getAuthor(): string
-{
-    return $this->author;
-}
+    public function getAuthor(): string
+    {
+        return $this->author;
+    }
 
-public
-function getYear(): string
-{
-    return $this->year;
-}
+    public function getYear(): string
+    {
+        return $this->year;
+    }
 
-public
-function getIdNumber(): string
-{
-    return $this->idNumber;
-}
+    public function getIdNumber(): string
+    {
+        return $this->idNumber;
+    }
 }
