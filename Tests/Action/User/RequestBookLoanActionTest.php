@@ -3,6 +3,7 @@ namespace Action\User;
 
 use App\Action\User\RequestBookLoanAction;
 use App\Domain\Model\Book;
+use App\Domain\Model\Loan;
 use App\Domain\Model\User;
 use App\Domain\Repository\BookRepository;
 use App\Domain\Repository\LoanRepository;
