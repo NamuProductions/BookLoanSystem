@@ -24,13 +24,13 @@ class RequestBookLoanActionTest extends TestCase
 
         $this->userRepository
             ->expects($this->once())
-            ->method('findById')
+            ->method('findByUserName')
             ->with('user1')
             ->willReturn($user);
 
         $this->bookRepository
             ->expects($this->once())
-            ->method('findById')
+            ->method('findByIdNumber')
             ->with('ID123')
             ->willReturn($book);
 
@@ -38,14 +38,17 @@ class RequestBookLoanActionTest extends TestCase
             ->expects($this->once())
             ->method('save')
             ->with($this->callback(function (Loan $loan) use ($user, $book) {
-                return $loan->getUser() === $user && $loan->getBook() === $book;
-            }));
+                $this->assertEquals($user->getUserName(), $loan->getUser());
+                $this->assertEquals($book->getIdNumber(), $loan->getBook());
+                return true;}));
 
         $this->bookRepository
             ->expects($this->once())
             ->method('save')
             ->with($this->callback(function (Book $savedBook) use ($book) {
-                return $savedBook === $book && !$savedBook->isAvailable();
+                $this->assertSame($book, $savedBook);
+                $this->assertFalse($savedBook->isAvailable());
+                return true;
             }));
 
         $this->sut->__invoke('user1', 'ID123');
