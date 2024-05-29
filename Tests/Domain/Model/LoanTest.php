@@ -16,9 +16,9 @@ class LoanTest extends TestCase
 
         $loan = new Loan($userName, $bookTitle, $startDate, $endDate);
 
-        $this->assertSame($userName, $loan->getUserName());
-        $this->assertSame($bookTitle, $loan->getBookTitle());
-        $this->assertSame($startDate, $loan->getStartDate());
-        $this->assertSame($endDate, $loan->getEndDate());
+        $this->assertSame($userName, $loan->getUser());
+        $this->assertSame($bookTitle, $loan->getBook());
+        $this->assertSame($startDate, $loan->getLoanDate());
+        $this->assertSame($endDate, $loan->getReturnDate());
     }
 }

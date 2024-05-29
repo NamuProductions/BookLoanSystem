@@ -5,29 +5,29 @@ namespace App\Domain\Model;
 readonly class Loan
 {
     public function __construct(
-        private string $userName,
-        private string $bookTitle,
-        private string $startDate,
-        private string $endDate
+        private string $user,
+        private string $book,
+        private string $loanDate,
+        private string $returnDate
     ) {}
 
-    public function getUserName(): string
+    public function getUser(): string
     {
-        return $this->userName;
+        return $this->user;
     }
 
-    public function getBookTitle(): string
+    public function getBook(): string
     {
-        return $this->bookTitle;
+        return $this->book;
     }
 
-    public function getStartDate(): string
+    public function getLoanDate(): string
     {
-        return $this->startDate;
+        return $this->loanDate;
     }
 
-    public function getEndDate(): string
+    public function getReturnDate(): string
     {
-        return $this->endDate;
+        return $this->returnDate;
     }
 }
