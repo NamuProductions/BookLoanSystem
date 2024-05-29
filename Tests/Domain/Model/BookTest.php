@@ -30,4 +30,25 @@ class BookTest extends TestCase
         $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
         $this->assertSame('ID123', $book->getIdNumber());
     }
+    public function test_it_should_return_isAvailable_when_is_available(): void
+    {
+        $book = new Book('The Title', 'The Author', '2024', 'ID123', true);
+        $this->assertTrue($book->isAvailable());
+    }
+
+    public function test_it_should_mark_as_unavailable(): void
+    {
+        $book = new Book('The Title', 'The Author', '2024', 'ID123', true);
+        $book->markAsUnavailable();
+
+        $this->assertFalse($book->isAvailable());
+    }
+
+    public function test_it_should_mark_as_available(): void
+    {
+        $book = new Book('The Title', 'The Author', '2024', 'ID123', false);
+        $book->markAsAvailable();
+
+        $this->assertTrue($book->isAvailable());
+    }
 }
