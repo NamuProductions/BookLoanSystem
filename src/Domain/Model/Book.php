@@ -8,10 +8,9 @@ readonly class Book
         private string $title,
         private string $author,
         private string $year,
-        private string $idNumber
-    )
-    {
-    }
+        private string $idNumber,
+        private bool $isAvailable = true
+    ) {}
 
     public function getTitle(): string
     {
@@ -31,5 +30,19 @@ readonly class Book
     public function getIdNumber(): string
     {
         return $this->idNumber;
+    }
+    public function isAvailable(): bool
+    {
+        return $this->isAvailable;
+    }
+
+    public function markAsUnavailable(): void
+    {
+        $this->isAvailable = false;
+    }
+
+    public function markAsAvailable(): void
+    {
+        $this->isAvailable = true;
     }
 }
