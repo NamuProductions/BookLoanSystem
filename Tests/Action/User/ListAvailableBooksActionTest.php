@@ -29,6 +29,18 @@ class ListAvailableBooksActionTest extends TestCase
         $this->assertSame($availableBooks, $result);
     }
 
+    public function test_it_should_return_empty_list_if_no_books_available(): void
+    {
+        $this->bookRepository
+            ->expects($this->once())
+            ->method('findAvailableBooks')
+            ->willReturn([]);
+
+        $result = $this->sut->__invoke();
+
+        $this->assertSame([], $result);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
