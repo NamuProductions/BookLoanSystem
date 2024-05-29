@@ -10,7 +10,7 @@ use InvalidArgumentException;
 readonly class RegisterUserAction
 {
     public function __construct(
-        private UserRepository $userRepository,
+        private UserRepository          $userRepository,
         private SessionManagerInterface $sessionManager
     )
     {
@@ -18,8 +18,12 @@ readonly class RegisterUserAction
 
     public function __invoke(string $userName, string $email, string $password): void
     {
-        if(empty($userName) || empty($password)) {
-            throw new InvalidArgumentException('Username and password cannot be empty');
+        if (empty($userName)) {
+            throw new InvalidArgumentException('Username cannot be empty');
+        }
+
+        if (empty($password)) {
+            throw new InvalidArgumentException('Password cannot be empty');
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

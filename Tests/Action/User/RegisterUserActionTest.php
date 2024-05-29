@@ -53,11 +53,24 @@ class RegisterUserActionTest extends TestCase
         $this->sut->__invoke($userName, $invalidEmail, $password);
     }
 
-    public function test_it_should_throw_exception_for_invalid_user_or_password_data(): void
+    public function test_it_should_throw_exception_for_invalid_user_data(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Username cannot be empty');
 
         $userName = '';
+        $email = 'correct@email.com';
+        $password = 'correctPassword';
+
+        $this->sut->__invoke($userName, $email, $password);
+    }
+
+    public function test_it_should_throw_exception_for_invalid_password_data(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Password cannot be empty');
+
+        $userName = 'testUser';
         $email = 'correct@email.com';
         $password = '';
 
