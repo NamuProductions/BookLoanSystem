@@ -2,7 +2,7 @@
 
 namespace App\Domain\Model;
 
-readonly class Book
+class Book
 {
     public function __construct(
         private string $title,
