@@ -5,10 +5,10 @@ namespace App\Domain\Model;
 class Book
 {
     public function __construct(
-        private string $title,
-        private string $author,
-        private string $year,
-        private string $idNumber,
+        private readonly string $title,
+        private readonly string $author,
+        private readonly string $year,
+        private readonly string $idNumber,
         private bool $isAvailable = true
     ) {}
 
