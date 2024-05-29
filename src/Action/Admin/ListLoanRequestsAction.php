@@ -11,15 +11,12 @@ readonly class ListLoanRequestsAction
     {
     }
 
-    /**
-     * @throws Exception
-     */
     public function __invoke(): array
     {
         try {
             return $this->loanRepository->findAllLoanRequests();
-        } catch (Exception $e) {
-            throw new Exception('Error retrieving loan requests', 0, $e);
+        } catch (Exception) {
+            throw new Exception('Error retrieving loan requests');
         }
     }
 }
