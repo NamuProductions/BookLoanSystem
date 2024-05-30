@@ -2,14 +2,18 @@
 
 namespace App\Domain\Model;
 
-readonly class Loan
+class Loan
 {
+    private bool $isReturned;
+
     public function __construct(
-        private string $user,
-        private string $book,
-        private string $loanDate,
-        private string $returnDate
-    ) {}
+        private readonly string $user,
+        private readonly string $book,
+        private readonly string $loanDate,
+        private readonly string $returnDate
+    ) {
+        $this->isReturned = false;
+    }
 
     public function getUser(): string
     {
@@ -29,5 +33,15 @@ readonly class Loan
     public function getReturnDate(): string
     {
         return $this->returnDate;
+    }
+
+    public function isReturned(): bool
+    {
+        return $this->isReturned;
+    }
+
+    public function markAsReturned(): void
+    {
+        $this->isReturned = true;
     }
 }
