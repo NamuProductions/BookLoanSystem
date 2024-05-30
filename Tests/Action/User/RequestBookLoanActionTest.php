@@ -54,6 +54,7 @@ class RequestBookLoanActionTest extends TestCase
 
         $this->sut->__invoke('user1', 'ID123');
     }
+
     public function test_it_should_throw_exception_if_book_not_available(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -74,6 +75,20 @@ class RequestBookLoanActionTest extends TestCase
 
         $this->sut->__invoke('user1', 'ID123');
     }
+
+    public function test_it_should_throw_exception_if_user_not_found(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('User not found');
+
+        $this->userRepository->expects($this->once())
+            ->method('findByUserName')
+            ->with('user1')
+            ->willReturn(null);
+
+        $this->sut->__invoke('user1', 'ID123');
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
