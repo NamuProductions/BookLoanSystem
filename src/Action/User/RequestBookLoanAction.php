@@ -23,13 +23,13 @@ readonly class RequestBookLoanAction
             throw new InvalidArgumentException('User not found.');
         }
 
-        $book = $this->bookRepository->findByIdNumber($bookId);
+        $book = $this->bookRepository->findById($bookId);
         if (!$book) {
             throw new InvalidArgumentException('Book not found.');
         }
 
         if (!$book->isAvailable()) {
-            throw new InvalidArgumentException('Book is not available for loan.');
+            throw new InvalidArgumentException('Book is not available.');
         }
 
         $loan = new Loan($user->getUserName(), $book->getIdNumber(), date('Y-m-d'), '');
