@@ -10,5 +10,7 @@ interface LoanRepository
 
     public function findByUser(string $userName): array;
 
+    public function findActiveLoan(string $userId, string $bookId): ?Loan;
+
     public function save(Loan $loan): void;
 }
