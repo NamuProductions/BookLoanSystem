@@ -12,22 +12,35 @@ class ListUserLoansActionTest extends TestCase
     private LoanRepository $loanRepository;
     private ListUserLoansAction $sut;
 
-    public function test_it_should_list_user_loans(): void
+    public function test_it_should_return_user_loans(): void
     {
         $user = 'user1';
-        $book = 'ID123';
-        $loan = new Loan($user, $book, '2023-01-01', '2023-01-15');
+        $loan1 = new Loan($user, 'ID123', '2023-01-01', '2023-01-15');
+        $loan2 = new Loan($user, 'ID124', '2023-01-10', '2023-01-20');
 
-        $this->loanRepository
-            ->expects($this->once())
+        $this->loanRepository->expects($this->once())
             ->method('findByUser')
             ->with($user)
-            ->willReturn([$loan]);
+            ->willReturn([$loan1, $loan2]);
 
-        $result = $this->sut->__invoke('user1');
+        $result = $this->sut->__invoke($user);
 
-        $this->assertCount(1, $result);
-        $this->assertSame($loan, $result[0]);
+        $this->assertCount(2, $result);
+        $this->assertSame([$loan1, $loan2], $result);
+    }
+
+    public function test_it_should_return_empty_list_when_user_has_no_loans(): void
+    {
+        $user = 'user1';
+
+        $this->loanRepository->expects($this->once())
+            ->method('findByUser')
+            ->with($user)
+            ->willReturn([]);
+
+        $result = $this->sut->__invoke($user);
+
+        $this->assertEmpty($result);
     }
 
     protected function setUp(): void
