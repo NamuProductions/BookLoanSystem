@@ -30,6 +30,20 @@ class SearchBooksActionTest extends TestCase
         $this->assertSame($matchedBooks, $result);
     }
 
+    public function test_it_should_return_empty_list_for_no_matches(): void
+    {
+        $query = 'NonExistentTitle';
+
+        $this->bookRepository->expects($this->once())
+            ->method('search')
+            ->with($query)
+            ->willReturn([]);
+
+        $result = $this->sut->__invoke($query);
+
+        $this->assertEmpty($result);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
