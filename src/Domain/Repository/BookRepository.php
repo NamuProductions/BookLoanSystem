@@ -12,5 +12,5 @@ interface BookRepository
 
     public function search(string $query): array;
 
-    public function findByIdNumber(string $idNumber): ?Book;
+    public function findById(string $id): ?Book;
 }
