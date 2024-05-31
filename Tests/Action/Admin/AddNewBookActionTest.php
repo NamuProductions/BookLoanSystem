@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Action\Admin;
 
@@ -39,7 +40,7 @@ class AddNewBookActionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Title is required');
 
-        $this->sut->__invoke('', 'Test Author', 2000, '0123456789');
+        $this->sut->__invoke('', 'Test Author', '2000', '0123456789');
     }
 
     public function test_it_should_throw_an_exception_when_author_is_missing(): void
