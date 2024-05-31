@@ -13,22 +13,22 @@ class Book
         private bool $isAvailable = true
     ) {}
 
-    public function getTitle(): string
+    public function title(): string
     {
         return $this->title;
     }
 
-    public function getAuthor(): string
+    public function author(): string
     {
         return $this->author;
     }
 
-    public function getYear(): string
+    public function year(): string
     {
         return $this->year;
     }
 
-    public function getIdNumber(): string
+    public function idNumber(): string
     {
         return $this->idNumber;
     }

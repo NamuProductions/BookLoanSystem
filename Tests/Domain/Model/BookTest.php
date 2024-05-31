@@ -11,25 +11,25 @@ class BookTest extends TestCase
     public function test_it_should_return_correct_title(): void
     {
         $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
-        $this->assertSame('Test Title', $book->getTitle());
+        $this->assertSame('Test Title', $book->title());
     }
 
     public function test_it_should_return_correct_author(): void
     {
         $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
-        $this->assertSame('Test Author', $book->getAuthor());
+        $this->assertSame('Test Author', $book->author());
     }
 
     public function test_it_should_return_correct_year(): void
     {
         $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
-        $this->assertSame('2021', $book->getYear());
+        $this->assertSame('2021', $book->year());
     }
 
     public function test_it_should_return_correct_id_number(): void
     {
         $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
-        $this->assertSame('ID123', $book->getIdNumber());
+        $this->assertSame('ID123', $book->idNumber());
     }
     public function test_it_should_return_isAvailable_when_is_available(): void
     {

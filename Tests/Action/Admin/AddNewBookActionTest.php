@@ -26,10 +26,10 @@ class AddNewBookActionTest extends TestCase
             ->expects($this->once())
             ->method('save')
             ->with($this->callback(function (Book $book) use ($title, $author, $year, $idNumber) {
-                return $book->getTitle() === $title &&
-                    $book->getAuthor() === $author &&
-                    $book->getYear() === $year &&
-                    $book->getIdNumber() === $idNumber;
+                return $book->title() === $title &&
+                    $book->author() === $author &&
+                    $book->year() === $year &&
+                    $book->idNumber() === $idNumber;
             }));
 
         $this->sut->__invoke($title, $author, $year, $idNumber);
