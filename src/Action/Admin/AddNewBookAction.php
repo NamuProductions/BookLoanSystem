@@ -16,8 +16,17 @@ readonly class AddNewBookAction
 
     public function __invoke(string $title, string $author, string $year, string $idNumber): void
     {
-        if(empty($title) || empty($author) || empty($year) || empty($idNumber)) {
-            throw new InvalidArgumentException('Title, author, year and idNumber are required');
+        if(empty($title)) {
+            throw new InvalidArgumentException('Title is required');
+        }
+        if(empty($author)) {
+            throw new InvalidArgumentException('Author is required');
+        }
+        if (empty($year)) {
+            throw new InvalidArgumentException('Year is required');
+        }
+        if(empty($idNumber)) {
+            throw new InvalidArgumentException('IdNumber is required');
         }
 
         $book = new Book($title, $author, $year, $idNumber);

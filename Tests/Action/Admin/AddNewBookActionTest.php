@@ -34,12 +34,36 @@ class AddNewBookActionTest extends TestCase
         $this->sut->__invoke($title, $author, $year, $idNumber);
     }
 
-    public function test_it_should_throw_an_exception_when_one_parameter_is_missing(): void
+    public function test_it_should_throw_an_exception_when_title_is_missing(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Title, author, year and idNumber are required');
+        $this->expectExceptionMessage('Title is required');
 
         $this->sut->__invoke('', 'Test Author', 2000, '0123456789');
+    }
+
+    public function test_it_should_throw_an_exception_when_author_is_missing(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Author is required');
+
+        $this->sut->__invoke('Title1', '', "2000", '0123456789');
+    }
+
+    public function test_it_should_throw_an_exception_when_year_is_missing(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Year is required');
+
+        $this->sut->__invoke('Title1', 'Test Author', "", '0123456789');
+    }
+
+    public function test_it_should_throw_an_exception_when_idNumber_is_missing(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('IdNumber is required');
+
+        $this->sut->__invoke('Title1', 'Test Author', "2000", '');
     }
 
     protected function setUp(): void
