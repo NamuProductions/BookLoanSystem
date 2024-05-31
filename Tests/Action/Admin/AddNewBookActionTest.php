@@ -67,6 +67,14 @@ class AddNewBookActionTest extends TestCase
         $this->sut->__invoke('Title1', 'Test Author', "2000", '');
     }
 
+    public function test_it_should_throw_an_exception_when_year_is_not_valid(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Year must be an integer between 0 and the current year.');
+
+        $this->sut->__invoke('Title1', 'Test Author', "20123", '0123456789');
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
