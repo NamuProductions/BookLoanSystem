@@ -17,19 +17,23 @@ readonly class AddNewBookAction
 
     public function __invoke(string $title, string $author, string $year, string $idNumber): void
     {
-        if(empty($title)) {
+        if (empty($title)) {
             throw new InvalidArgumentException('Title is required');
         }
-        if(empty($author)) {
+        if (empty($author)) {
             throw new InvalidArgumentException('Author is required');
         }
         if (empty($year)) {
             throw new InvalidArgumentException('Year is required');
         }
-        if(empty($idNumber)) {
+        if (empty($idNumber)) {
             throw new InvalidArgumentException('IdNumber is required');
         }
-
+        $currentYear = (int)date('Y');
+        $yearInt = (int)$year;
+        if ($yearInt < 0 || $yearInt > $currentYear || (string)$yearInt !== $year) {
+            throw new InvalidArgumentException('Year must be an integer between 0 and the current year.');
+        }
         $book = new Book($title, $author, $year, $idNumber);
         $this->bookRepository->save($book);
     }
