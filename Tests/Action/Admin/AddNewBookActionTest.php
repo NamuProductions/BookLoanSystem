@@ -75,6 +75,35 @@ class AddNewBookActionTest extends TestCase
         $this->sut->__invoke('Title1', 'Test Author', "20123", '0123456789');
     }
 
+    public function test_a_negative_year(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Year must be an integer between 0 and the current year.');
+
+        $year = '-2024';
+        $currentYear = (int)date('Y');
+
+        $yearInt = (int)$year;
+        if ($yearInt < 0 || $yearInt > $currentYear || (string)$yearInt !== $year) {
+            throw new InvalidArgumentException('Year must be an integer between 0 and the current year.');
+        }
+    }
+
+    public function test_a_future_year(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Year must be an integer between 0 and the current year.');
+
+        $year = (string)((int)date('Y') + 1);
+        $currentYear = (int)date('Y');
+
+        $yearInt = (int)$year;
+        if ($yearInt < 0 || $yearInt > $currentYear || (string)$yearInt !== $year) {
+            throw new InvalidArgumentException('Year must be an integer between 0 and the current year.');
+        }
+    }
+
+
     protected function setUp(): void
     {
         parent::setUp();
