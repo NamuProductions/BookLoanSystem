@@ -30,6 +30,18 @@ class ListReturnRequestsActionTest extends TestCase
         $this->assertSame($loan2, $result[1]);
     }
 
+    public function test_it_should_return_empty_array_if_no_return_requests(): void
+    {
+        $this->loanRepository->expects($this->once())
+            ->method('findAllReturnRequests')
+            ->willReturn([]);
+
+        $result = ($this->sut)();
+
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
