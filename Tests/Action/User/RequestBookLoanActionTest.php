@@ -42,7 +42,7 @@ class RequestBookLoanActionTest extends TestCase
             ->method('save')
             ->with($this->callback(function (Loan $loan) use ($user, $book) {
                 $this->assertEquals($user->getUserName(), $loan->getUser());
-                $this->assertEquals($book->idNumber(), $loan->getBook());
+                $this->assertEquals($book->bookId(), $loan->getBook());
                 return true;}));
 
         $this->bookRepository

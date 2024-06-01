@@ -33,7 +33,7 @@ readonly class RequestBookLoanAction
             throw new InvalidArgumentException('Book is not available.');
         }
 
-        $loan = new Loan($user->getUserName(), $book->idNumber(), date('Y-m-d'), '');
+        $loan = new Loan($user->getUserName(), $book->bookId(), date('Y-m-d'), '');
         $this->loanRepository->save($loan);
 
         $book->markAsUnavailable();

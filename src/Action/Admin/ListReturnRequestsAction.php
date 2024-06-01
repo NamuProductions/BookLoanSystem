@@ -3,20 +3,19 @@ declare(strict_types=1);
 
 namespace App\Action\Admin;
 
-use App\Domain\Repository\LoanRepository;
 use Exception;
 
 readonly class ListReturnRequestsAction
 {
-    public function __construct(private LoanRepository $loanRepository)
+    public function __construct()
     {
     }
 
     public function __invoke(): array
     {
         try {
-            return $this->loanRepository->findAllReturnRequests();
-        } catch (Exception) {
+            return [];
+        } catch (Exception $e) {
             throw new Exception('Error retrieving return requests');
         }
     }

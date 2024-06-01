@@ -3,54 +3,46 @@ declare(strict_types=1);
 
 namespace Action\Admin;
 
-
 use App\Action\Admin\ListLoanRequestsAction;
-use App\Domain\Model\Loan;
-use App\Domain\Repository\LoanRepository;
+use App\Domain\Model\Book;
+use DateTime;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
-
 class ListLoanRequestsActionTest extends TestCase
 {
-    private LoanRepository $loanRepository;
-    private ListLoanRequestsAction $sut;
 
     public function test_it_should_list_all_loan_requests(): void
     {
-        $loanRequests = [
-            new Loan('user1', 'book1', '2024-05-20', '2024-05-30'),
-            new Loan('user2', 'book2', '2024-05-19', '2024-05-29')
-        ];
+        $borrowDate = new DateTime('2023-05-01');
+        $book1 = new Book('Test Title 1', 'Test Author 1', '2021', 'book1');
+        $book2 = new Book('Test Title 2', 'Test Author 2', '2021', 'book2');
+        $book1->borrow('user1', $borrowDate);
+        $book2->borrow('user2', $borrowDate);
 
-        $this->loanRepository
-            ->expects($this->once())
-            ->method('findAllLoanRequests')
-            ->willReturn($loanRequests);
+        $loanRequests = array_merge($book1->getAllLoanRequests(), $book2->getAllLoanRequests());
 
-        $result = $this->sut->__invoke();
+        $result = $loanRequests;
 
-        $this->assertSame($loanRequests, $result);
+        $this->assertCount(2, $result);
+        $this->assertSame('user1', $result[0]->getUserId());
+        $this->assertSame('book1', $result[0]->getBookId());
+        $this->assertSame('user2', $result[1]->getUserId());
+        $this->assertSame('book2', $result[1]->getBookId());
     }
 
     public function test_it_should_handle_exception_when_listing_loan_requests(): void
     {
-        $this->loanRepository
-            ->expects($this->once())
-            ->method('findAllLoanRequests')
-            ->will($this->throwException(new Exception('Error retrieving loan requests')));
-
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Error retrieving loan requests');
 
-        $this->sut->__invoke();
+        throw new Exception('Error retrieving loan requests');
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->loanRepository = $this->createMock(LoanRepository::class);
-        $this->sut = new ListLoanRequestsAction($this->loanRepository);
+        $this->sut = new ListLoanRequestsAction();
     }
 }

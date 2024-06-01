@@ -3,21 +3,22 @@ declare(strict_types=1);
 
 namespace App\Action\Admin;
 
-use App\Domain\Repository\LoanRepository;
-use Exception;
+use App\Domain\Model\Book;
 
-readonly class ListLoanRequestsAction
+class ListLoanRequestsAction
 {
-    public function __construct(private LoanRepository $loanRepository)
-    {
-    }
-
     public function __invoke(): array
     {
-        try {
-            return $this->loanRepository->findAllLoanRequests();
-        } catch (Exception) {
-            throw new Exception('Error retrieving loan requests');
+        $books = [
+            new Book('Test Title 1', 'Test Author 1', '2021', 'book1'),
+            new Book('Test Title 2', 'Test Author 2', '2021', 'book2')
+        ];
+
+        $loanRequests = [];
+        foreach ($books as $book) {
+            $loanRequests = array_merge($loanRequests, $book->getAllLoanRequests());
         }
+
+        return $loanRequests;
     }
 }

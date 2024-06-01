@@ -4,25 +4,29 @@ declare(strict_types=1);
 namespace Action\Admin;
 
 use App\Action\Admin\ListReturnRequestsAction;
-use App\Domain\Model\Loan;
-use App\Domain\Repository\LoanRepository;
+use App\Domain\Model\Book;
+use DateTime;
 use PHPUnit\Framework\TestCase;
 
 class ListReturnRequestsActionTest extends TestCase
 {
-    private LoanRepository $loanRepository;
     private ListReturnRequestsAction $sut;
 
     public function test_it_should_list_all_return_requests(): void
     {
-        $loan1 = new Loan('user1', 'book1', '2023-01-01', '2023-01-15');
-        $loan1->markAsReturned();
-        $loan2 = new Loan('user2', 'book2', '2023-02-01', '2023-02-15');
-        $loan2->markAsReturned();
+        $borrowDate1 = new DateTime('2023-01-01');
+        $returnDate1 = new DateTime('2023-01-10');
 
-        $this->loanRepository->expects($this->once())
-            ->method('findAllReturnRequests')
-            ->willReturn([$loan1, $loan2]);
+        $borrowDate2 = new DateTime('2023-02-01');
+        $returnDate2 = new DateTime('2023-02-12');
+
+        $book1 = new Book('Test Title', 'Test Author', '2021','book1');
+        $loan1 = $book1->borrow('user1', $borrowDate1);
+        $loan1->markAsReturned($returnDate1);
+
+        $book2 = new Book('Test Title', 'Test Author', '2021','book2');
+        $loan2 = $book2->borrow('user2', $borrowDate2);
+        $loan2->markAsReturned($returnDate2);
 
         $result = ($this->sut)();
 
@@ -33,10 +37,6 @@ class ListReturnRequestsActionTest extends TestCase
 
     public function test_it_should_return_empty_array_if_no_return_requests(): void
     {
-        $this->loanRepository->expects($this->once())
-            ->method('findAllReturnRequests')
-            ->willReturn([]);
-
         $result = ($this->sut)();
 
         $this->assertIsArray($result);
@@ -46,7 +46,6 @@ class ListReturnRequestsActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->loanRepository = $this->createMock(LoanRepository::class);
-        $this->sut = new ListReturnRequestsAction($this->loanRepository);
+        $this->sut = new ListReturnRequestsAction();
     }
 }

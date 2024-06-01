@@ -3,52 +3,50 @@ declare(strict_types=1);
 
 namespace Action\User;
 
-use App\Action\User\ListUserLoansAction;
-use App\Domain\Model\Loan;
-use App\Domain\Repository\LoanRepository;
+use App\Domain\Model\Book;
+use DateTime;
 use PHPUnit\Framework\TestCase;
 
 class ListUserLoansActionTest extends TestCase
 {
-    private LoanRepository $loanRepository;
-    private ListUserLoansAction $sut;
-
     public function test_it_should_return_user_loans(): void
     {
-        $user = 'user1';
-        $loan1 = new Loan($user, 'ID123', '2023-01-01', '2023-01-15');
-        $loan2 = new Loan($user, 'ID124', '2023-01-10', '2023-01-20');
+        $borrowDate = new DateTime('2023-01-01');
+        $book = new Book('Test Title', 'Test Author', '2021', 'book1');
+        $book->borrow('user1', $borrowDate);
 
-        $this->loanRepository->expects($this->once())
-            ->method('findByUser')
-            ->with($user)
-            ->willReturn([$loan1, $loan2]);
+        $loans = $book->findByUser('user1');
 
-        $result = $this->sut->__invoke($user);
-
-        $this->assertCount(2, $result);
-        $this->assertSame([$loan1, $loan2], $result);
+        $this->assertCount(1, $loans);
+        $this->assertSame('user1', $loans[0]->getUserId());
+        $this->assertSame($book->bookId(), $loans[0]->getBookId());
+        $this->assertEquals($borrowDate->format('Y-m-d'), $loans[0]->getBorrowDate()->format('Y-m-d'));
+        $this->assertEquals($borrowDate->modify('+14 days')->format('Y-m-d'), $loans[0]->getDueDate()->format('Y-m-d'));
     }
 
     public function test_it_should_return_empty_list_when_user_has_no_loans(): void
     {
-        $user = 'user1';
+        $book = new Book('Test Title', 'Test Author', '2021', 'book1');
+        $loans = $book->findByUser('user1');
 
-        $this->loanRepository->expects($this->once())
-            ->method('findByUser')
-            ->with($user)
-            ->willReturn([]);
-
-        $result = $this->sut->__invoke($user);
-
-        $this->assertEmpty($result);
+        $this->assertEmpty($loans);
     }
 
-    protected function setUp(): void
+    public function test_it_should_mark_book_as_returned(): void
     {
-        parent::setUp();
+        $borrowDate = new DateTime('2023-01-01');
+        $book = new Book('Test Title', 'Test Author', '2021', 'book1');
+        $book->borrow('user1', $borrowDate);
 
-        $this->loanRepository = $this->createMock(LoanRepository::class);
-        $this->sut = new ListUserLoansAction($this->loanRepository);
+        $loans = $book->findByUser('user1');
+        $this->assertCount(1, $loans);
+        $this->assertFalse($loans[0]->isReturned());
+
+        $book->returnBook();
+
+        $loans = $book->findByUser('user1');
+        $this->assertCount(1, $loans);
+        $this->assertTrue($loans[0]->isReturned());
+        $this->assertInstanceOf(DateTime::class, $loans[0]->getReturnDate());
     }
 }

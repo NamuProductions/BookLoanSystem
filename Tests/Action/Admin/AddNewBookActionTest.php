@@ -29,7 +29,7 @@ class AddNewBookActionTest extends TestCase
                 return $book->title() === $title &&
                     $book->author() === $author &&
                     $book->year() === $year &&
-                    $book->idNumber() === $idNumber;
+                    $book->bookId() === $idNumber;
             }));
 
         $this->sut->__invoke($title, $author, $year, $idNumber);

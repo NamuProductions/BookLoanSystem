@@ -3,46 +3,51 @@ declare(strict_types=1);
 
 namespace App\Domain\Model;
 
+use DateTime;
+
 class Loan
 {
-    private bool $isReturned;
+    private ?DateTime $returnDate = null;
 
     public function __construct(
-        private readonly string $user,
-        private readonly string $book,
-        private readonly string $loanDate,
-        private readonly string $returnDate
-    ) {
-        $this->isReturned = false;
-    }
+        private readonly string $bookId,
+        private readonly string $userId,
+        private readonly DateTime $borrowDate,
+        private readonly DateTime $dueDate
+    ) {}
 
-    public function getUser(): string
+    public function getBookId(): string
     {
-        return $this->user;
+        return $this->bookId;
     }
 
-    public function getBook(): string
+    public function getUserId(): string
     {
-        return $this->book;
+        return $this->userId;
     }
 
-    public function getLoanDate(): string
+    public function getBorrowDate(): DateTime
     {
-        return $this->loanDate;
+        return $this->borrowDate;
     }
 
-    public function getReturnDate(): string
+    public function getDueDate(): DateTime
+    {
+        return $this->dueDate;
+    }
+
+    public function getReturnDate(): ?DateTime
     {
         return $this->returnDate;
     }
 
-    public function isReturned(): bool
+    public function markAsReturned(DateTime $returnDate): void
     {
-        return $this->isReturned;
+        $this->returnDate = $returnDate;
     }
 
-    public function markAsReturned(): void
+    public function isReturned(): bool
     {
-        $this->isReturned = true;
+        return $this->returnDate !== null;
     }
 }

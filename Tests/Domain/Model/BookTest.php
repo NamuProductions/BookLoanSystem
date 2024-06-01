@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Domain\Model;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use App\Domain\Model\Book;
 
@@ -29,7 +30,7 @@ class BookTest extends TestCase
     public function test_it_should_return_correct_id_number(): void
     {
         $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
-        $this->assertSame('ID123', $book->idNumber());
+        $this->assertSame('ID123', $book->bookId());
     }
     public function test_it_should_return_isAvailable_when_is_available(): void
     {
@@ -51,5 +52,67 @@ class BookTest extends TestCase
         $book->markAsAvailable();
 
         $this->assertTrue($book->isAvailable());
+    }
+
+    public function test_it_should_borrow_book(): void
+    {
+        $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
+        $book->borrow('user123');
+        $this->assertFalse($book->isAvailable());
+    }
+
+    public function test_it_should_not_borrow_book_if_already_borrowed(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $book = new Book('Test Title', 'Test Author', '2021', 'ID123', false);
+        $book->borrow('user123');
+    }
+
+    public function test_it_should_return_book(): void
+    {
+        $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
+        $book->borrow('user123');
+        $book->returnBook();
+        $this->assertTrue($book->isAvailable());
+    }
+
+    public function test_it_should_not_return_book_if_already_available(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
+        $book->returnBook();
+    }
+
+    public function test_it_should_get_all_loan_requests(): void
+    {
+        $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
+        $book->borrow('user123');
+        $loanRequests = $book->getAllLoanRequests();
+        $this->assertCount(1, $loanRequests);
+    }
+
+    public function test_it_should_find_loans_by_user(): void
+    {
+        $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
+        $book->borrow('user123');
+        $loans = $book->findByUser('user123');
+        $this->assertCount(1, $loans);
+    }
+
+    public function test_it_should_find_active_loan(): void
+    {
+        $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
+        $book->borrow('user123');
+        $loan = $book->findActiveLoan('user123', 'ID123');
+        $this->assertNotNull($loan);
+    }
+
+    public function test_it_should_not_find_active_loan_if_returned(): void
+    {
+        $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
+        $book->borrow('user123');
+        $book->returnBook();
+        $loan = $book->findActiveLoan('user123', 'ID123');
+        $this->assertNull($loan);
     }
 }
