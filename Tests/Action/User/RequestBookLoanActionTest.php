@@ -5,10 +5,8 @@ namespace Action\User;
 
 use App\Action\User\RequestBookLoanAction;
 use App\Domain\Model\Book;
-use App\Domain\Model\Loan;
 use App\Domain\Model\User;
 use App\Domain\Repository\BookRepository;
-use App\Domain\Repository\LoanRepository;
 use App\Domain\Repository\UserRepository;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +15,6 @@ class RequestBookLoanActionTest extends TestCase
 {
     private UserRepository $userRepository;
     private BookRepository $bookRepository;
-    private LoanRepository $loanRepository;
     private RequestBookLoanAction $sut;
 
     public function test_it_should_request_book_loan(): void
@@ -36,14 +33,6 @@ class RequestBookLoanActionTest extends TestCase
             ->method('findById')
             ->with('ID123')
             ->willReturn($book);
-
-        $this->loanRepository
-            ->expects($this->once())
-            ->method('save')
-            ->with($this->callback(function (Loan $loan) use ($user, $book) {
-                $this->assertEquals($user->getUserName(), $loan->getUser());
-                $this->assertEquals($book->bookId(), $loan->getBook());
-                return true;}));
 
         $this->bookRepository
             ->expects($this->once())
@@ -116,9 +105,7 @@ class RequestBookLoanActionTest extends TestCase
         parent::setUp();
 
         $this->bookRepository = $this->createMock(BookRepository::class);
-        $this->loanRepository = $this->createMock(LoanRepository::class);
         $this->userRepository = $this->createMock(UserRepository::class);
-        $this->sut = new RequestBookLoanAction($this->bookRepository, $this->loanRepository, $this->userRepository);
+        $this->sut = new RequestBookLoanAction($this->bookRepository, $this->userRepository);
     }
-
 }
