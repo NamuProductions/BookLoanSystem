@@ -3,30 +3,28 @@ declare(strict_types=1);
 
 namespace App\Action\User;
 
-use App\Domain\Repository\LoanRepository;
 use App\Domain\Repository\BookRepository;
 use InvalidArgumentException;
 
 readonly class MarkBookAsReturnedAction
 {
     public function __construct(
-        private LoanRepository $loanRepository,
         private BookRepository $bookRepository
     ) {}
 
     public function __invoke(string $userId, string $bookId): void
     {
-        $loan = $this->loanRepository->findActiveLoan($userId, $bookId);
+        $book = $this->bookRepository->findById($bookId);
+        if ($book === null) {
+            throw new InvalidArgumentException('Book not found.');
+        }
 
-        if (!$loan) {
+        $activeLoan = $book->findActiveLoan($userId, $bookId);
+        if ($activeLoan === null) {
             throw new InvalidArgumentException('No active loan found for this book and user.');
         }
 
-        $loan->markAsReturned();
-        $this->loanRepository->save($loan);
-
-        $book = $this->bookRepository->findById($bookId);
-        $book->markAsAvailable();
+        $book->returnBook();
         $this->bookRepository->save($book);
     }
 }
