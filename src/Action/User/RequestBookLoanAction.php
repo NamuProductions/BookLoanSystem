@@ -3,17 +3,15 @@ declare(strict_types=1);
 
 namespace App\Action\User;
 
-use App\Domain\Model\Loan;
 use App\Domain\Repository\BookRepository;
-use App\Domain\Repository\LoanRepository;
 use App\Domain\Repository\UserRepository;
+use DateTime;
 use InvalidArgumentException;
 
 readonly class RequestBookLoanAction
 {
     public function __construct(
         private BookRepository $bookRepository,
-        private LoanRepository $loanRepository,
         private UserRepository $userRepository
     ) {}
 
@@ -33,10 +31,7 @@ readonly class RequestBookLoanAction
             throw new InvalidArgumentException('Book is not available.');
         }
 
-        $loan = new Loan($user->getUserName(), $book->bookId(), date('Y-m-d'), '');
-        $this->loanRepository->save($loan);
-
-        $book->markAsUnavailable();
+        $book->borrow($user->getUserName(), new DateTime());
         $this->bookRepository->save($book);
     }
 }
