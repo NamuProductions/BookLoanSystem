@@ -5,40 +5,28 @@ namespace Action\User;
 
 use App\Action\User\MarkBookAsReturnedAction;
 use App\Domain\Model\Book;
-use App\Domain\Model\Loan;
 use App\Domain\Repository\BookRepository;
-use App\Domain\Repository\LoanRepository;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use DateTime;
 
 class MarkBookAsReturnedActionTest extends TestCase
 {
     private BookRepository $bookRepository;
-    private LoanRepository $loanRepository;
     private MarkBookAsReturnedAction $sut;
 
     public function test_it_should_mark_book_as_returned(): void
     {
         $userId = 'user1';
         $bookId = 'ID123';
-        $loan = new Loan($userId, $bookId, '2023-01-01', '2023-01-15');
-        $book = new Book('Title1', 'Author1', '2023', $bookId, false);
-
-        $this->loanRepository->expects($this->once())
-            ->method('findActiveLoan')
-            ->with($userId, $bookId)
-            ->willReturn($loan);
+        $borrowDate = new DateTime('2023-01-01');
+        $book = new Book('Title1', 'Author1', '2023', $bookId, true);
+        $book->borrow($userId, $borrowDate);
 
         $this->bookRepository->expects($this->once())
             ->method('findById')
             ->with($bookId)
             ->willReturn($book);
-
-        $this->loanRepository->expects($this->once())
-            ->method('save')
-            ->with($this->callback(function (Loan $savedLoan) use ($loan) {
-                return $savedLoan === $loan && $savedLoan->isReturned();
-            }));
 
         $this->bookRepository->expects($this->once())
             ->method('save')
@@ -56,10 +44,27 @@ class MarkBookAsReturnedActionTest extends TestCase
 
         $userId = 'user1';
         $bookId = 'ID123';
+        $book = new Book('Title1', 'Author1', '2023', $bookId, true);
 
-        $this->loanRepository->expects($this->once())
-            ->method('findActiveLoan')
-            ->with($userId, $bookId)
+        $this->bookRepository->expects($this->once())
+            ->method('findById')
+            ->with($bookId)
+            ->willReturn($book);
+
+        $this->sut->__invoke($userId, $bookId);
+    }
+
+    public function test_it_should_throw_exception_if_book_not_found(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Book not found.');
+
+        $userId = 'user1';
+        $bookId = 'ID123';
+
+        $this->bookRepository->expects($this->once())
+            ->method('findById')
+            ->with($bookId)
             ->willReturn(null);
 
         $this->sut->__invoke($userId, $bookId);
@@ -69,7 +74,6 @@ class MarkBookAsReturnedActionTest extends TestCase
     {
         parent::setUp();
         $this->bookRepository = $this->createMock(BookRepository::class);
-        $this->loanRepository = $this->createMock(LoanRepository::class);
-        $this->sut = new MarkBookAsReturnedAction($this->loanRepository, $this->bookRepository);
+        $this->sut = new MarkBookAsReturnedAction($this->bookRepository);
     }
 }
