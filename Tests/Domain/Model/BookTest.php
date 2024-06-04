@@ -83,12 +83,12 @@ class BookTest extends TestCase
         $book->returnBook();
     }
 
-    public function test_it_should_get_all_loan_requests(): void
+    public function test_it_should_get_not_returned_loans(): void
     {
         $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
         $book->borrow('user123');
-        $loanRequests = $book->getAllLoanRequests();
-        $this->assertCount(1, $loanRequests);
+        $notReturnedLoans = $book->notReturnedLoans();
+        $this->assertCount(1, $notReturnedLoans);
     }
 
     public function test_it_should_find_loans_by_user(): void
@@ -99,20 +99,20 @@ class BookTest extends TestCase
         $this->assertCount(1, $loans);
     }
 
-    public function test_it_should_find_active_loan(): void
+    public function test_it_should_find_active_loan_by_user_and_book(): void
     {
         $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
         $book->borrow('user123');
-        $loan = $book->findActiveLoan('user123', 'ID123');
+        $loan = $book->findActiveLoanByUserAndBook('user123', 'ID123');
         $this->assertNotNull($loan);
     }
 
-    public function test_it_should_not_find_active_loan_if_returned(): void
+    public function test_it_should_not_find_active_loan_by_user_and_book_if_returned(): void
     {
         $book = new Book('Test Title', 'Test Author', '2021', 'ID123');
         $book->borrow('user123');
         $book->returnBook();
-        $loan = $book->findActiveLoan('user123', 'ID123');
+        $loan = $book->findActiveLoanByUserAndBook('user123', 'ID123');
         $this->assertNull($loan);
     }
 }

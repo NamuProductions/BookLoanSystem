@@ -19,7 +19,7 @@ readonly class MarkBookAsReturnedAction
             throw new InvalidArgumentException('Book not found.');
         }
 
-        $activeLoan = $book->findActiveLoan($userId, $bookId);
+        $activeLoan = $book->findActiveLoanByUserAndBook($userId, $bookId);
         if ($activeLoan === null) {
             throw new InvalidArgumentException('No active loan found for this book and user.');
         }

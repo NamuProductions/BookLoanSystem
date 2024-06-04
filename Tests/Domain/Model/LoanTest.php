@@ -3,23 +3,23 @@ declare(strict_types=1);
 
 namespace Domain\Model;
 
-use PHPUnit\Framework\TestCase;
 use App\Domain\Model\Loan;
+use DateTime;
+use PHPUnit\Framework\TestCase;
 
 class LoanTest extends TestCase
 {
     public function test_loan_creation_and_properties(): void
     {
-        $userName = 'testUser';
-        $bookTitle = 'testBook';
-        $startDate = '2024-05-01';
-        $endDate = '2024-05-11';
+        $borrowDate = new DateTime('2023-01-01');
+        $dueDate = new DateTime('2023-01-15');
 
-        $loan = new Loan($userName, $bookTitle, $startDate, $endDate);
+        $loan = new Loan('book1', 'user1', $borrowDate, $dueDate);
 
-        $this->assertSame($userName, $loan->getUser());
-        $this->assertSame($bookTitle, $loan->getBook());
-        $this->assertSame($startDate, $loan->getLoanDate());
-        $this->assertSame($endDate, $loan->getReturnDate());
+        $this->assertSame('book1', $loan->getBookId());
+        $this->assertSame('user1', $loan->getUserId());
+        $this->assertEquals($borrowDate, $loan->getBorrowDate());
+        $this->assertEquals($dueDate, $loan->getDueDate());
+        $this->assertFalse($loan->isReturned());
     }
 }

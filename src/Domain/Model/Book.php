@@ -20,40 +20,15 @@ class Book
         $this->validateYear($year);
     }
 
-    public function title(): string
-    {
-        return $this->title;
-    }
+    public function title(): string {return $this->title;}
+    public function author(): string {return $this->author;}
+    public function year(): string {return $this->year;}
+    public function bookId(): string {return $this->bookId;}
 
-    public function author(): string
-    {
-        return $this->author;
-    }
+    public function isAvailable(): bool {return $this->isAvailable;}
 
-    public function year(): string
-    {
-        return $this->year;
-    }
-
-    public function bookId(): string
-    {
-        return $this->bookId;
-    }
-
-    public function isAvailable(): bool
-    {
-        return $this->isAvailable;
-    }
-
-    public function markAsUnavailable(): void
-    {
-        $this->isAvailable = false;
-    }
-
-    public function markAsAvailable(): void
-    {
-        $this->isAvailable = true;
-    }
+    public function markAsUnavailable(): void {$this->isAvailable = false;}
+    public function markAsAvailable(): void {$this->isAvailable = true;}
 
     public function borrow(string $userId, DateTime $borrowDate = null): Loan
     {
@@ -80,9 +55,13 @@ class Book
         $this->markAsAvailable();
     }
 
-    public function getAllLoanRequests(): array
+    public function notReturnedLoans(): array
     {
         return array_filter($this->loans, fn($loan) => !$loan->isReturned());
+    }
+    public function returnedLoans(): array
+    {
+        return array_filter($this->loans, fn($loan) => $loan->isReturned());
     }
 
     public function findByUser(string $userName): array
@@ -90,7 +69,7 @@ class Book
         return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userName);
     }
 
-    public function findActiveLoan(string $userId, string $bookId): ?Loan
+    public function findActiveLoanByUserAndBook(string $userId, string $bookId): ?Loan
     {
         foreach ($this->loans as $loan) {
             if ($loan->getUserId() === $userId && $loan->getBookId() === $bookId && !$loan->isReturned()) {

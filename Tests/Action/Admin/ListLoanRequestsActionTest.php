@@ -5,12 +5,16 @@ namespace Action\Admin;
 
 use App\Action\Admin\ListLoanRequestsAction;
 use App\Domain\Model\Book;
+use App\Domain\Repository\BookRepository;
 use DateTime;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
 class ListLoanRequestsActionTest extends TestCase
 {
+
+    private BookRepository $bookRepository;
+    private ListLoanRequestsAction $sut;
 
     public function test_it_should_list_all_loan_requests(): void
     {
@@ -20,9 +24,9 @@ class ListLoanRequestsActionTest extends TestCase
         $book1->borrow('user1', $borrowDate);
         $book2->borrow('user2', $borrowDate);
 
-        $loanRequests = array_merge($book1->getAllLoanRequests(), $book2->getAllLoanRequests());
+        $this->bookRepository->method('findAll')->willReturn([$book1, $book2]);
 
-        $result = $loanRequests;
+        $result = ($this->sut)();
 
         $this->assertCount(2, $result);
         $this->assertSame('user1', $result[0]->getUserId());
@@ -33,16 +37,18 @@ class ListLoanRequestsActionTest extends TestCase
 
     public function test_it_should_handle_exception_when_listing_loan_requests(): void
     {
+        $this->bookRepository->method('findAll')->willThrowException(new Exception('Error retrieving loan requests'));
+
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Error retrieving loan requests');
 
-        throw new Exception('Error retrieving loan requests');
+        ($this->sut)();
     }
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->sut = new ListLoanRequestsAction();
+        $this->bookRepository = $this->createMock(BookRepository::class);
+        $this->sut = new ListLoanRequestsAction($this->bookRepository);
     }
 }
