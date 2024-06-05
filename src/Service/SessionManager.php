@@ -31,7 +31,7 @@ class SessionManager implements SessionManagerInterface
     {
         if (isset($_SESSION['user'])) {
             $userData = $_SESSION['user'];
-            return new User($userData['username'], $userData['email'], '', $userData['role']);
+            return new User($userData['username'], $userData['email'], $userData['password'], $userData['role']);
         }
         return null;
     }
