@@ -19,6 +19,19 @@ class SessionManagerTest extends TestCase
         $this->assertTrue($this->sut->isAuthenticated());
         $this->assertEquals($user, $this->sut->getUser());
     }
+
+    // todo:
+    // public function test_it_should_end_session()
+//    {
+//        $user = new User('testUser', 'test@email.com', 'testPassword', 'user');
+//
+//        $this->sut->startSession($user);
+//        $this->sut->endSession();
+//
+//        $this->assertNull($this->sut->getUser());
+//    }
+
+
     protected function setUp(): void
     {
         parent::setUp();
