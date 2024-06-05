@@ -13,6 +13,7 @@ class SessionManager implements SessionManagerInterface
         $_SESSION['user'] = [
             'username' => $user->getUserName(),
             'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
             'role' => $user->getRole(),
         ];
     }
