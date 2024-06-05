@@ -9,7 +9,9 @@ class SessionManager implements SessionManagerInterface
 {
     public function startSession(User $user): void
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $_SESSION['user'] = [
             'username' => $user->getUserName(),
             'email' => $user->getEmail(),
@@ -20,7 +22,10 @@ class SessionManager implements SessionManagerInterface
 
     public function endSession(): void
     {
-        session_destroy();
+        if (session_status() !== PHP_SESSION_NONE) {
+            unset($_SESSION['user']);
+            session_destroy();
+        }
     }
 
     public function isAuthenticated(): bool

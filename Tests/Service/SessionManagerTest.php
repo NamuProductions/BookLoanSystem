@@ -12,6 +12,8 @@ class SessionManagerTest extends TestCase
 
     public function test_it_should_start_session()
     {
+        session_start();
+
         $user = new User('testUser', 'test@email.com', 'testPassword', 'user');
 
         $this->sut->startSession($user);
@@ -20,16 +22,18 @@ class SessionManagerTest extends TestCase
         $this->assertEquals($user, $this->sut->getUser());
     }
 
-    // todo:
-    // public function test_it_should_end_session()
-//    {
-//        $user = new User('testUser', 'test@email.com', 'testPassword', 'user');
-//
-//        $this->sut->startSession($user);
-//        $this->sut->endSession();
-//
-//        $this->assertNull($this->sut->getUser());
-//    }
+    public function test_it_should_end_session()
+    {
+        session_start();
+
+        $user = new User('testUser', 'test@email.com', 'testPassword', 'user');
+
+        $this->sut->startSession($user);
+        $this->sut->endSession();
+
+        $this->assertFalse($this->sut->isAuthenticated());
+        $this->assertNull($this->sut->getUser());
+    }
 
 
     protected function setUp(): void
@@ -38,4 +42,11 @@ class SessionManagerTest extends TestCase
         $this->sut = new SessionManager();
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
+    }
 }
