@@ -27,8 +27,8 @@ class Book
 
     public function isAvailable(): bool {return $this->isAvailable;}
 
-    public function markAsUnavailable(): void {$this->isAvailable = false;}
-    public function markAsAvailable(): void {$this->isAvailable = true;}
+    private function markAsUnavailable(): void {$this->isAvailable = false;}
+    private function markAsAvailable(): void {$this->isAvailable = true;}
 
     public function borrow(string $userId, DateTime $borrowDate = null): Loan
     {
