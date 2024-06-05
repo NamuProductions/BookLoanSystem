@@ -21,29 +21,24 @@ class Book
     {
     }
 
-    public function title(): string
+    public function title(): string {return $this->title;}
+
+    public function author(): string {return $this->author;}
+
+    public function year(): Year {return $this->year;}
+
+    public function bookId(): string {return $this->bookId;}
+
+    public function isAvailable(): bool {return $this->isAvailable;}
+
+    public function notReturnedLoans(): array
     {
-        return $this->title;
+        return array_filter($this->loans, fn($loan) => !$loan->isReturned());
     }
 
-    public function author(): string
+    public function returnedLoans(): array
     {
-        return $this->author;
-    }
-
-    public function year(): Year
-    {
-        return $this->year;
-    }
-
-    public function bookId(): string
-    {
-        return $this->bookId;
-    }
-
-    public function isAvailable(): bool
-    {
-        return $this->isAvailable;
+        return array_filter($this->loans, fn($loan) => $loan->isReturned());
     }
 
     private function markAsUnavailable(): void
