@@ -18,7 +18,7 @@ class Year
     private function validateYear(int $year): void
     {
         $currentYear = (int)date("Y");
-        if if ($year == 0 || $year < -10000 || $year > ($currentYear + 10000)) {
+        if ($year == 0 || $year < -10000 || $year > ($currentYear + 10000)) {
             throw new InvalidArgumentException('Invalid year.');
         }
     }
