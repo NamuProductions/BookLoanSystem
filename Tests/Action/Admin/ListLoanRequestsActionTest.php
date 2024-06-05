@@ -6,6 +6,7 @@ namespace Action\Admin;
 use App\Action\Admin\ListLoanRequestsAction;
 use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
+use App\Domain\ValueObject\Year;
 use DateTime;
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -19,8 +20,8 @@ class ListLoanRequestsActionTest extends TestCase
     public function test_it_should_list_all_loan_requests(): void
     {
         $borrowDate = new DateTime('2023-05-01');
-        $book1 = new Book('Test Title 1', 'Test Author 1', '2021', 'book1');
-        $book2 = new Book('Test Title 2', 'Test Author 2', '2021', 'book2');
+        $book1 = new Book('Test Title 1', 'Test Author 1', new Year(2021), 'book1');
+        $book2 = new Book('Test Title 2', 'Test Author 2', new Year(2021), 'book2');
         $book1->borrow('user1', $borrowDate);
         $book2->borrow('user2', $borrowDate);
 
