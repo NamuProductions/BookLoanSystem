@@ -6,6 +6,7 @@ namespace Action\User;
 use App\Action\User\SearchBooksAction;
 use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
+use App\Domain\ValueObject\Year;
 use PHPUnit\Framework\TestCase;
 
 class SearchBooksActionTest extends TestCase
@@ -17,7 +18,7 @@ class SearchBooksActionTest extends TestCase
     {
         $query = 'Title1';
         $matchedBooks = [
-            new Book('Title1', 'Author1', '2023', 'ID123'),
+            new Book('Title1', 'Author1', new Year(2023), 'ID123'),
         ];
 
         $this->bookRepository
