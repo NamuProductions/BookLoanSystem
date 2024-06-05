@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Model;
 
+use App\Domain\ValueObject\Year;
 use DateTime;
 use InvalidArgumentException;
 
@@ -13,22 +14,47 @@ class Book
     public function __construct(
         private readonly string $title,
         private readonly string $author,
-        private readonly string $year,
+        private readonly Year   $year,
         private readonly string $bookId,
         private bool            $isAvailable = true
-    ) {
-        $this->validateYear($year);
+    )
+    {
     }
 
-    public function title(): string {return $this->title;}
-    public function author(): string {return $this->author;}
-    public function year(): string {return $this->year;}
-    public function bookId(): string {return $this->bookId;}
+    public function title(): string
+    {
+        return $this->title;
+    }
 
-    public function isAvailable(): bool {return $this->isAvailable;}
+    public function author(): string
+    {
+        return $this->author;
+    }
 
-    private function markAsUnavailable(): void {$this->isAvailable = false;}
-    private function markAsAvailable(): void {$this->isAvailable = true;}
+    public function year(): Year
+    {
+        return $this->year;
+    }
+
+    public function bookId(): string
+    {
+        return $this->bookId;
+    }
+
+    public function isAvailable(): bool
+    {
+        return $this->isAvailable;
+    }
+
+    private function markAsUnavailable(): void
+    {
+        $this->isAvailable = false;
+    }
+
+    private function markAsAvailable(): void
+    {
+        $this->isAvailable = true;
+    }
 
     public function borrow(string $userId, DateTime $borrowDate = null): Loan
     {
@@ -55,15 +81,6 @@ class Book
         $this->markAsAvailable();
     }
 
-    public function notReturnedLoans(): array
-    {
-        return array_filter($this->loans, fn($loan) => !$loan->isReturned());
-    }
-    public function returnedLoans(): array
-    {
-        return array_filter($this->loans, fn($loan) => $loan->isReturned());
-    }
-
     public function findByUser(string $userName): array
     {
         return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userName);
@@ -77,13 +94,5 @@ class Book
             }
         }
         return null;
-    }
-
-    private function validateYear(string $year): void
-    {
-        $currentYear = (int)date("Y");
-        if (!is_numeric($year) || (int)$year < 0 || (int)$year > $currentYear) {
-            throw new InvalidArgumentException('Invalid year.');
-        }
     }
 }
