@@ -14,4 +14,12 @@ class YearTest extends TestCase
         $this->assertEquals(2023, $year->getValue());
         $this->assertEquals("2023", (string)$year);
     }
+
+    public function test_year_creation_with_negative_value(): void
+    {
+        $year = new Year(-500);
+        $this->assertInstanceOf(Year::class, $year);
+        $this->assertEquals(-500, $year->getValue());
+        $this->assertEquals('500B.C.', (string)$year);
+    }
 }
