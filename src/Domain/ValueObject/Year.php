@@ -8,6 +8,9 @@ use InvalidArgumentException;
 class Year
 {
     private int $year;
+    private const MIN_YEAR_BC = -10000;
+    private const MAX_YEAR_AD = 10000;
+    private const YEAR_ZERO = 0;
 
     public function __construct(int $year)
     {
@@ -18,8 +21,8 @@ class Year
     private function validateYear(int $year): void
     {
         $currentYear = (int)date("Y");
-        if ($year == 0 || $year < -10000 || $year > ($currentYear + 10000)) {
-            throw new InvalidArgumentException('Invalid year.');
+        if ($year == self::YEAR_ZERO || $year < self::MIN_YEAR_BC || $year > ($currentYear + self::MAX_YEAR_AD)) {
+            throw new InvalidArgumentException('Invalid Year');
         }
     }
 
