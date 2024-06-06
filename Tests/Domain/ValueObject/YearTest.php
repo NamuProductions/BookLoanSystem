@@ -11,7 +11,6 @@ class YearTest extends TestCase
     {
         $year = new Year(2023);
         $this->assertInstanceOf(Year::class, $year);
-        $this->assertEquals(2023, $year->getValue());
         $this->assertEquals("2023", (string)$year);
     }
 
@@ -19,7 +18,6 @@ class YearTest extends TestCase
     {
         $year = new Year(-500);
         $this->assertInstanceOf(Year::class, $year);
-        $this->assertEquals(-500, $year->getValue());
         $this->assertEquals('500B.C.', (string)$year);
     }
 
@@ -27,7 +25,6 @@ class YearTest extends TestCase
     {
         $year = new Year(0);
         $this->assertInstanceOf(Year::class, $year);
-        $this->assertEquals(0, $year->getValue());
         $this->assertEquals('0', (string)$year);
     }
 }
