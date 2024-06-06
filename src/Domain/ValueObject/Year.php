@@ -33,6 +33,9 @@ class Year
 
     public function __toString(): string
     {
+        if ($this->year < 0) {
+            return abs($this->year) . "a.C.";
+        }
         return (string)$this->year;
     }
 }
