@@ -23,7 +23,7 @@ class YearTest extends TestCase
         $this->assertEquals('500B.C.', (string)$year);
     }
 
-    public function test_year_case_zero_should_return_0_as_string(): void
+    public function test_it_should_return_0_as_string_is_case_0_year(): void
     {
         $year = new Year(0);
         $this->assertInstanceOf(Year::class, $year);
