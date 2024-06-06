@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class LoanTest extends TestCase
 {
-    public function test_loan_creation_and_properties(): void
+    public function test_it_should_loan_creation_and_properties(): void
     {
         $borrowDate = new DateTime('2023-01-01');
         $dueDate = new DateTime('2023-01-15');
