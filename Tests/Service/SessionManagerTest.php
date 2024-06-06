@@ -12,8 +12,6 @@ class SessionManagerTest extends TestCase
 
     public function test_it_should_start_session()
     {
-        session_start();
-
         $user = new User('testUser', 'test@email.com', 'testPassword', 'user');
 
         $this->sut->startSession($user);
@@ -24,8 +22,6 @@ class SessionManagerTest extends TestCase
 
     public function test_it_should_end_session()
     {
-        session_start();
-
         $user = new User('testUser', 'test@email.com', 'testPassword', 'user');
 
         $this->sut->startSession($user);
