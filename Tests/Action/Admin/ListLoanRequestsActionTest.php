@@ -24,7 +24,7 @@ class ListLoanRequestsActionTest extends TestCase
         $book1->borrow('user1', $borrowDate);
         $book2->borrow('user2', $borrowDate);
 
-        $this->loanRequestQueryService->method('getAllLoanRequests')->willReturn([$book1->notReturnedLoans()[0], $book2->notReturnedLoans()[0]]);
+        $this->loanRequestQueryService->method('allLoanRequests')->willReturn([$book1->notReturnedLoans()[0], $book2->notReturnedLoans()[0]]);
 
         $result = ($this->sut)();
 
@@ -37,7 +37,7 @@ class ListLoanRequestsActionTest extends TestCase
 
     public function test_it_should_handle_exception_when_listing_loan_requests(): void
     {
-        $this->loanRequestQueryService->method('getAllLoanRequests')->willThrowException(new Exception('Error retrieving loan requests'));
+        $this->loanRequestQueryService->method('allLoanRequests')->willThrowException(new Exception('Error retrieving loan requests'));
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Error retrieving loan requests');

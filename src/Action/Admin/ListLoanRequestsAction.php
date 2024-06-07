@@ -15,7 +15,7 @@ readonly class ListLoanRequestsAction
     public function __invoke(): array
     {
         try {
-            return $this->loanRequestQueryService->getAllLoanRequests();
+            return $this->loanRequestQueryService->allLoanRequests();
         } catch (Exception) {
             throw new Exception('Error retrieving loan requests');
         }

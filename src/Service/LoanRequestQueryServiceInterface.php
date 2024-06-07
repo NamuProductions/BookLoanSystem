@@ -7,5 +7,5 @@ use App\Domain\Model\Loan;
 
 interface LoanRequestQueryServiceInterface
 {
-    public function getAllLoanRequests(): array;
+    public function allLoanRequests(): array;
 }
