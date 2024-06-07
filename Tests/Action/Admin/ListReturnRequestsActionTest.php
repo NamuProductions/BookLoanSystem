@@ -5,15 +5,15 @@ namespace Action\Admin;
 
 use App\Action\Admin\ListReturnRequestsAction;
 use App\Domain\Model\Book;
-use App\Domain\Repository\BookRepository;
 use App\Domain\ValueObject\Year;
+use App\Service\ReturnRequestQueryServiceInterface;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 
 class ListReturnRequestsActionTest extends TestCase
 {
     private ListReturnRequestsAction $sut;
-    private BookRepository $bookRepository;
+    private ReturnRequestQueryServiceInterface $returnRequestQueryService;
 
     public function test_it_should_list_all_return_requests(): void
     {
@@ -31,10 +31,10 @@ class ListReturnRequestsActionTest extends TestCase
         $loan2 = $book2->borrow('user2', $borrowDate2);
         $loan2->markAsReturned($returnDate2);
 
-        $this->bookRepository
+        $this->returnRequestQueryService
             ->expects($this->once())
-            ->method('findAll')
-            ->willReturn([$book1, $book2]);
+            ->method('returnRequests')
+            ->willReturn([$book1->returnedLoans()[0], $book2->returnedLoans()[0]]);
 
         $result = ($this->sut)();
 
@@ -45,9 +45,9 @@ class ListReturnRequestsActionTest extends TestCase
 
     public function test_it_should_return_empty_array_if_no_return_requests(): void
     {
-        $this->bookRepository
+        $this->returnRequestQueryService
             ->expects($this->once())
-            ->method('findAll')
+            ->method('returnRequests')
             ->willReturn([]);
 
         $result = ($this->sut)();
@@ -59,7 +59,7 @@ class ListReturnRequestsActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->bookRepository = $this->createMock(BookRepository::class);
-        $this->sut = new ListReturnRequestsAction($this->bookRepository);
+        $this->returnRequestQueryService = $this->createMock(ReturnRequestQueryServiceInterface::class);
+        $this->sut = new ListReturnRequestsAction($this->returnRequestQueryService);
     }
 }
