@@ -11,7 +11,7 @@ readonly class LoanRequestQueryService implements LoanRequestQueryServiceInterfa
     {
     }
 
-    public function getAllLoanRequests(): array
+    public function allLoanRequests(): array
     {
         $allBooks = $this->bookRepository->findAll();
         $loanRequests = [];
