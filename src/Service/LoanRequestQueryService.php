@@ -5,7 +5,7 @@ namespace App\Service;
 
 use App\Domain\Repository\BookRepository;
 
-readonly class LoanRequestQueryService
+readonly class LoanRequestQueryService implements LoanRequestQueryServiceInterface
 {
     public function __construct(private BookRepository $bookRepository)
     {
