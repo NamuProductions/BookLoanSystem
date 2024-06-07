@@ -6,7 +6,7 @@ namespace App\Action\Admin;
 use App\Service\ReturnRequestQueryServiceInterface;
 use Exception;
 
-readonly class ListReturnRequestsAction
+readonly class ReturnRequestsAction
 {
     public function __construct(private ReturnRequestQueryServiceInterface $returnRequestQueryService)
     {

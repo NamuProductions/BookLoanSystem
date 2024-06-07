@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Action\Admin;
 
-use App\Action\Admin\ListReturnRequestsAction;
+use App\Action\Admin\ReturnRequestsAction;
 use App\Domain\Model\Book;
 use App\Domain\ValueObject\Year;
 use App\Service\ReturnRequestQueryServiceInterface;
@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class ListReturnRequestsActionTest extends TestCase
 {
-    private ListReturnRequestsAction $sut;
+    private ReturnRequestsAction $sut;
     private ReturnRequestQueryServiceInterface $returnRequestQueryService;
 
     public function test_it_should_list_all_return_requests(): void
@@ -60,6 +60,6 @@ class ListReturnRequestsActionTest extends TestCase
     {
         parent::setUp();
         $this->returnRequestQueryService = $this->createMock(ReturnRequestQueryServiceInterface::class);
-        $this->sut = new ListReturnRequestsAction($this->returnRequestQueryService);
+        $this->sut = new ReturnRequestsAction($this->returnRequestQueryService);
     }
 }

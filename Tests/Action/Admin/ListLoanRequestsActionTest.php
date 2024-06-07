@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Action\Admin;
 
-use App\Action\Admin\ListLoanRequestsAction;
+use App\Action\Admin\LoanRequestsAction;
 use App\Domain\Model\Book;
 use App\Domain\ValueObject\Year;
 use App\Service\LoanRequestQueryServiceInterface;
@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class ListLoanRequestsActionTest extends TestCase
 {
     private LoanRequestQueryServiceInterface $loanRequestQueryService;
-    private ListLoanRequestsAction $sut;
+    private LoanRequestsAction $sut;
 
     public function test_it_should_list_all_loan_requests(): void
     {
@@ -49,6 +49,6 @@ class ListLoanRequestsActionTest extends TestCase
     {
         parent::setUp();
         $this->loanRequestQueryService = $this->createMock(LoanRequestQueryServiceInterface::class);
-        $this->sut = new ListLoanRequestsAction($this->loanRequestQueryService);
+        $this->sut = new LoanRequestsAction($this->loanRequestQueryService);
     }
 }

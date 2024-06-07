@@ -6,7 +6,7 @@ namespace App\Action\Admin;
 use App\Service\LoanRequestQueryServiceInterface;
 use Exception;
 
-readonly class ListLoanRequestsAction
+readonly class LoanRequestsAction
 {
     public function __construct(
         private LoanRequestQueryServiceInterface $loanRequestQueryService)
