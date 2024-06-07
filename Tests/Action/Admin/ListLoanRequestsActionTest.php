@@ -5,8 +5,8 @@ namespace Action\Admin;
 
 use App\Action\Admin\ListLoanRequestsAction;
 use App\Domain\Model\Book;
-use App\Domain\Repository\BookRepository;
 use App\Domain\ValueObject\Year;
+use App\Service\LoanRequestQueryService;
 use DateTime;
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class ListLoanRequestsActionTest extends TestCase
 {
 
-    private BookRepository $bookRepository;
+    private LoanRequestQueryService $loanRequestQueryService;
     private ListLoanRequestsAction $sut;
 
     public function test_it_should_list_all_loan_requests(): void
@@ -25,7 +25,7 @@ class ListLoanRequestsActionTest extends TestCase
         $book1->borrow('user1', $borrowDate);
         $book2->borrow('user2', $borrowDate);
 
-        $this->bookRepository->method('findAll')->willReturn([$book1, $book2]);
+        $this->loanRequestQueryService->method('getAllLoanRequests')->willReturn([$book1->notReturnedLoans()[0], $book2->notReturnedLoans()[0]]);
 
         $result = ($this->sut)();
 
@@ -38,7 +38,7 @@ class ListLoanRequestsActionTest extends TestCase
 
     public function test_it_should_handle_exception_when_listing_loan_requests(): void
     {
-        $this->bookRepository->method('findAll')->willThrowException(new Exception('Error retrieving loan requests'));
+        $this->loanRequestQueryService->method('getAllLoanRequests')->willThrowException(new Exception('Error retrieving loan requests'));
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Error retrieving loan requests');
@@ -49,7 +49,7 @@ class ListLoanRequestsActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->bookRepository = $this->createMock(BookRepository::class);
-        $this->sut = new ListLoanRequestsAction($this->bookRepository);
+        $this->loanRequestQueryService = $this->createMock(LoanRequestQueryService::class);
+        $this->sut = new ListLoanRequestsAction($this->loanRequestQueryService);
     }
 }
