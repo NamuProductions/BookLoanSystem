@@ -7,6 +7,7 @@ use App\Action\User\MarkBookAsReturnedAction;
 use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
 use App\Domain\ValueObject\Year;
+use App\Service\ActiveLoanQueryServiceInterface;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use DateTime;
@@ -14,6 +15,7 @@ use DateTime;
 class MarkBookAsReturnedActionTest extends TestCase
 {
     private BookRepository $bookRepository;
+    private ActiveLoanQueryServiceInterface $activeLoanQueryService;
     private MarkBookAsReturnedAction $sut;
 
     public function test_it_should_mark_book_as_returned(): void
@@ -21,13 +23,18 @@ class MarkBookAsReturnedActionTest extends TestCase
         $userId = 'user1';
         $bookId = 'ID123';
         $borrowDate = new DateTime('2023-01-01');
-        $book = new Book('Title1', 'Author1', new Year(2023), $bookId, true);
-        $book->borrow($userId, $borrowDate);
+        $book = new Book('Title1', 'Author1', new Year(2023), $bookId);
+        $loan = $book->borrow($userId, $borrowDate);
 
         $this->bookRepository->expects($this->once())
             ->method('findById')
             ->with($bookId)
             ->willReturn($book);
+
+        $this->activeLoanQueryService->expects($this->once())
+            ->method('findActiveLoan')
+            ->with($userId, $bookId)
+            ->willReturn($loan);
 
         $this->bookRepository->expects($this->once())
             ->method('save')
@@ -45,12 +52,17 @@ class MarkBookAsReturnedActionTest extends TestCase
 
         $userId = 'user1';
         $bookId = 'ID123';
-        $book = new Book('Title1', 'Author1', new Year(2023), $bookId, true);
+        $book = new Book('Title1', 'Author1', new Year(2023), $bookId);
 
         $this->bookRepository->expects($this->once())
             ->method('findById')
             ->with($bookId)
             ->willReturn($book);
+
+        $this->activeLoanQueryService->expects($this->once())
+            ->method('findActiveLoan')
+            ->with($userId, $bookId)
+            ->willReturn(null);
 
         $this->sut->__invoke($userId, $bookId);
     }
@@ -75,6 +87,7 @@ class MarkBookAsReturnedActionTest extends TestCase
     {
         parent::setUp();
         $this->bookRepository = $this->createMock(BookRepository::class);
-        $this->sut = new MarkBookAsReturnedAction($this->bookRepository);
+        $this->activeLoanQueryService = $this->createMock(ActiveLoanQueryServiceInterface::class);
+        $this->sut = new MarkBookAsReturnedAction($this->bookRepository, $this->activeLoanQueryService);
     }
 }
