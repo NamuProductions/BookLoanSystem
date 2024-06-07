@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace App\Action\Admin;
 
-use App\Service\LoanRequestQueryService;
+use App\Service\LoanRequestQueryServiceInterface;
 use Exception;
 
 readonly class ListLoanRequestsAction
 {
     public function __construct(
-        private LoanRequestQueryService $loanRequestQueryService)
+        private LoanRequestQueryServiceInterface $loanRequestQueryService)
     {}
 
     public function __invoke(): array
