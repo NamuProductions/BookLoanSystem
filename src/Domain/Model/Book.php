@@ -64,15 +64,13 @@ class Book
         return $loan;
     }
 
-    public function returnBook(): void
+    public function returnBook(string $userId): void
     {
-        if ($this->isAvailable) {
-            throw new InvalidArgumentException('Book is already available.');
+        $activeLoan = $this->findActiveLoanByUserAndBook($userId);
+        if ($activeLoan === null) {
+            throw new InvalidArgumentException('No active loan found for this book and user.');
         }
-        $loan = end($this->loans);
-        if ($loan instanceof Loan) {
-            $loan->markAsReturned(new DateTime());
-        }
+        $activeLoan->markAsReturned(new DateTime());
         $this->markAsAvailable();
     }
 
@@ -81,10 +79,10 @@ class Book
         return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userName);
     }
 
-    public function findActiveLoanByUserAndBook(string $userId, string $bookId): ?Loan
+    private function findActiveLoanByUserAndBook(string $userId): ?Loan
     {
         foreach ($this->loans as $loan) {
-            if ($loan->getUserId() === $userId && $loan->getBookId() === $bookId && !$loan->isReturned()) {
+            if ($loan->getUserId() === $userId && !$loan->isReturned()) {
                 return $loan;
             }
         }
