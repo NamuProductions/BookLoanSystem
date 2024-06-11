@@ -43,7 +43,7 @@ class ListUserLoansActionTest extends TestCase
         $this->assertCount(1, $loans);
         $this->assertFalse($loans[0]->isReturned());
 
-        $book->returnBook();
+        $book->returnBook('user1');
 
         $loans = $book->findByUser('user1');
         $this->assertCount(1, $loans);
