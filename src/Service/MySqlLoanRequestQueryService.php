@@ -17,10 +17,11 @@ readonly class MySqlLoanRequestQueryService implements LoanRequestQueryServiceIn
 
     public function allLoanRequests(): array
     {
-        $statement = $this->databaseConnection->prepare('SELECT book_id, title, user_name, user_id, borrow_at FROM loan_requests
-                                                join user on user.id = loan_requests.userId
-                                                join book on book.id = loan_requests.bookId
-                                                where status = "pending"'
+        $statement = $this->databaseConnection->prepare("SELECT lr.book_id, b.title, u.user_name, u.id AS user_id, lr.borrow_at 
+                                                          FROM loan_requests lr
+                                                          JOIN users u ON lr.user_id = u.id
+                                                          JOIN books b ON lr.book_id = b.id
+                                                          WHERE lr.status = 'pending'"
         );
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_FUNC, function($bookId, $title, $userName, $userId, $borrowedAtDateString){
