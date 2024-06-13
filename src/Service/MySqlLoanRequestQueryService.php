@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Action\Admin\LoanRequestsAction;
 use DateTime;
 use PDO;
 
 readonly class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
 {
-    public function __construct(private PDO $databaseConnection)
+    private PDO $databaseConnection;
+
+    public function __construct()
     {
+        $this->databaseConnection = new PDO('mysql:host=localhost;port=3307;dbname=library', 'root', 'root');
     }
 
     public function allLoanRequests(): array
