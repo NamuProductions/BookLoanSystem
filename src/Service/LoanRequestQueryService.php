@@ -17,11 +17,11 @@ class LoanRequestQueryService
 
     public function getAllLoanRequests(): array
     {
-        $statement = $this->databaseConnection->prepare('SELECT lr.id, b.title AS book_title, u.user_name, u.id AS user_id, lr.borrow_at
+        $statement = $this->databaseConnection->prepare("SELECT lr.id, b.title AS book_title, u.user_name, u.id AS user_id, lr.borrow_at
                                                           FROM loan_requests lr
                                                           JOIN users u ON lr.user_id = u.id
                                                           JOIN books b ON lr.book_id = b.id
-                                                          WHERE lr.status = "pending"');
+                                                          WHERE lr.status = 'pending'");
 
         $statement->execute();
 
