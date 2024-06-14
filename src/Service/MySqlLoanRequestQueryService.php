@@ -6,13 +6,13 @@ namespace App\Service;
 use DateTime;
 use PDO;
 
-readonly class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
+class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
 {
     private PDO $databaseConnection;
 
-    public function __construct()
+    public function __construct(PDO $databaseConnection)
     {
-        $this->databaseConnection = new PDO('mysql:host=localhost;port=3307;dbname=library', 'root', 'root');
+        $this->databaseConnection = $databaseConnection;
     }
 
     public function allLoanRequests(): array
@@ -21,10 +21,10 @@ readonly class MySqlLoanRequestQueryService implements LoanRequestQueryServiceIn
                                                           FROM loan_requests lr
                                                           JOIN users u ON lr.user_id = u.id
                                                           JOIN books b ON lr.book_id = b.id
-                                                          WHERE lr.status = 'pending'"
-        );
+                                                          WHERE lr.status = 'pending'");
         $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_FUNC, function($bookId, $title, $userName, $userId, $borrowedAtDateString){
+
+        return $statement->fetchAll(PDO::FETCH_FUNC, function($bookId, $title, $userName, $userId, $borrowedAtDateString) {
             return new LoanRequestsDto($bookId, $title, $userName, $userId, new DateTime($borrowedAtDateString));
         });
     }
