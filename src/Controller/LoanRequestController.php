@@ -4,21 +4,21 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\DatabaseService;
-use App\Service\LoanRequestQueryService;
+use App\Service\MySqlLoanRequestQueryService;
 
 class LoanRequestController
 {
-    public function index()
+    public function index(): void
     {
         $databaseService = new DatabaseService();
         $pdo = $databaseService->getDatabaseConnection();
 
-        $loanRequestService = new LoanRequestQueryService($pdo);
+        $loanRequestService = new MySqlLoanRequestQueryService($pdo);
 
-       $loanRequests = $loanRequestService->getAllLoanRequests();
+        $loanRequests = $loanRequestService->allLoanRequests();
 
-       foreach ($loanRequests as $loanRequest) {
-            echo "ID: {$loanRequest['id']}, Book Title: {$loanRequest['book_title']}, User Name: {$loanRequest['user_name']}, Borrowed At: {$loanRequest['borrow_at']->format('Y-m-d')}";
+        foreach ($loanRequests as $loanRequest) {
+            echo "ID: {$loanRequest['id']}, Book Title: {$loanRequest['title']}, User Name: {$loanRequest['user_name']}, Borrowed At: {$loanRequest['borrow_at']->format('Y-m-d')}";
             echo "<br>";
         }
     }
