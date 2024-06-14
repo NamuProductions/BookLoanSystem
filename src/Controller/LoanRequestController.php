@@ -18,7 +18,7 @@ class LoanRequestController
         $loanRequests = $loanRequestService->allLoanRequests();
 
         foreach ($loanRequests as $loanRequest) {
-            echo "ID: {$loanRequest['id']}, Book Title: {$loanRequest['title']}, User Name: {$loanRequest['user_name']}, Borrowed At: {$loanRequest['borrow_at']->format('Y-m-d')}";
+            echo "ID: {$loanRequest->getBookId()}, Book Title: {$loanRequest->getTitle()}, User Name: {$loanRequest->getUserName()}, Borrowed At: {$loanRequest->getBorrowedAt()->format('Y-m-d')}";
             echo "<br>";
         }
     }
