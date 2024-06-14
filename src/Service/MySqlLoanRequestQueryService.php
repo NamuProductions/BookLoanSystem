@@ -23,9 +23,19 @@ class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
                                                           JOIN books b ON lr.book_id = b.id
                                                           WHERE lr.status = 'pending'");
         $statement->execute();
+        $loanRequests = [];
 
-        return $statement->fetchAll(PDO::FETCH_FUNC, function($bookId, $title, $userName, $userId, $borrowedAtDateString) {
-            return new LoanRequestsDto($bookId, $title, $userName, $userId, new DateTime($borrowedAtDateString));
-        });
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $borrowedAt = new DateTime($row['borrow_at']);
+            $loanRequests[] = new LoanRequestsDto(
+                (string) $row['book_id'],
+                (string) $row['title'],
+                (string) $row['user_name'],
+                (string) $row['user_id'],
+                $borrowedAt
+            );
+        }
+
+        return $loanRequests;
     }
 }
