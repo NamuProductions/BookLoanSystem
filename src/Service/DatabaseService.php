@@ -4,33 +4,25 @@ declare(strict_types=1);
 namespace App\Service;
 
 use PDO;
-use PDOException;
 
 class DatabaseService
 {
-    private PDO $databaseConnection;
+    private string $host = 'localhost';
+    private string $port = '3307';
+    private string $dbname = 'library';
+    private string $username = 'root';
+    private string $password = 'root';
+    private PDO $pdo;
 
     public function __construct()
     {
-        $host = 'localhost';
-        $port = '3307';
-        $dbname = 'library';
-        $username = 'root';
-        $password = 'root';
-
-        $dsn = "mysql:host=$host;port=$port;dbname=$dbname";
-
-        try {
-            $this->databaseConnection = new PDO($dsn, $username, $password);
-            $this->databaseConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Successfully connection";
-        } catch (PDOException) {
-            die("Connection error");
-        }
+        $dsn = "mysql:host=$this->host;port=$this->port;dbname=$this->dbname";
+        $this->pdo = new PDO($dsn, $this->username, $this->password);
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
     public function getDatabaseConnection(): PDO
     {
-        return $this->databaseConnection;
+        return $this->pdo;
     }
 }
