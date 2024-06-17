@@ -66,7 +66,7 @@ class Book
 
     public function returnBook(string $userId): void
     {
-        $activeLoan = $this->findActiveLoanByUserAndBook($userId);
+        $activeLoan = $this->findActiveLoanByUser($userId);
         if ($activeLoan === null) {
             throw new InvalidArgumentException('No active loan found for this book and user.');
         }
@@ -79,7 +79,7 @@ class Book
         return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userName);
     }
 
-    private function findActiveLoanByUserAndBook(string $userId): ?Loan
+    private function findActiveLoanByUser(string $userId): ?Loan
     {
         foreach ($this->loans as $loan) {
             if ($loan->getUserId() === $userId && !$loan->isReturned()) {
