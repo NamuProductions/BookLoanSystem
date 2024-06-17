@@ -45,4 +45,8 @@ class Loan
     {
         return $this->returnDate !== null;
     }
+    public function returnDate(): ?DateTime
+    {
+        return $this->returnDate;
+    }
 }

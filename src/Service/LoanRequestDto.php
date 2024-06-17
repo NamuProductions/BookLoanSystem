@@ -12,13 +12,15 @@ readonly class LoanRequestDto
     public string $userName;
     public string $userId;
     public DateTime $borrowedAt;
+    public ?DateTime $returnDate;
 
     public function __construct(
         string   $bookId,
         string   $title,
         string   $userName,
         string   $userId,
-        DateTime $borrowedAt
+        DateTime $borrowedAt,
+        ?DateTime $returnDate = null
     )
     {
         $this->bookId = $bookId;
@@ -26,5 +28,6 @@ readonly class LoanRequestDto
         $this->userName = $userName;
         $this->userId = $userId;
         $this->borrowedAt = $borrowedAt;
+        $this->returnDate = $returnDate;
     }
 }
