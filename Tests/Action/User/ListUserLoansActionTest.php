@@ -16,7 +16,7 @@ class ListUserLoansActionTest extends TestCase
         $book = new Book('Test Title', 'Test Author', new Year(2021), 'book1');
         $book->borrow('user1', $borrowDate);
 
-        $loans = $book->findByUser('user1');
+        $loans = $book->findAllLoansByUser('user1');
 
         $this->assertCount(1, $loans);
         $this->assertSame('user1', $loans[0]->getUserId());
@@ -28,7 +28,7 @@ class ListUserLoansActionTest extends TestCase
     public function test_it_should_return_empty_list_when_user_has_no_loans(): void
     {
         $book = new Book('Test Title', 'Test Author', new Year(2021), 'book1');
-        $loans = $book->findByUser('user1');
+        $loans = $book->findAllLoansByUser('user1');
 
         $this->assertEmpty($loans);
     }
@@ -39,13 +39,13 @@ class ListUserLoansActionTest extends TestCase
         $book = new Book('Test Title', 'Test Author', new Year(2021), 'book1');
         $book->borrow('user1', $borrowDate);
 
-        $loans = $book->findByUser('user1');
+        $loans = $book->findAllLoansByUser('user1');
         $this->assertCount(1, $loans);
         $this->assertFalse($loans[0]->isReturned());
 
         $book->returnBook('user1');
 
-        $loans = $book->findByUser('user1');
+        $loans = $book->findAllLoansByUser('user1');
         $this->assertCount(1, $loans);
         $this->assertTrue($loans[0]->isReturned());
         $this->assertInstanceOf(DateTime::class, $loans[0]->getReturnDate());

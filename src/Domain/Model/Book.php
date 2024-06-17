@@ -74,7 +74,7 @@ class Book
         $this->markAsAvailable();
     }
 
-    public function findByUser(string $userName): array
+    public function findAllLoansByUser(string $userName): array
     {
         return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userName);
     }
