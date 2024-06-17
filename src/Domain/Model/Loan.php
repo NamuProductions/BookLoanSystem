@@ -36,11 +36,6 @@ class Loan
         return $this->dueDate;
     }
 
-    public function getReturnDate(): ?DateTime
-    {
-        return $this->returnDate;
-    }
-
     public function markAsReturned(DateTime $returnDate): void
     {
         $this->returnDate = $returnDate;
