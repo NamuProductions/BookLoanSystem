@@ -19,7 +19,8 @@ class LoanRequestController
         $loanRequests = $loanRequestService->allLoanRequests();
 
         foreach ($loanRequests as $loanRequest) {
-            echo "ID: {$loanRequest->getBookId()}, Book Title: {$loanRequest->getTitle()}, User Name: {$loanRequest->getUserName()}, Borrowed At: {$loanRequest->getBorrowedAt()->format('Y-m-d')}";
+            $returnDate = $loanRequest->returnDate ? $loanRequest->returnDate->format('Y-m-d') : 'Not Returned';
+            echo "ID: $loanRequest->bookId, Book Title: $loanRequest->title, User Name: $loanRequest->userName, Borrowed At: {$loanRequest->borrowedAt->format('Y-m-d')}, Return Date: $returnDate";
             echo "<br>";
         }
     }
