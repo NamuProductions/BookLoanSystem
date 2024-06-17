@@ -8,9 +8,11 @@ use Exception;
 
 readonly class LoanRequestsAction
 {
-    public function __construct(
-        private LoanRequestQueryServiceInterface $loanRequestQueryService)
-    {}
+    private LoanRequestQueryServiceInterface $loanRequestQueryService;
+    public function __construct(LoanRequestQueryServiceInterface $loanRequestQueryService)
+    {
+        $this->loanRequestQueryService = $loanRequestQueryService;
+    }
 
     public function __invoke(): array
     {
