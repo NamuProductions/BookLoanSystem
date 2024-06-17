@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Action\User;
 
 use App\Domain\Model\Book;
-use App\Domain\Model\Loan;
 use App\Domain\ValueObject\Year;
 use DateTime;
 use PHPUnit\Framework\TestCase;
