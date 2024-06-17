@@ -11,7 +11,7 @@ use DateTime;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
-class ListLoanRequestsActionTest extends TestCase
+class LoanRequestsActionTest extends TestCase
 {
     private LoanRequestQueryServiceInterface $loanRequestQueryService;
     private LoanRequestsAction $sut;
