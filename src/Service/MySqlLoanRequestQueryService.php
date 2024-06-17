@@ -28,6 +28,7 @@ class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $borrowedAt = new DateTime($row['borrow_at']);
             $returnAt = $row['return_at'] ? new DateTime($row['return_at']) : null;
+
             $loanRequests[] = new LoanRequestDto(
                 (string)$row['book_id'],
                 (string)$row['title'],
