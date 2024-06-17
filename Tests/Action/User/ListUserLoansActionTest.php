@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Action\User;
 
 use App\Domain\Model\Book;
+use App\Domain\Model\Loan;
 use App\Domain\ValueObject\Year;
 use DateTime;
 use PHPUnit\Framework\TestCase;
@@ -48,6 +49,6 @@ class ListUserLoansActionTest extends TestCase
         $loans = $book->findAllLoansByUser('user1');
         $this->assertCount(1, $loans);
         $this->assertTrue($loans[0]->isReturned());
-        $this->assertInstanceOf(DateTime::class, $loans[0]->getReturnDate());
+        $this->assertInstanceOf(DateTime::class, $loans[0]->returnDate());
     }
 }
