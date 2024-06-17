@@ -3,18 +3,19 @@ declare(strict_types=1);
 
 namespace Action\Admin;
 
-use App\Action\Admin\LoanRequestsAction;
 use App\Domain\Model\Book;
 use App\Domain\ValueObject\Year;
 use App\Service\LoanRequestQueryServiceInterface;
+use App\Service\MySqlLoanRequestQueryService;
 use DateTime;
 use Exception;
+use PDO;
 use PHPUnit\Framework\TestCase;
 
 class LoanRequestsActionTest extends TestCase
 {
     private LoanRequestQueryServiceInterface $loanRequestQueryService;
-    private LoanRequestsAction $sut;
+    private MySqlLoanRequestQueryService $sut;
 
     public function test_it_should_list_all_loan_requests(): void
     {
@@ -26,7 +27,9 @@ class LoanRequestsActionTest extends TestCase
 
         $this->loanRequestQueryService->method('allLoanRequests')->willReturn([$book1->notReturnedLoans()[0], $book2->notReturnedLoans()[0]]);
 
-        $result = ($this->sut)();
+        $this->sut = new MySqlLoanRequestQueryService($this->createMock(PDO::class));
+
+        $result = $this->sut->allLoanRequests();
 
         $this->assertCount(2, $result);
         $this->assertSame('user1', $result[0]->getUserId());
@@ -39,16 +42,17 @@ class LoanRequestsActionTest extends TestCase
     {
         $this->loanRequestQueryService->method('allLoanRequests')->willThrowException(new Exception('Error retrieving loan requests'));
 
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Error retrieving loan requests');
+        $this->sut = new MySqlLoanRequestQueryService($this->createMock(PDO::class));
 
-        ($this->sut)();
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Error preparing SQL statement');
+
+        $this->sut->allLoanRequests();
     }
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->loanRequestQueryService = $this->createMock(LoanRequestQueryServiceInterface::class);
-        $this->sut = new LoanRequestsAction($this->loanRequestQueryService);
     }
 }
