@@ -48,6 +48,6 @@ class ListUserLoansActionTest extends TestCase
         $loans = $book->findAllLoansByUser('user1');
         $this->assertCount(1, $loans);
         $this->assertTrue($loans[0]->isReturned());
-        $this->assertInstanceOf(DateTime::class, $loans[0]->getReturnDate());
+        $this->assertInstanceOf(DateTime::class, $loans[0]->returnDate());
     }
 }
