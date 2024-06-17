@@ -20,12 +20,19 @@ class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
     public function allLoanRequests(): array
     {
         try {
-            $statement = $this->databaseConnection->prepare("SELECT lr.book_id, b.title, u.user_name, u.id AS user_id, lr.borrow_at, lr.return_at
-                                                            FROM loan_requests lr
-                                                            JOIN users u ON lr.user_id = u.id
-                                                            JOIN books b ON lr.book_id = b.id
-                                                            WHERE lr.status = 'pending'");
+            $sql = "SELECT lr.book_id, b.title, u.user_name, u.id AS user_id, lr.borrow_at, lr.return_at
+                    FROM loan_requests lr
+                    JOIN users u ON lr.user_id = u.id
+                    JOIN books b ON lr.book_id = b.id
+                    WHERE lr.status = 'pending'";
+
+            $statement = $this->databaseConnection->prepare($sql);
+            if (!$statement) {
+                throw new Exception("Error preparing SQL statement");
+            }
+
             $statement->execute();
+
             $loanRequests = [];
 
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -42,8 +49,10 @@ class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
             }
 
             return $loanRequests;
-        } catch (PDOException) {
-            throw new Exception('Error retrieving loan requests');
+        } catch (PDOException $e) {
+            throw new Exception('PDO Error: ' . $e->getMessage());
+        } catch (Exception $e) {
+            throw new Exception('Error retrieving loan requests: ' . $e->getMessage());
         }
     }
 }
