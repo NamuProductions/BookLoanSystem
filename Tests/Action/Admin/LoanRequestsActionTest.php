@@ -3,56 +3,48 @@ declare(strict_types=1);
 
 namespace Action\Admin;
 
-use App\Domain\Model\Book;
-use App\Domain\ValueObject\Year;
+use App\Action\Admin\LoanRequestsAction;
 use App\Service\LoanRequestQueryServiceInterface;
-use App\Service\MySqlLoanRequestQueryService;
+use App\Service\LoanRequestDto;
 use DateTime;
 use Exception;
-use PDO;
 use PHPUnit\Framework\TestCase;
 
 class LoanRequestsActionTest extends TestCase
 {
     private LoanRequestQueryServiceInterface $loanRequestQueryService;
-    private MySqlLoanRequestQueryService $sut;
+    private LoanRequestsAction $sut;
 
-    public function test_it_should_list_all_loan_requests(): void
+   public function test_it_should_list_all_loan_requests(): void
     {
-        $borrowDate = new DateTime('2023-05-01');
-        $book1 = new Book('Test Title 1', 'Test Author 1', new Year(2021), 'book1');
-        $book2 = new Book('Test Title 2', 'Test Author 2', new Year(2021), 'book2');
-        $book1->borrow('user1', $borrowDate);
-        $book2->borrow('user2', $borrowDate);
+        $loanRequest1 = new LoanRequestDto('book1', 'Test Title 1', 'user1', 'user1', new DateTime('2023-05-01'));
+        $loanRequest2 = new LoanRequestDto('book2', 'Test Title 2', 'user2', 'user2', new DateTime('2023-05-01'));
 
-        $this->loanRequestQueryService->method('allLoanRequests')->willReturn([$book1->notReturnedLoans()[0], $book2->notReturnedLoans()[0]]);
+        $this->loanRequestQueryService->method('allLoanRequests')->willReturn([$loanRequest1, $loanRequest2]);
 
-        $this->sut = new MySqlLoanRequestQueryService($this->createMock(PDO::class));
-
-        $result = $this->sut->allLoanRequests();
+        $result = ($this->sut)();
 
         $this->assertCount(2, $result);
-        $this->assertSame('user1', $result[0]->getUserId());
-        $this->assertSame('book1', $result[0]->getBookId());
-        $this->assertSame('user2', $result[1]->getUserId());
-        $this->assertSame('book2', $result[1]->getBookId());
+        $this->assertSame('user1', $result[0]->userId);
+        $this->assertSame('book1', $result[0]->bookId);
+        $this->assertSame('user2', $result[1]->userId);
+        $this->assertSame('book2', $result[1]->bookId);
     }
 
     public function test_it_should_handle_exception_when_listing_loan_requests(): void
     {
         $this->loanRequestQueryService->method('allLoanRequests')->willThrowException(new Exception('Error retrieving loan requests'));
 
-        $this->sut = new MySqlLoanRequestQueryService($this->createMock(PDO::class));
-
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Error preparing SQL statement');
+        $this->expectExceptionMessage('Error retrieving loan requests');
 
-        $this->sut->allLoanRequests();
+        ($this->sut)();
     }
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->loanRequestQueryService = $this->createMock(LoanRequestQueryServiceInterface::class);
+        $this->sut = new LoanRequestsAction($this->loanRequestQueryService);
     }
 }
