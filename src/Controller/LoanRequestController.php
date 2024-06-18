@@ -18,7 +18,7 @@ class LoanRequestController
     public function index(): array
     {
         try {
-            return $this->loanRequestsAction();
+            return ($this->loanRequestsAction)();
         } catch (Exception $e) {
             return ['error' => $e->getMessage()];
         }
