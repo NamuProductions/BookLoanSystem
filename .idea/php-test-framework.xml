@@ -5,7 +5,7 @@
       <tool tool_name="PHPUnit">
         <cache>
           <versions>
-            <info id="LocalC:\Users\Usuario\IdeaProjects\myApplications\BookLoanSystem\vendor\autoload.php" version="11.1.3" />
+            <info id="LocalC:\Users\Usuario\IdeaProjects\myApplications\BookLoanSystem\vendor\autoload.php" version="11.2.1" />
           </versions>
         </cache>
       </tool>

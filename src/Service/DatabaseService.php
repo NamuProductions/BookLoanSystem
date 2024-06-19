@@ -9,13 +9,14 @@ class DatabaseService
 {
     private string $host = 'localhost';
     private string $port = '3307';
-    private string $dbname = 'library';
+    private string $dbname;
     private string $username = 'root';
     private string $password = 'root';
     private PDO $pdo;
 
     public function __construct()
     {
+        $this->dbname = getenv('DB_NAME') ?: 'library';
         $dsn = "mysql:host=$this->host;port=$this->port;dbname=$this->dbname";
         $this->pdo = new PDO($dsn, $this->username, $this->password);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
