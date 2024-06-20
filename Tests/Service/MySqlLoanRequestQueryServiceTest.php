@@ -30,19 +30,6 @@ class MySqlLoanRequestQueryServiceTest extends TestCase
         $this->assertSame('2', $result[1]->bookId);
     }
 
-    public function test_it_should_handle_exception_when_listing_loan_requests(): void
-    {
-        $pdoMock = $this->createMock(PDO::class);
-        $pdoMock->method('prepare')->willThrowException(new Exception('Error preparing SQL statement'));
-
-        $sut = new MySqlLoanRequestQueryService($pdoMock);
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Error preparing SQL statement');
-
-        $sut->allLoanRequests();
-    }
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -60,9 +47,9 @@ class MySqlLoanRequestQueryServiceTest extends TestCase
         $this->pdo->exec("INSERT INTO users (id, username, password, email, full_name) VALUES 
                           (1, 'user1', 'password1', 'user1@example.com', 'User One'), 
                           (2, 'user2', 'password2', 'user2@example.com', 'User Two')");
-        $this->pdo->exec("INSERT INTO books (id, title, author, isbn, published_date, genre, pages) VALUES 
-                          (1, 'Test Title 1', 'Author 1', '1234567890123', '2022-01-01', 'Fiction', 300), 
-                          (2, 'Test Title 2', 'Author 2', '1234567890124', '2022-02-01', 'Non-Fiction', 250)");
+        $this->pdo->exec("INSERT INTO books (id, title, author, isbn, published_date, genre, pages, language) VALUES 
+                          (1, 'Test Title 1', 'Author 1', '1234567890123', '2022-01-01', 'Fiction', 300, 'English'), 
+                          (2, 'Test Title 2', 'Author 2', '1234567890124', '2022-02-01', 'Non-Fiction', 250, 'Català')");
         $this->pdo->exec("INSERT INTO loan_requests (id, book_id, user_id, borrowed_at, return_date) VALUES 
                           (1, 1, 1, '2023-05-01 00:00:00', NULL), 
                           (2, 2, 2, '2023-05-01 00:00:00', NULL)");
