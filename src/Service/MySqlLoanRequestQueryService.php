@@ -17,7 +17,7 @@ class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
 
     public function allLoanRequests(): array
     {
-        $statement = $this->databaseConnection->prepare("SELECT lr.book_id, b.title, u.user_name, u.id AS user_id, lr.borrow_at, lr.return_at
+        $statement = $this->databaseConnection->prepare("SELECT lr.book_id, b.title, u.username, u.id AS user_id, lr.borrowed_at, lr.return_date
                                                         FROM loan_requests lr
                                                           JOIN users u ON lr.user_id = u.id
                                                           JOIN books b ON lr.book_id = b.id
@@ -26,13 +26,13 @@ class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
         $loanRequests = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $borrowedAt = new DateTime($row['borrow_at']);
-            $returnAt = $row['return_at'] ? new DateTime($row['return_at']) : null;
+            $borrowedAt = new DateTime($row['borrowed_at']);
+            $returnAt = $row['return_date'] ? new DateTime($row['return_date']) : null;
 
             $loanRequests[] = new LoanRequestDto(
                 (string)$row['book_id'],
                 (string)$row['title'],
-                (string)$row['user_name'],
+                (string)$row['username'],
                 (string)$row['user_id'],
                 $borrowedAt,
                 $returnAt
