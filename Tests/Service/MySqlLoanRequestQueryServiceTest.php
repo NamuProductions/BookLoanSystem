@@ -5,7 +5,6 @@ namespace Service;
 
 use App\Service\DatabaseService;
 use App\Service\MySqlLoanRequestQueryService;
-use Exception;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use App\Service\LoanRequestDto;
