@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Domain\ValueObject\DateRange;
 use DateTime;
 use PDO;
 
@@ -28,14 +29,14 @@ class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $borrowedAt = new DateTime($row['borrowed_at']);
             $returnAt = $row['return_date'] ? new DateTime($row['return_date']) : null;
+            $dateRange = new DateRange($borrowedAt, $returnAt);
 
             $loanRequests[] = new LoanRequestDto(
                 (string)$row['book_id'],
                 (string)$row['title'],
                 (string)$row['username'],
                 (string)$row['user_id'],
-                $borrowedAt,
-                $returnAt
+                $dateRange
             );
         }
 
