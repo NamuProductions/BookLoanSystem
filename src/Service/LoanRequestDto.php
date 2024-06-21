@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use DateTime;
+use App\Domain\ValueObject\DateRange;
 
 readonly class LoanRequestDto
 {
@@ -11,23 +11,20 @@ readonly class LoanRequestDto
     public string $title;
     public string $userName;
     public string $userId;
-    public DateTime $borrowedAt;
-    public ?DateTime $returnDate;
+    public DateRange $dateRange;
 
     public function __construct(
         string   $bookId,
         string   $title,
         string   $userName,
         string   $userId,
-        DateTime $borrowedAt,
-        ?DateTime $returnDate = null
+        DateRange $dateRange
     )
     {
         $this->bookId = $bookId;
         $this->title = $title;
         $this->userName = $userName;
         $this->userId = $userId;
-        $this->borrowedAt = $borrowedAt;
-        $this->returnDate = $returnDate;
+        $this->dateRange = $dateRange;
     }
 }
