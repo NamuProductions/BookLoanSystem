@@ -17,8 +17,8 @@ class ListAvailableBooksActionTest extends TestCase
     public function test_it_should_list_all_available_books(): void
     {
         $availableBooks = [
-            new Book('Book 1', 'Author 1', new Year(2012), '012345', true),
-            new Book('Book 2', 'Author 2', new Year(1989), '123456', true)
+            new Book('Book 1', 'Author 1', 'Català', new Year(2012), '012345', true),
+            new Book('Book 2', 'Author 2', 'Català', new Year(1989), '123456', true)
         ];
 
         $this->bookRepository

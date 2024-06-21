@@ -20,20 +20,22 @@ class AddNewBookActionTest extends TestCase
     {
         $title = 'Test Book';
         $author = 'Test Author';
+        $language = 'Català';
         $year = new Year(2000);
         $idNumber = '0123456789';
 
         $this->bookRepository
             ->expects($this->once())
             ->method('save')
-            ->with($this->callback(function (Book $book) use ($title, $author, $year, $idNumber) {
+            ->with($this->callback(function (Book $book) use ($title, $author, $language, $year, $idNumber) {
                 return $book->title() === $title &&
                     $book->author() === $author &&
+                    $book->language() === $language &&
                     $book->year() === $year &&
                     $book->bookId() === $idNumber;
             }));
 
-        $this->sut->__invoke($title, $author, $year, $idNumber);
+        $this->sut->__invoke($title, $author, $language, $year, $idNumber);
     }
 
     public function test_it_should_throw_an_exception_when_title_is_missing(): void
@@ -41,7 +43,7 @@ class AddNewBookActionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Title is required');
 
-        $this->sut->__invoke('', 'Test Author', new Year(2000), '0123456789');
+        $this->sut->__invoke('', 'Test Author', 'Català', new Year(2000), '0123456789');
     }
 
     public function test_it_should_throw_an_exception_when_author_is_missing(): void
@@ -49,7 +51,7 @@ class AddNewBookActionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Author is required');
 
-        $this->sut->__invoke('Title1', '', new Year(2000), '0123456789');
+        $this->sut->__invoke('Title1', '', 'Català', new Year(2000), '0123456789');
     }
 
     public function test_it_should_throw_an_exception_when_idNumber_is_missing(): void
@@ -57,7 +59,7 @@ class AddNewBookActionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('IdNumber is required');
 
-        $this->sut->__invoke('Title1', 'Test Author', new Year(2000), '');
+        $this->sut->__invoke('Title1', 'Test Author', 'Català', new Year(2000), '');
     }
 
     protected function setUp(): void

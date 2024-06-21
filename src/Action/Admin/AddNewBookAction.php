@@ -16,7 +16,7 @@ readonly class AddNewBookAction
     {
     }
 
-    public function __invoke(string $title, string $author, Year $year, string $idNumber): void
+    public function __invoke(string $title, string $author, string $language, Year $year, string $idNumber): void
     {
         if (empty($title)) {
             throw new InvalidArgumentException('Title is required');
@@ -24,12 +24,14 @@ readonly class AddNewBookAction
         if (empty($author)) {
             throw new InvalidArgumentException('Author is required');
         }
-
+        if (empty($language)) {
+            throw new InvalidArgumentException('Language is required');
+        }
         if (empty($idNumber)) {
             throw new InvalidArgumentException('IdNumber is required');
         }
 
-        $book = new Book($title, $author, $year, $idNumber);
+        $book = new Book($title, $author, $language, $year, $idNumber);
         $this->bookRepository->save($book);
     }
 }

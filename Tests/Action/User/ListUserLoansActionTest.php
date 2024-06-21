@@ -13,7 +13,7 @@ class ListUserLoansActionTest extends TestCase
     public function test_it_should_return_user_loans(): void
     {
         $borrowDate = new DateTime('2023-01-01');
-        $book = new Book('Test Title', 'Test Author', new Year(2021), 'book1');
+        $book = new Book('Test Title', 'Test Author', 'Català', new Year(2021), 'book1');
         $book->borrow('user1', $borrowDate);
 
         $loans = $book->findAllLoansByUser('user1');
@@ -27,7 +27,7 @@ class ListUserLoansActionTest extends TestCase
 
     public function test_it_should_return_empty_list_when_user_has_no_loans(): void
     {
-        $book = new Book('Test Title', 'Test Author', new Year(2021), 'book1');
+        $book = new Book('Test Title', 'Test Author', 'Català', new Year(2021), 'book1');
         $loans = $book->findAllLoansByUser('user1');
 
         $this->assertEmpty($loans);
@@ -36,7 +36,7 @@ class ListUserLoansActionTest extends TestCase
     public function test_it_should_mark_book_as_returned(): void
     {
         $borrowDate = new DateTime('2023-01-01');
-        $book = new Book('Test Title', 'Test Author', new Year(2021), 'book1');
+        $book = new Book('Test Title', 'Test Author', 'Català', new Year(2021), 'book1');
         $book->borrow('user1', $borrowDate);
 
         $loans = $book->findAllLoansByUser('user1');

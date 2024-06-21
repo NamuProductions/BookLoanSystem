@@ -23,11 +23,11 @@ class ListReturnRequestsActionTest extends TestCase
         $borrowDate2 = new DateTime('2023-02-01');
         $returnDate2 = new DateTime('2023-02-12');
 
-        $book1 = new Book('Test Title', 'Test Author', new Year(2021), 'book1');
+        $book1 = new Book('Test Title', 'Test Author', 'Català', new Year(2021), 'book1');
         $loan1 = $book1->borrow('user1', $borrowDate1);
         $loan1->markAsReturned($returnDate1);
 
-        $book2 = new Book('Test Title', 'Test Author', new Year(2021), 'book2');
+        $book2 = new Book('Test Title', 'Test Author', 'Català', new Year(2021), 'book2');
         $loan2 = $book2->borrow('user2', $borrowDate2);
         $loan2->markAsReturned($returnDate2);
 

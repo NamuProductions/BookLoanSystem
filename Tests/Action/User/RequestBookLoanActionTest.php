@@ -21,7 +21,7 @@ class RequestBookLoanActionTest extends TestCase
     public function test_it_should_request_book_loan(): void
     {
         $user = new User('user1', 'user1@example.com', 'password', 'user');
-        $book = new Book('Title1', 'Author1', new Year(2023), 'ID123');
+        $book = new Book('Title1', 'Author1', 'Català', new Year(2023), 'ID123');
 
         $this->userRepository
             ->expects($this->once())
@@ -53,7 +53,7 @@ class RequestBookLoanActionTest extends TestCase
         $this->expectExceptionMessage('Book is not available');
 
         $user = new User('user1', 'user1@example.com', 'password', 'user');
-        $book = new Book('Title1', 'Author1', new Year(2023), 'ID123', false);
+        $book = new Book('Title1', 'Author1', 'Català', new Year(2023), 'ID123', false);
 
         $this->userRepository->expects($this->once())
             ->method('findByUserName')

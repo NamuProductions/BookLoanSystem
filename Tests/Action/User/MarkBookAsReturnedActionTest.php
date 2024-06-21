@@ -21,7 +21,7 @@ class MarkBookAsReturnedActionTest extends TestCase
         $userId = 'user1';
         $bookId = 'ID123';
         $borrowDate = new DateTime('2023-01-01');
-        $book = new Book('Title1', 'Author1', new Year(2023), $bookId);
+        $book = new Book('Title1', 'Author1', 'Català', new Year(2023), $bookId);
         $book->borrow($userId, $borrowDate);
 
         $this->bookRepository->expects($this->once())
@@ -45,7 +45,7 @@ class MarkBookAsReturnedActionTest extends TestCase
 
         $userId = 'user1';
         $bookId = 'ID123';
-        $book = new Book('Title1', 'Author1', new Year(2023), $bookId);
+        $book = new Book('Title1', 'Author1', 'Català', new Year(2023), $bookId);
 
         $this->bookRepository->expects($this->once())
             ->method('findById')
