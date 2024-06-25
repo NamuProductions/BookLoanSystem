@@ -24,9 +24,9 @@ class LoanCollection
         return array_filter($this->loans, fn($loan) => $loan->isReturned());
     }
 
-    public function findAllLoansByUser(string $userName): array
+    public function findAllLoansByUser(string $userId): array
     {
-        return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userName);
+        return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userId);
     }
 
     public function findActiveLoanByUser(string $userId): ?Loan
