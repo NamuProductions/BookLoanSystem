@@ -9,7 +9,7 @@ class DateRange
 {
     private DateTime $start;
     private ?DateTime $realReturnDate;
-    private const LOAN_DAYS = 14;
+    public const LOAN_DAYS = 14;
 
     public function __construct(DateTime $start, ?DateTime $realReturnDate = null)
     {
