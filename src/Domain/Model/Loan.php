@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Model;
 
-use App\Domain\ValueObject\DateRange;
+use App\Domain\ValueObject\LoansDateTimes;
 use DateTime;
 
 class Loan
@@ -13,7 +13,7 @@ class Loan
     public function __construct(
         private readonly string $bookId,
         private readonly string $userId,
-        private readonly DateRange $dateRange
+        private readonly LoansDateTimes $dateRange
     ) {}
 
     public function getBookId(): string
@@ -26,7 +26,7 @@ class Loan
         return $this->userId;
     }
 
-    public function dateRange(): DateRange
+    public function loansDateTimes(): LoansDateTimes
     {
         return $this->dateRange;
     }

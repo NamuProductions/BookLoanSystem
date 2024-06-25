@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Action\Admin;
 
 use App\Action\Admin\LoanRequestsAction;
-use App\Domain\ValueObject\DateRange;
+use App\Domain\ValueObject\LoansDateTimes;
 use App\Service\LoanRequestQueryServiceInterface;
 use App\Service\LoanRequestDto;
 use DateTime;
@@ -21,8 +21,8 @@ class LoanRequestsActionTest extends TestCase
         $startDate1 = new DateTime('2023-05-01');
         $startDate2 = new DateTime('2023-05-01');
 
-        $loanRequest1 = new LoanRequestDto('book1', 'Test Title 1', 'user1', 'user1', new DateRange($startDate1));
-        $loanRequest2 = new LoanRequestDto('book2', 'Test Title 2', 'user2', 'user2', new DateRange($startDate2));
+        $loanRequest1 = new LoanRequestDto('book1', 'Test Title 1', 'user1', 'user1', new LoansDateTimes($startDate1));
+        $loanRequest2 = new LoanRequestDto('book2', 'Test Title 2', 'user2', 'user2', new LoansDateTimes($startDate2));
 
         $this->loanRequestQueryService->method('allLoanRequests')->willReturn([$loanRequest1, $loanRequest2]);
 

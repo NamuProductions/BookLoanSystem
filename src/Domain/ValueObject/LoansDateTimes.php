@@ -5,23 +5,23 @@ namespace App\Domain\ValueObject;
 
 use DateTime;
 
-class DateRange
+class LoansDateTimes
 {
-    private DateTime $start;
+    private DateTime $borrowDate;
     private DateTime $lastDayOfLoan;
     private ?DateTime $realReturnDate;
     public const LOAN_DAYS = 14;
 
-    public function __construct(DateTime $start, ?DateTime $realReturnDate = null)
+    public function __construct(DateTime $borrowDate, ?DateTime $realReturnDate = null)
     {
-        $this->start = $start;
-        $this->lastDayOfLoan = (clone $start)->modify('+' . self::LOAN_DAYS . ' days');
+        $this->borrowDate = $borrowDate;
+        $this->lastDayOfLoan = (clone $borrowDate)->modify('+' . self::LOAN_DAYS . ' days');
         $this->realReturnDate = $realReturnDate;
     }
 
-    public function start(): DateTime
+    public function borrowDate(): DateTime
     {
-        return $this->start;
+        return $this->borrowDate;
     }
 
     public function lastDayOfLoan(): DateTime
@@ -39,12 +39,12 @@ class DateRange
         if ($this->realReturnDate === null) {
             return null;
         }
-        $interval = $this->start->diff($this->realReturnDate);
+        $interval = $this->borrowDate->diff($this->realReturnDate);
         return $interval->days;
     }
 
     public function includes(DateTime $date): bool // TODO: usarlo si es false para penalizar al usuario
     {
-        return $date >= $this->start && $date <= $this->lastDayOfLoan;
+        return $date >= $this->borrowDate && $date <= $this->lastDayOfLoan;
     }
 }

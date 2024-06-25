@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Domain\Model;
 
 use App\Domain\ValueObject\Year;
-use App\Domain\ValueObject\DateRange;
+use App\Domain\ValueObject\LoansDateTimes;
 use DateTime;
 use InvalidArgumentException;
 
@@ -54,10 +54,8 @@ class Book
         if (!$this->isAvailable) {
             throw new InvalidArgumentException('Book is already borrowed.');
         }
-        $borrowDate = $borrowDate ?? new DateTime();
-        $dueDate = (clone $borrowDate)->modify('+' . DateRange::LOAN_DAYS . ' days');
-        $dateRange = new DateRange($borrowDate, $dueDate);
-        $loan = new Loan($this->bookId, $userId, $dateRange);
+        $loansDateTimes = new LoansDateTimes($borrowDate, null);
+        $loan = new Loan($this->bookId, $userId, $loansDateTimes);
         $this->loans[] = $loan;
         $this->markAsUnavailable();
         return $loan;
