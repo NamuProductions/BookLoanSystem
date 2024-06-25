@@ -78,7 +78,7 @@ class Book
         return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userId);
     }
 
-    private function findActiveLoanByUser(string $userId): ?Loan
+    public function findActiveLoanByUser(string $userId): ?Loan
     {
         foreach ($this->loans as $loan) {
             if ($loan->getUserId() === $userId && !$loan->isReturned()) {
