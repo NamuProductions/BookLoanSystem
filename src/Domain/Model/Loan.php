@@ -8,7 +8,7 @@ use DateTime;
 
 class Loan
 {
-    private ?DateTime $returnDate = null;
+    private ?DateTime $realReturnDate = null;
 
     public function __construct(
         private readonly string $bookId,
@@ -31,9 +31,9 @@ class Loan
         return $this->dateRange;
     }
 
-    public function markAsReturned(DateTime $returnDate): void
+    public function markAsReturned(DateTime $realReturnDate): void
     {
-        $this->returnDate = $returnDate;
+        $this->realReturnDate = $realReturnDate;
     }
 
     public function isReturned(): bool
@@ -41,8 +41,8 @@ class Loan
         return $this->dateRange->realReturnDate() !== null;
     }
 
-    public function returnDate(): ?DateTime
+    public function realReturnDate(): ?DateTime
     {
-        return $this->returnDate;
+        return $this->realReturnDate;
     }
 }
