@@ -23,8 +23,8 @@ class ListUserLoansActionTest extends TestCase
         $this->assertCount(1, $loans);
         $this->assertSame('user1', $loans[0]->getUserId());
         $this->assertSame($book->bookId(), $loans[0]->getBookId());
-        $this->assertEquals($borrowDate->format('Y-m-d'), $loans[0]->getDateRange()->start()->format('Y-m-d'));
-        $this->assertEquals($dueDate->format('Y-m-d'), $loans[0]->getDateRange()->end()->format('Y-m-d'));
+        $this->assertEquals($borrowDate->format('Y-m-d'), $loans[0]->dateRange()->start()->format('Y-m-d'));
+        $this->assertEquals($dueDate->format('Y-m-d'), $loans[0]->dateRange()->lastDayOfLoan()->format('Y-m-d'));
     }
 
     public function test_it_should_return_empty_list_when_user_has_no_loans(): void
