@@ -40,7 +40,7 @@ class DateRange
         return $interval->days;
     }
 
-    public function includes(DateTime $date): bool
+    public function includes(DateTime $date): bool // TODO: implementar una penalización de X días sin prestamos si includes retorna false.
     {
         return $date >= $this->start && $date <= $this->end();
     }
