@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Domain\Model;
 
 use App\Domain\ValueObject\Year;
+use App\Domain\ValueObject\DateRange;
 use DateTime;
 use InvalidArgumentException;
 
@@ -14,22 +15,24 @@ class Book
     public function __construct(
         private readonly string $title,
         private readonly string $author,
-        private readonly Year   $year,
+        private readonly string $language,
+        private readonly Year $year,
         private readonly string $bookId,
-        private bool            $isAvailable = true
-    )
-    {
+        private bool $isAvailable = true
+    ) {
     }
 
-    public function title(): string {return $this->title;}
+    public function title(): string { return $this->title; }
 
-    public function author(): string {return $this->author;}
+    public function author(): string { return $this->author; }
 
-    public function year(): Year {return $this->year;}
+    public function language(): string { return $this->language; }
 
-    public function bookId(): string {return $this->bookId;}
+    public function year(): Year { return $this->year; }
 
-    public function isAvailable(): bool {return $this->isAvailable;}
+    public function bookId(): string { return $this->bookId; }
+
+    public function isAvailable(): bool { return $this->isAvailable; }
 
     public function notReturnedLoans(): array
     {
@@ -57,8 +60,8 @@ class Book
             throw new InvalidArgumentException('Book is already borrowed.');
         }
         $borrowDate = $borrowDate ?? new DateTime();
-        $dueDate = (clone $borrowDate)->modify('+14 days');
-        $loan = new Loan($this->bookId, $userId, $borrowDate, $dueDate);
+        $dateRange = new DateRange($borrowDate);
+        $loan = new Loan($this->bookId, $userId, $dateRange);
         $this->loans[] = $loan;
         $this->markAsUnavailable();
         return $loan;
@@ -74,9 +77,9 @@ class Book
         $this->markAsAvailable();
     }
 
-    public function findAllLoansByUser(string $userName): array
+    public function findAllLoansByUser(string $userId): array
     {
-        return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userName);
+        return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userId);
     }
 
     private function findActiveLoanByUser(string $userId): ?Loan
