@@ -8,12 +8,14 @@ use DateTime;
 class DateRange
 {
     private DateTime $start;
+    private DateTime $lastDayOfLoan;
     private ?DateTime $realReturnDate;
     public const LOAN_DAYS = 14;
 
     public function __construct(DateTime $start, ?DateTime $realReturnDate = null)
     {
         $this->start = $start;
+        $this->lastDayOfLoan = (clone $start)->modify('+' . self::LOAN_DAYS . ' days');
         $this->realReturnDate = $realReturnDate;
     }
 
@@ -24,7 +26,7 @@ class DateRange
 
     public function lastDayOfLoan(): DateTime
     {
-        return (clone $this->start)->modify('+' . self::LOAN_DAYS . ' days');
+        return $this->lastDayOfLoan;
     }
 
     public function realReturnDate(): ?DateTime
@@ -41,8 +43,8 @@ class DateRange
         return $interval->days;
     }
 
-    public function includes(DateTime $date): bool
+    public function includes(DateTime $date): bool // TODO: usarlo si es false para penalizar al usuario
     {
-        return $date >= $this->start && $date <= $this->lastDayOfLoan();
+        return $date >= $this->start && $date <= $this->lastDayOfLoan;
     }
 }
