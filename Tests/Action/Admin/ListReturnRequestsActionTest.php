@@ -34,7 +34,7 @@ class ListReturnRequestsActionTest extends TestCase
         $this->returnRequestQueryService
             ->expects($this->once())
             ->method('returnRequests')
-            ->willReturn([$book1->returnedLoans()[0], $book2->returnedLoans()[0]]);
+            ->willReturn([$loan1, $loan2]);
 
         $result = ($this->sut)();
 
