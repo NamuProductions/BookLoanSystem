@@ -23,15 +23,10 @@ class Book
     }
 
     public function title(): string { return $this->title; }
-
     public function author(): string { return $this->author; }
-
     public function language(): string { return $this->language; }
-
     public function year(): Year { return $this->year; }
-
     public function bookId(): string { return $this->bookId; }
-
     public function isAvailable(): bool { return $this->isAvailable; }
 
     public function notReturnedLoans(): array
