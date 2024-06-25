@@ -7,44 +7,44 @@ use DateTime;
 
 class LoansDateTimes
 {
-    private DateTime $borrowDate;
-    private DateTime $lastDayOfLoan;
-    private ?DateTime $realReturnDate;
+    private DateTime $loanBorrowedAt;
+    private DateTime $LoanMaximumReturnDate;
+    private ?DateTime $LoanReturnedAt;
     public const LOAN_DAYS = 14;
 
     public function __construct(DateTime $borrowDate, ?DateTime $realReturnDate = null)
     {
-        $this->borrowDate = $borrowDate;
-        $this->lastDayOfLoan = (clone $borrowDate)->modify('+' . self::LOAN_DAYS . ' days');
-        $this->realReturnDate = $realReturnDate;
+        $this->loanBorrowedAt = $borrowDate;
+        $this->LoanMaximumReturnDate = (clone $borrowDate)->modify('+' . self::LOAN_DAYS . ' days');
+        $this->LoanReturnedAt = $realReturnDate;
     }
 
-    public function borrowDate(): DateTime
+    public function loanBorrowedAt(): DateTime
     {
-        return $this->borrowDate;
+        return $this->loanBorrowedAt;
     }
 
-    public function lastDayOfLoan(): DateTime
+    public function LoanMaximumReturnDate(): DateTime
     {
-        return $this->lastDayOfLoan;
+        return $this->LoanMaximumReturnDate;
     }
 
-    public function realReturnDate(): ?DateTime
+    public function LoanReturnedAt(): ?DateTime
     {
-        return $this->realReturnDate;
+        return $this->LoanReturnedAt;
     }
 
     public function duration(): ?int
     {
-        if ($this->realReturnDate === null) {
+        if ($this->LoanReturnedAt === null) {
             return null;
         }
-        $interval = $this->borrowDate->diff($this->realReturnDate);
+        $interval = $this->loanBorrowedAt->diff($this->LoanReturnedAt);
         return $interval->days;
     }
 
     public function includes(DateTime $date): bool // TODO: usarlo si es false para penalizar al usuario
     {
-        return $date >= $this->borrowDate && $date <= $this->lastDayOfLoan;
+        return $date >= $this->loanBorrowedAt && $date <= $this->LoanMaximumReturnDate;
     }
 }
