@@ -20,12 +20,6 @@ readonly class MarkBookAsReturnedAction
             throw new InvalidArgumentException('Book not found.');
         }
 
-        $activeLoan = $book->findActiveLoanByUser($userId);
-
-        if ($activeLoan === null) {
-            throw new InvalidArgumentException('No active loan found for this book and user.');
-        }
-
         $book->returnBook($userId);
 
         $this->bookRepository->save($book);
