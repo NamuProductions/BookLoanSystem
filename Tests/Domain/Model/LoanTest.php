@@ -12,15 +12,14 @@ class LoanTest extends TestCase
 {
     public function test_it_should_loan_creation_and_properties(): void
     {
-        $start = new DateTime('2023-01-01');
-        $lastDayOfLoan = new DateTime('2023-01-15');
-        $dateRange = new LoansDateTimes($start,$lastDayOfLoan);
+        $borrowDate = new DateTime('2023-01-01');
+        $loansDateTimes = new LoansDateTimes($borrowDate);
 
-        $loan = new Loan('book1', 'user1', $dateRange);
+        $loan = new Loan('book1', 'user1', $loansDateTimes);
 
         $this->assertSame('book1', $loan->getBookId());
         $this->assertSame('user1', $loan->getUserId());
-        $this->assertEquals($dateRange, $loan->loansDateTimes());
+        $this->assertEquals($loansDateTimes, $loan->loansDateTimes());
         $this->assertFalse($loan->isReturned());
     }
 }
