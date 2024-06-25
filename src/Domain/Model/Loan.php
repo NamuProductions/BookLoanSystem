@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Model;
 
+use App\Domain\ValueObject\DateRange;
 use DateTime;
 
 class Loan
@@ -12,8 +13,7 @@ class Loan
     public function __construct(
         private readonly string $bookId,
         private readonly string $userId,
-        private readonly DateTime $borrowDate,
-        private readonly DateTime $dueDate
+        private readonly DateRange $dateRange
     ) {}
 
     public function getBookId(): string
@@ -26,14 +26,9 @@ class Loan
         return $this->userId;
     }
 
-    public function getBorrowDate(): DateTime
+    public function dateRange(): DateRange
     {
-        return $this->borrowDate;
-    }
-
-    public function getDueDate(): DateTime
-    {
-        return $this->dueDate;
+        return $this->dateRange;
     }
 
     public function markAsReturned(DateTime $returnDate): void
@@ -43,8 +38,9 @@ class Loan
 
     public function isReturned(): bool
     {
-        return $this->returnDate !== null;
+        return $this->dateRange->realReturnDate() !== null;
     }
+
     public function returnDate(): ?DateTime
     {
         return $this->returnDate;
