@@ -55,7 +55,8 @@ class Book
             throw new InvalidArgumentException('Book is already borrowed.');
         }
         $borrowDate = $borrowDate ?? new DateTime();
-        $dateRange = new DateRange($borrowDate);
+        $dueDate = (clone $borrowDate)->modify('+' . DateRange::LOAN_DAYS . ' days');
+        $dateRange = new DateRange($borrowDate, $dueDate);
         $loan = new Loan($this->bookId, $userId, $dateRange);
         $this->loans[] = $loan;
         $this->markAsUnavailable();
