@@ -7,26 +7,42 @@ use DateTime;
 class DateRange
 {
     private DateTime $start;
-    private ?DateTime $end;
+    private ?DateTime $realEnd;
+    private const LOAN_DAYS = 14;
 
-    public function __construct(DateTime $start, ?DateTime $end = null) {
+    public function __construct(DateTime $start, ?DateTime $realEnd = null)
+    {
         $this->start = $start;
-        $this->end = $end;
+        $this->realEnd = $realEnd;
     }
 
-    public function start(): DateTime {
+    public function start(): DateTime
+    {
         return $this->start;
     }
 
-    public function end(): ?DateTime {
-        return $this->end;
+    public function end(): ?DateTime
+    {
+        return (clone $this->start)->modify('+' . self::LOAN_DAYS . ' days');
     }
 
-    public function duration(): ?int {
-        if ($this->end === null) {
+    public function realEnd(): ?DateTime
+    {
+        return $this->realEnd;
+    }
+
+    public function duration(): ?int
+    {
+        if ($this->realEnd === null) {
             return null;
         }
-        $interval = $this->start->diff($this->end);
+        $interval = $this->start->diff($this->realEnd);
         return $interval->days;
     }
+
+    public function includes(DateTime $date): bool
+    {
+        return $date >= $this->start && $date <= $this->end();
+    }
+
 }
