@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
 
@@ -7,13 +8,13 @@ use DateTime;
 class DateRange
 {
     private DateTime $start;
-    private ?DateTime $realEnd;
+    private ?DateTime $realReturnDate;
     private const LOAN_DAYS = 14;
 
-    public function __construct(DateTime $start, ?DateTime $realEnd = null)
+    public function __construct(DateTime $start, ?DateTime $realReturnDate = null)
     {
         $this->start = $start;
-        $this->realEnd = $realEnd;
+        $this->realReturnDate = $realReturnDate;
     }
 
     public function start(): DateTime
@@ -21,28 +22,27 @@ class DateRange
         return $this->start;
     }
 
-    public function end(): ?DateTime
+    public function lastDayOfLoan(): DateTime
     {
         return (clone $this->start)->modify('+' . self::LOAN_DAYS . ' days');
     }
 
-    public function realEnd(): ?DateTime
+    public function realReturnDate(): ?DateTime
     {
-        return $this->realEnd;
+        return $this->realReturnDate;
     }
 
     public function duration(): ?int
     {
-        if ($this->realEnd === null) {
+        if ($this->realReturnDate === null) {
             return null;
         }
-        $interval = $this->start->diff($this->realEnd);
+        $interval = $this->start->diff($this->realReturnDate);
         return $interval->days;
     }
 
-    public function includes(DateTime $date): bool // TODO: implementar una penalización de X días sin prestamos si includes retorna false.
+    public function includes(DateTime $date): bool
     {
-        return $date >= $this->start && $date <= $this->end();
+        return $date >= $this->start && $date <= $this->lastDayOfLoan();
     }
-
 }
