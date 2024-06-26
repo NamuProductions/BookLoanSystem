@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Model;
 
+use App\Domain\Collection\LoanCollection;
 use App\Domain\ValueObject\Year;
 use App\Domain\ValueObject\LoansDateTimes;
 use DateTime;
@@ -10,7 +11,7 @@ use InvalidArgumentException;
 
 class Book
 {
-    private array $loans = [];
+    private LoanCollection $loans;
 
     public function __construct(
         private readonly string $title,
@@ -20,6 +21,7 @@ class Book
         private readonly string $bookId,
         private bool $isAvailable = true
     ) {
+        $this->loans = new LoanCollection();
     }
 
     public function title(): string { return $this->title; }
@@ -28,16 +30,6 @@ class Book
     public function year(): Year { return $this->year; }
     public function bookId(): string { return $this->bookId; }
     public function isAvailable(): bool { return $this->isAvailable; }
-
-    public function notReturnedLoans(): array
-    {
-        return array_filter($this->loans, fn($loan) => !$loan->isReturned());
-    }
-
-    public function returnedLoans(): array
-    {
-        return array_filter($this->loans, fn($loan) => $loan->isReturned());
-    }
 
     private function markAsUnavailable(): void
     {
@@ -54,35 +46,23 @@ class Book
         if (!$this->isAvailable) {
             throw new InvalidArgumentException('Book is already borrowed.');
         }
-        $loansDateTimes = new LoansDateTimes($borrowDate, null);
-        $loan = new Loan($this->bookId, $userId, $loansDateTimes);
-        $this->loans[] = $loan;
+        $loan = new Loan($this->bookId, $userId, new LoansDateTimes($borrowDate ?? new DateTime()));
+        $this->loans->addLoan($loan);
         $this->markAsUnavailable();
         return $loan;
     }
 
     public function returnBook(string $userId): void
     {
-        $activeLoan = $this->findActiveLoanByUser($userId);
+        $activeLoan = $this->loans->findActiveLoanByUser($userId);
         if ($activeLoan === null) {
             throw new InvalidArgumentException('No active loan found for this book and user.');
         }
         $activeLoan->markAsReturned(new DateTime());
         $this->markAsAvailable();
     }
-
-    public function findAllLoansByUser(string $userId): array
+    public function findLoansByUser(string $userId): array
     {
-        return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userId);
-    }
-
-    public function findActiveLoanByUser(string $userId): ?Loan
-    {
-        foreach ($this->loans as $loan) {
-            if ($loan->getUserId() === $userId && !$loan->isReturned()) {
-                return $loan;
-            }
-        }
-        return null;
+        return $this->loans->findAllLoansByUser($userId);
     }
 }
