@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Action\User;
 
@@ -13,10 +14,15 @@ class ListUserLoansAction
         $this->bookRepository = $bookRepository;
     }
 
-    public function execute(string $userId): array
+    public function __invoke(string $userId): array
     {
-        return $this->bookRepository->findAllLoansByUser($userId);
+        $books = $this->bookRepository->findAll();
+        $userLoans = [];
+
+        foreach ($books as $book) {
+            $userLoans = array_merge($userLoans, $book->findLoansByUser($userId));
+        }
+
+        return $userLoans;
     }
-
 }
-
