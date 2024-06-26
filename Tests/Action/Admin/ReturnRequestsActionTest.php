@@ -10,7 +10,7 @@ use App\Service\ReturnRequestQueryServiceInterface;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 
-class ListReturnRequestsActionTest extends TestCase
+class ReturnRequestsActionTest extends TestCase
 {
     private ReturnRequestsAction $sut;
     private ReturnRequestQueryServiceInterface $returnRequestQueryService;
