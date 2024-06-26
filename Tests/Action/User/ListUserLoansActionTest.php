@@ -19,31 +19,39 @@ class ListUserLoansActionTest extends TestCase
     {
         $borrowDate = new DateTime('2023-01-01');
         $dueDate = (clone $borrowDate)->modify('+14 days');
-        $book = new Book('Test Title', 'Test Author', 'Català', new Year(2021), 'book1');
-        $book->borrow('user1', $borrowDate);
+
+        $book1 = new Book('Test Title 1', 'Test Author 1', 'Català', new Year(2021), 'book1');
+        $book1->borrow('user1', $borrowDate);
+
+        $book2 = new Book('Test Title 2', 'Test Author 2', 'English', new Year(2022), 'book2');
+        $book2->borrow('user1', $borrowDate);
 
         $this->bookRepository->expects($this->once())
-            ->method('findAllLoansByUser')
-            ->with('user1')
-            ->willReturn([$book]);
+            ->method('findAll')
+            ->willReturn([$book1, $book2]);
 
-        $loans = $this->sut->execute('user1');
+        $loans = ($this->sut)('user1');
 
-        $this->assertCount(1, $loans);
+        $this->assertCount(2, $loans);
+
         $this->assertSame('user1', $loans[0]->getUserId());
-        $this->assertSame($book->bookId(), $loans[0]->getBookId());
+        $this->assertSame($book1->bookId(), $loans[0]->getBookId());
         $this->assertEquals($borrowDate->format('Y-m-d'), $loans[0]->loansDateTimes()->loanBorrowedAt()->format('Y-m-d'));
         $this->assertEquals($dueDate->format('Y-m-d'), $loans[0]->loansDateTimes()->loanMaximumReturnDate()->format('Y-m-d'));
+
+        $this->assertSame('user1', $loans[1]->getUserId());
+        $this->assertSame($book2->bookId(), $loans[1]->getBookId());
+        $this->assertEquals($borrowDate->format('Y-m-d'), $loans[1]->loansDateTimes()->loanBorrowedAt()->format('Y-m-d'));
+        $this->assertEquals($dueDate->format('Y-m-d'), $loans[1]->loansDateTimes()->loanMaximumReturnDate()->format('Y-m-d'));
     }
 
     public function test_it_should_return_empty_list_when_user_has_no_loans(): void
     {
         $this->bookRepository->expects($this->once())
-            ->method('findAllLoansByUser')
-            ->with('user1')
+            ->method('findAll')
             ->willReturn([]);
 
-        $loans = $this->sut->execute('user1');
+        $loans = ($this->sut)('user1');
 
         $this->assertEmpty($loans);
     }
