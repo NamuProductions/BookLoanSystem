@@ -16,4 +16,6 @@ interface BookRepository
     public function search(string $query): array;
 
     public function findById(string $id): ?Book;
+
+    public function findAllLoansByUser(string $userId): array;
 }
