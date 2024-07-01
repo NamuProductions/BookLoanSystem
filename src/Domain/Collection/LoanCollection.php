@@ -14,12 +14,13 @@ class LoanCollection
         $this->loans[] = $loan;
     }
 
-//    public function getNotReturnedLoans(): array
+    // todo: look if we need this or not
+//    public function notReturnedLoans(): array
 //    {
 //        return array_filter($this->loans, fn($loan) => !$loan->isReturned());
 //    }
 //
-//    public function getReturnedLoans(): array
+//    public function returnedLoans(): array
 //    {
 //        return array_filter($this->loans, fn($loan) => $loan->isReturned());
 //    }
