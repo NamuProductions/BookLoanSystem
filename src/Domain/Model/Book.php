@@ -61,7 +61,8 @@ class Book
         $activeLoan->markAsReturned(new DateTime());
         $this->markAsAvailable();
     }
-    public function findLoansByUser(string $userId): array
+
+    public function findAllLoansByUser(string $userId): array
     {
         return $this->loans->findAllLoansByUser($userId);
     }

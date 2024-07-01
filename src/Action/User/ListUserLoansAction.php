@@ -21,7 +21,7 @@ class ListUserLoansAction
         $userLoans = [];
 
         foreach ($books as $book) {
-            $userLoans = array_merge($userLoans, $book->findLoansByUser($userId));
+            $userLoans = array_merge($userLoans, $book->findAllLoansByUser($userId));
         }
 
         return $userLoans;
