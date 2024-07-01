@@ -24,17 +24,17 @@ class FullName
         $this->lastName = $lastName;
     }
 
-    public function getFirstName(): string
+    public function firstName(): string
     {
         return $this->firstName;
     }
 
-    public function getLastName(): string
+    public function lastName(): string
     {
         return $this->lastName;
     }
 
-    public function getFullName(): string
+    public function fullName(): string
     {
         return "{$this->firstName} {$this->lastName}";
     }
