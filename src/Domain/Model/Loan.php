@@ -38,7 +38,7 @@ class Loan
 
     public function isReturned(): bool
     {
-        return $this->loansDateTimes->LoanReturnedAt() !== null;
+        return $this->loanReturnedAt() !== null;
     }
 
     public function loanReturnedAt(): ?DateTime
