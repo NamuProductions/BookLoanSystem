@@ -16,13 +16,6 @@ class ListUserLoansAction
 
     public function __invoke(string $userId): array
     {
-        $books = $this->bookRepository->findAll();
-        $userLoans = [];
-
-        foreach ($books as $book) {
-            $userLoans = array_merge($userLoans, $book->findAllLoansByUser($userId));
-        }
-
-        return $userLoans;
+        return $this->bookRepository->findAllLoansByUser($userId);
     }
 }
