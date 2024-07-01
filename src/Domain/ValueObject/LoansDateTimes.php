@@ -29,6 +29,11 @@ class LoansDateTimes
         return $this->LoanMaximumReturnDate;
     }
 
+    public function LoanReturnedAt(): ?DateTime
+    {
+        return $this->LoanReturnedAt;
+    }
+
     public function duration(): ?int
     {
         if ($this->LoanReturnedAt === null) {
