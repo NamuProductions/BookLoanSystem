@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Action\User;
 
 use App\Domain\Repository\BookRepository;
-use App\Domain\Model\Book;
 
 class ListUserLoansAction
 {
