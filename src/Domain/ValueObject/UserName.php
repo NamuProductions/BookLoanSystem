@@ -5,7 +5,7 @@ namespace App\Domain\ValueObject;
 
 use InvalidArgumentException;
 
-class FullName
+class UserName
 {
     private string $firstName;
     private string $lastName;
