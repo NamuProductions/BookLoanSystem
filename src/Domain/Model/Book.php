@@ -41,12 +41,12 @@ class Book
         $this->isAvailable = true;
     }
 
-    public function borrow(string $userId, DateTime $borrowDate = null): Loan
+    public function borrow(User $user, DateTime $borrowDate = null): Loan
     {
         if (!$this->isAvailable) {
             throw new InvalidArgumentException('Book is already borrowed.');
         }
-        $loan = new Loan($this->bookId, $userId, new LoansDateTimes($borrowDate ?? new DateTime()));
+        $loan = new Loan($this->bookId, $user->getUserName(), new LoansDateTimes($borrowDate ?? new DateTime()));
         $this->loans->addLoan($loan);
         $this->markAsUnavailable();
         return $loan;
