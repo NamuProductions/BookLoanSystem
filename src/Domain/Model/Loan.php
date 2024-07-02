@@ -31,9 +31,9 @@ class Loan
         return $this->loansDateTimes;
     }
 
-    public function markAsReturned(DateTime $LoanReturnedAt): void
+    public function markAsReturned(DateTime $loanReturnedAt): void
     {
-        $this->loanReturnedAt = $LoanReturnedAt;
+        $this->loanReturnedAt = $loanReturnedAt;
     }
 
     public function isReturned(): bool
