@@ -27,11 +27,7 @@ readonly class RequestBookLoanAction
             throw new InvalidArgumentException('Book not found.');
         }
 
-        if (!$book->isAvailable()) {
-            throw new InvalidArgumentException('Book is not available.');
-        }
-
-        $book->borrow($user->getUserName(), new DateTime());
+        $book->borrow($user, new DateTime());
         $this->bookRepository->save($book);
     }
 }
