@@ -50,7 +50,7 @@ class RequestBookLoanActionTest extends TestCase
     public function test_it_should_throw_exception_if_book_not_available(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Book is not available');
+        $this->expectExceptionMessage('Book is already borrowed');
 
         $user = new User('user1', 'user1@example.com', 'password', 'user');
         $book = new Book('Title1', 'Author1', 'Català', new Year(2023), 'ID123', false);

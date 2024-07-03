@@ -5,6 +5,7 @@ namespace Action\Admin;
 
 use App\Action\Admin\ReturnRequestsAction;
 use App\Domain\Model\Book;
+use App\Domain\Model\User;
 use App\Domain\ValueObject\Year;
 use App\Service\ReturnRequestQueryServiceInterface;
 use DateTime;
@@ -17,18 +18,20 @@ class ReturnRequestsActionTest extends TestCase
 
     public function test_it_should_list_all_return_requests(): void
     {
+        $user1 = new User('user1', 'user1@test.com', 'testPassword', 'user');
         $borrowDate1 = new DateTime('2023-01-01');
         $returnDate1 = new DateTime('2023-01-10');
 
+        $user2 = new User('user2', 'user1@test.com', 'testPassword', 'user');
         $borrowDate2 = new DateTime('2023-02-01');
         $returnDate2 = new DateTime('2023-02-12');
 
         $book1 = new Book('Test Title', 'Test Author', 'Català', new Year(2021), 'book1');
-        $loan1 = $book1->borrow('user1', $borrowDate1);
+        $loan1 = $book1->borrow($user1, $borrowDate1);
         $loan1->markAsReturned($returnDate1);
 
         $book2 = new Book('Test Title', 'Test Author', 'Català', new Year(2021), 'book2');
-        $loan2 = $book2->borrow('user2', $borrowDate2);
+        $loan2 = $book2->borrow($user2, $borrowDate2);
         $loan2->markAsReturned($returnDate2);
 
         $this->returnRequestQueryService
