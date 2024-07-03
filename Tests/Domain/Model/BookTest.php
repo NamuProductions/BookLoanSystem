@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Domain\Model;
 
 use App\Domain\Model\Book;
+use App\Domain\Model\User;
 use App\Domain\ValueObject\Year;
 use DateTime;
 use InvalidArgumentException;
@@ -46,27 +47,32 @@ class BookTest extends TestCase
 
     public function test_it_should_mark_as_unavailable_when_borrowed(): void
     {
+        $user = new User('user1', 'user1@test.com', 'testPassword', 'user');
         $borrowDate = new DateTime('2023-01-01');
-        $this->sut->borrow('user1', $borrowDate);
+
+        $this->sut->borrow($user, $borrowDate);
 
         $this->assertFalse($this->sut->isAvailable());
     }
 
     public function test_it_should_return_loan_details_when_borrowed(): void
     {
+        $user = new User('user1', 'user1@test.com', 'testPassword', 'user');
         $borrowDate = new DateTime('2023-01-01');
-        $loan = $this->sut->borrow('user1', $borrowDate);
+        $loan = $this->sut->borrow($user, $borrowDate);
 
-        $this->assertSame('user1', $loan->getUserId());
+        $this->assertSame($user->getUserName(), $loan->getUserId());
         $this->assertSame('book1', $loan->getBookId());
         $this->assertEquals($borrowDate->format('Y-m-d'), $loan->loansDateTimes()->loanBorrowedAt()->format('Y-m-d'));
     }
 
     public function test_it_should_mark_as_available_when_returned(): void
     {
+        $user = new User('user1', 'user1@test.com', 'testPassword', 'user');
         $borrowDate = new DateTime('2023-01-01');
-        $this->sut->borrow('user1', $borrowDate);
-        $this->sut->returnBook('user1');
+
+        $this->sut->borrow($user, $borrowDate);
+        $this->sut->returnBook($user->getUserName());
 
         $this->assertTrue($this->sut->isAvailable());
     }
@@ -76,19 +82,21 @@ class BookTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('No active loan found for this book and user.');
 
-        $this->sut->returnBook('user1');
+        $user = new User('user1', 'user1@test.com', 'testPassword', 'user');
+        $this->sut->returnBook($user->getUserName());
     }
 
     public function test_it_should_find_all_loans_by_user(): void
     {
         $borrowDate1 = new DateTime('2023-01-01');
+        $user = new User('user1', 'user1@test.com', 'testPassword', 'user');
 
-        $this->sut->borrow('user1', $borrowDate1);
+        $this->sut->borrow($user, $borrowDate1);
 
-        $loans = $this->sut->findAllLoansByUser('user1');
+        $loans = $this->sut->findAllLoansByUser($user->getUserName());
 
         $this->assertCount(1, $loans);
-        $this->assertSame('user1', $loans[0]->getUserId());
+        $this->assertSame($user->getUserName(), $loans[0]->getUserId());
         $this->assertSame('book1', $loans[0]->getBookId());
         $this->assertEquals($borrowDate1->format('Y-m-d'), $loans[0]->loansDateTimes()->loanBorrowedAt()->format('Y-m-d'));
     }
