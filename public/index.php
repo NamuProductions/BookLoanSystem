@@ -30,12 +30,13 @@ if ($requestUri === '/register' && $requestMethod === 'GET') {
 } elseif ($requestUri === '/books' && $requestMethod === 'GET') {
     $bookController->index();
 } elseif (preg_match('/^\/books\/(\d+)$/', $requestUri, $matches) && $requestMethod === 'GET') {
-    $bookController->show((int) $matches[1]);
+    $bookController->show((int)$matches[1]);
 } elseif (preg_match('/^\/books\/(\d+)\/borrow$/', $requestUri, $matches) && $requestMethod === 'POST') {
-    $bookController->borrow((int) $matches[1]);
+    $bookController->borrow((int)$matches[1]);
 } elseif (preg_match('/^\/books\/(\d+)\/return$/', $requestUri, $matches) && $requestMethod === 'POST') {
-    $bookController->return((int) $matches[1]);
+    $bookController->return((int)$matches[1]);
 } else {
     http_response_code(404);
     echo "Page not found";
 }
+
