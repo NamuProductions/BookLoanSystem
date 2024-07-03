@@ -38,7 +38,6 @@ class PdoBookRepository implements BookRepository
         ]);
     }
 
-
     public function findById(string $id): ?Book
     {
         $stmt = $this->pdo->prepare('SELECT * FROM books WHERE id = :id');

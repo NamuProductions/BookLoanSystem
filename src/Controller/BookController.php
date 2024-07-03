@@ -26,7 +26,12 @@ class BookController
 
     public function show(int $id): void
     {
-        $book = $this->bookRepository->findById($id);
+        $book = $this->bookRepository->findById((string)$id);
+        if (!$book) {
+            http_response_code(404);
+            echo "Book not found";
+            return;
+        }
         require __DIR__ . '/../View/books/show.php';
     }
 
@@ -35,7 +40,7 @@ class BookController
         session_start();
         $username = $_SESSION['user'];
         $user = $this->userRepository->findByUserName($username);
-        $book = $this->bookRepository->findById($id);
+        $book = $this->bookRepository->findById((string)$id);
 
         if ($book->isAvailable()) {
             $book->borrow($user, new DateTime());
@@ -52,7 +57,7 @@ class BookController
         session_start();
         $username = $_SESSION['user'];
         $user = $this->userRepository->findByUserName($username);
-        $book = $this->bookRepository->findById($id);
+        $book = $this->bookRepository->findById((string)$id);
 
         try {
             $book->returnBook($user);

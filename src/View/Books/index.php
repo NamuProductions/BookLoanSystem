@@ -10,7 +10,7 @@
     <?php if (!empty($books)): ?>
         <?php foreach ($books as $book): ?>
             <li>
-                <a href="/books/<?= $book->getBookId(); ?>"><?= $book->getTitle(); ?></a>
+                <a href="/books/<?= $book->bookId(); ?>"><?= $book->title(); ?></a>
                 - <?= $book->isAvailable() ? 'Available' : 'Borrowed'; ?>
             </li>
         <?php endforeach; ?>
