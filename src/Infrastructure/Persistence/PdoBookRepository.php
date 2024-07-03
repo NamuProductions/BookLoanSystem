@@ -19,15 +19,15 @@ class PdoBookRepository implements BookRepository
     public function save(Book $book): void
     {
         $stmt = $this->pdo->prepare('
-        INSERT INTO books (id, title, author, language, year, is_available)
-        VALUES (:id, :title, :author, :language, :year, :is_available)
-        ON DUPLICATE KEY UPDATE
-            title = VALUES(title),
-            author = VALUES(author),
-            language = VALUES(language),
-            year = VALUES(year),
-            is_available = VALUES(is_available)
-    ');
+            INSERT INTO books (id, title, author, language, year, is_available)
+            VALUES (:id, :title, :author, :language, :year, :is_available)
+            ON DUPLICATE KEY UPDATE
+                title = VALUES(title),
+                author = VALUES(author),
+                language = VALUES(language),
+                year = VALUES(year),
+                is_available = VALUES(is_available)
+        ');
         $stmt->execute([
             'id' => $book->bookId(),
             'title' => $book->title(),
@@ -114,11 +114,11 @@ class PdoBookRepository implements BookRepository
     public function findAllLoansByUser(string $userId): array
     {
         $stmt = $this->pdo->prepare('
-        SELECT b.*
-        FROM books b
-        INNER JOIN loan_requests l ON b.id = l.book_id
-        WHERE l.user_id = :userId AND l.return_date IS NULL
-    ');
+            SELECT b.*
+            FROM books b
+            INNER JOIN loan_requests l ON b.id = l.book_id
+            WHERE l.user_id = :userId AND l.return_date IS NULL
+        ');
         $stmt->execute(['userId' => $userId]);
         $books = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -133,5 +133,4 @@ class PdoBookRepository implements BookRepository
         }
         return $books;
     }
-
 }
