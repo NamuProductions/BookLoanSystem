@@ -17,10 +17,11 @@ class Book
         private readonly string $title,
         private readonly string $author,
         private readonly string $language,
-        private readonly Year $year,
+        private readonly Year   $year,
         private readonly string $bookId,
-        private bool $isAvailable = true
-    ) {
+        private bool            $isAvailable = true
+    )
+    {
         $this->loans = new LoanCollection();
     }
 
