@@ -52,19 +52,24 @@ class BookController
         }
     }
 
-    public function return(int $id): void
+    public function return(int $bookId): void
     {
-        session_start();
-        $username = $_SESSION['user'];
-        $user = $this->userRepository->findByUserName($username);
-        $book = $this->bookRepository->findById((string)$id);
+        $userId = $_SESSION['userId'];
+        $user = $this->userRepository->findById($userId);
 
+        $book = $this->bookRepository->findById($bookId);
+        if ($book === null) {
+            http_response_code(404);
+            echo "Book not found";
+            return;
+        }
         try {
-            $book->returnBook($user);
+            $book->returnBook($user->getUserName());
             $this->bookRepository->save($book);
             header('Location: /books');
-            exit;
+            echo 'Book returned successfully';
         } catch (InvalidArgumentException $e) {
+            http_response_code(400);
             echo $e->getMessage();
         }
     }
