@@ -15,6 +15,24 @@ class PdoUserRepository implements UserRepository
         $this->pdo = $pdo;
     }
 
+    public function findById(string $userId): ?User
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE id = :id');
+        $stmt->execute(['id' => $userId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row === false) {
+            return null;
+        }
+
+        return new User(
+            $row['id'],
+            $row['username'],
+            $row['password'],
+            $row['role']
+        );
+    }
+
     public function save(User $user): void
     {
         $stmt = $this->pdo->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
