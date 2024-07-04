@@ -7,7 +7,7 @@ use App\Controller\UserController;
 use App\Infrastructure\Persistence\PdoBookRepository;
 use App\Infrastructure\Persistence\PdoUserRepository;
 
-$pdo = new PDO('mysql:host=localhost;port=3307;dbname=test_db', 'root', 'root');
+$pdo = new PDO('mysql:host=localhost;port=3307;dbname=library', 'root', 'root');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $bookRepository = new PdoBookRepository($pdo);
@@ -19,7 +19,14 @@ $userController = new UserController($userRepository);
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
-if ($requestUri === '/register' && $requestMethod === 'GET') {
+$basePath = '/BookLoanSystem/public';
+if (str_starts_with($requestUri, $basePath)) {
+    $requestUri = substr($requestUri, strlen($basePath));
+}
+
+if ($requestUri === '/' && $requestMethod === 'GET') {
+    include __DIR__ . '/../src/View/home.php';
+} elseif ($requestUri === '/register' && $requestMethod === 'GET') {
     $userController->showRegistrationForm();
 } elseif ($requestUri === '/register' && $requestMethod === 'POST') {
     $userController->register();
@@ -30,7 +37,6 @@ if ($requestUri === '/register' && $requestMethod === 'GET') {
 } elseif ($requestUri === '/books' && $requestMethod === 'GET') {
     $bookController->index();
 } elseif (preg_match('/^\/books\/(\d+)$/', $requestUri, $matches) && $requestMethod === 'GET') {
-    var_dump($matches);
     $bookController->show((int)$matches[1]);
 } elseif (preg_match('/^\/books\/(\d+)\/borrow$/', $requestUri, $matches) && $requestMethod === 'POST') {
     $bookController->borrow((int)$matches[1]);
@@ -38,5 +44,5 @@ if ($requestUri === '/register' && $requestMethod === 'GET') {
     $bookController->return((int)$matches[1]);
 } else {
     http_response_code(404);
-    echo "Page not found";
+    echo "Page not found mecaguen to";
 }
