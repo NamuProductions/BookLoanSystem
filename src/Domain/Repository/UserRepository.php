@@ -10,4 +10,6 @@ interface UserRepository
     public function save(User $user): void;
 
     public function findByUserName(string $username): ?User;
+
+    public function findById(mixed $userId);
 }
