@@ -11,5 +11,5 @@ interface UserRepository
 
     public function findByUserName(string $username): ?User;
 
-    public function findById(mixed $userId);
+    public function findById(string $userId): ?User;
 }
