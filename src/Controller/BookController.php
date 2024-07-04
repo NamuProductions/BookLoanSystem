@@ -54,8 +54,22 @@ class BookController
 
     public function return(int $bookId): void
     {
+        session_start();
+
+        if (!isset($_SESSION['userId'])) {
+            http_response_code(400);
+            echo "User not logged in";
+            return;
+        }
+
         $userId = $_SESSION['userId'];
         $user = $this->userRepository->findById($userId);
+
+        if (!$user) {
+            http_response_code(404);
+            echo "User not found";
+            return;
+        }
 
         $book = $this->bookRepository->findById($bookId);
         if ($book === null) {
@@ -64,7 +78,7 @@ class BookController
             return;
         }
         try {
-            $book->returnBook($user->getUserName());
+            $book->returnBook($user->getId());
             $this->bookRepository->save($book);
             header('Location: /books');
             echo 'Book returned successfully';
