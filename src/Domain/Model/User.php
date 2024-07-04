@@ -9,7 +9,8 @@ readonly class User
         private string $userName,
         private string $email,
         private string $password,
-        private string $role
+        private string $role,
+        private string $userId,
     ) {}
 
     public function getUserName(): string
@@ -30,5 +31,10 @@ readonly class User
     public function getRole(): string
     {
         return $this->role;
+    }
+
+    public function getUserId(): string
+    {
+    return $this->userId;
     }
 }
