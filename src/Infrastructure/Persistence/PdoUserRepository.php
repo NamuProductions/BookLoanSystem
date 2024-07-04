@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence;
 
@@ -17,42 +18,39 @@ class PdoUserRepository implements UserRepository
 
     public function findById(string $userId): ?User
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE id = :id');
-        $stmt->execute(['id' => $userId]);
+        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE userId = :userId');
+        $stmt->execute(['userId' => $userId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row === false) {
             return null;
         }
 
-        return new User(
-            $row['id'],
-            $row['username'],
-            $row['password'],
-            $row['role']
-        );
+        return new User($row['userName'], $row['email'], $row['password'], $row['role'], $row['userId']);
     }
 
     public function save(User $user): void
     {
-        $stmt = $this->pdo->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
+        $stmt = $this->pdo->prepare('REPLACE INTO users (userId, userName, email, password, role) VALUES (:userId, :userName, :email, :password, :role)');
         $stmt->execute([
-            'username' => $user->getUserName(),
+            'userId' => $user->getUserId(),
+            'userName' => $user->getUserName(),
             'email' => $user->getEmail(),
             'password' => $user->getPassword(),
+            'role' => $user->getRole(),
         ]);
     }
 
     public function findByUserName(string $username): ?User
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE username = :username');
-        $stmt->execute(['username' => $username]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE userName = :userName');
+        $stmt->execute(['userName' => $username]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$result) {
+        if ($row === false) {
             return null;
         }
 
-        return new User($result['username'], $result['email'], $result['password'], $result['role']);
+        return new User($row['userName'], $row['email'], $row['password'], $row['role'], $row['userId']);
     }
 }
