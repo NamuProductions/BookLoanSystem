@@ -78,7 +78,7 @@ class BookController
             return;
         }
         try {
-            $book->returnBook($user->getId());
+            $book->returnBook($user->getUserId());
             $this->bookRepository->save($book);
             header('Location: /books');
             echo 'Book returned successfully';
