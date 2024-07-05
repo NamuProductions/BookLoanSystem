@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Model;
 
-use App\Action\Admin\LoanRequestsAction;
+use App\Domain\ValueObject\LoansDateTimes;
 use App\Domain\ValueObject\Year;
 use DateTime;
 use InvalidArgumentException;
@@ -82,21 +82,30 @@ class Book
             throw new InvalidArgumentException('Book is not available for borrowing.');
         }
 
-        $loanRequestId = uniqid('loan_', true);
+        $loan = new Loan(
+            bookId: $this->bookId,
+            userId: $user->userId(),
+            loansDateTimes: new LoansDateTimes($borrowDate)
+        );
 
-        $this->loanRequests[] = new LoanRequestsAction($loanRequestId, $this->bookId, $user->userId(), $borrowDate);
+        $this->loanRequests[] = $loan;
         $this->isAvailable = false;
     }
 
-    public function returnBook(string $userId): void
+    public function returnBook(int $userId): void
     {
         foreach ($this->loanRequests as $loanRequest) {
-            if ($loanRequest->userId() === $userId && $loanRequest->returnDate() === null) {
-                $loanRequest->setReturnDate(new DateTime());
+            if ($loanRequest->userId() === $userId && !$loanRequest->isReturned()) {
+                $loanRequest->markAsReturned(new DateTime());
                 $this->isAvailable = true;
                 return;
             }
         }
         throw new InvalidArgumentException('No active loan request found for this user.');
+    }
+
+    public function findAllLoansByUser(int $userId): array
+    {
+        return array_filter($this->loanRequests, fn($loanRequest) => $loanRequest->userId() === $userId);
     }
 }
