@@ -116,7 +116,7 @@ class PdoBookRepository implements BookRepository
         $stmt = $this->pdo->prepare('
             SELECT b.*
             FROM books b
-            INNER JOIN loan_requests l ON b.id = l.book_id
+            INNER JOIN loans l ON b.id = l.book_id
             WHERE l.user_id = :userId AND l.return_date IS NULL
         ');
         $stmt->execute(['userId' => $userId]);
