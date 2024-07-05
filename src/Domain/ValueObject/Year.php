@@ -13,7 +13,7 @@ class Year
         $this->year = $year;
     }
 
-        public function getValue(): int
+        public function value(): int
     {
         return $this->year;
     }
