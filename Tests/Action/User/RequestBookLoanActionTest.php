@@ -20,8 +20,21 @@ class RequestBookLoanActionTest extends TestCase
 
     public function test_it_should_request_book_loan(): void
     {
-        $user = new User('user1', 'user1@example.com', 'password', 'user');
-        $book = new Book('Title1', 'Author1', 'Català', new Year(2023), 'ID123');
+        $user = new User(
+            userName: 'user1',
+            password: 'password',
+            email: 'user1@example.com',
+            fullName: 'user1 and2');
+
+        $book = new Book(
+            title: 'Title1',
+            year: new Year(2023),
+            author: 'Author1',
+            pages: 1234,
+            genre: 'Infantil',
+            language: 'Català',
+            isAvailable: true,
+            bookId: 123);
 
         $this->userRepository
             ->expects($this->once())
@@ -32,7 +45,7 @@ class RequestBookLoanActionTest extends TestCase
         $this->bookRepository
             ->expects($this->once())
             ->method('findById')
-            ->with('ID123')
+            ->with(123)
             ->willReturn($book);
 
         $this->bookRepository
@@ -44,16 +57,26 @@ class RequestBookLoanActionTest extends TestCase
                 return true;
             }));
 
-        $this->sut->__invoke('user1', 'ID123');
+        $this->sut->__invoke('user1', 123);
     }
 
     public function test_it_should_throw_exception_if_book_not_available(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Book is already borrowed');
+        $user = new User(
+            userName: 'user1',
+            password: 'password',
+            email: 'user1@example.com',
+            fullName: 'user1 and2');
 
-        $user = new User('user1', 'user1@example.com', 'password', 'user');
-        $book = new Book('Title1', 'Author1', 'Català', new Year(2023), 'ID123', false);
+        $book = new Book(
+            title: 'Title1',
+            year: new Year(2023),
+            author: 'Author1',
+            pages: 1234,
+            genre: 'Infantil',
+            language: 'Català',
+            isAvailable: false,
+            bookId: 1);
 
         $this->userRepository->expects($this->once())
             ->method('findByUserName')
@@ -62,31 +85,36 @@ class RequestBookLoanActionTest extends TestCase
 
         $this->bookRepository->expects($this->once())
             ->method('findById')
-            ->with('ID123')
+            ->with(123)
             ->willReturn($book);
 
-        $this->sut->__invoke('user1', 'ID123');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Book is already borrowed');
+
+        $this->sut->__invoke('user1', 123);
     }
 
     public function test_it_should_throw_exception_if_user_not_found(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('User not found');
-
         $this->userRepository->expects($this->once())
             ->method('findByUserName')
             ->with('user1')
             ->willReturn(null);
 
-        $this->sut->__invoke('user1', 'ID123');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('User not found');
+
+        $this->sut->__invoke('user1', 123);
     }
 
     public function test_it_should_throw_exception_if_book_not_found(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Book not found');
 
-        $user = new User('user1', 'user1@example.com', 'password', 'user');
+        $user = new User(
+            userName: 'user1',
+            password: 'password',
+            email: 'user1@example.com',
+            fullName: 'user1 and2');
 
         $this->userRepository->expects($this->once())
             ->method('findByUserName')
@@ -95,10 +123,13 @@ class RequestBookLoanActionTest extends TestCase
 
         $this->bookRepository->expects($this->once())
             ->method('findById')
-            ->with('ID123')
+            ->with(123)
             ->willReturn(null);
 
-        $this->sut->__invoke('user1', 'ID123');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Book not found');
+
+        $this->sut->__invoke('user1', 123);
     }
 
     protected function setUp(): void
