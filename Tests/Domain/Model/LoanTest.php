@@ -14,8 +14,8 @@ class LoanTest extends TestCase
 
     public function test_it_should_loan_creation_and_properties(): void
     {
-        $this->assertSame('book1', $this->sut->bookId());
-        $this->assertSame('user1', $this->sut->userId());
+        $this->assertSame(1, $this->sut->bookId());
+        $this->assertSame(1, $this->sut->userId());
         $this->assertFalse($this->sut->isReturned());
     }
 
@@ -40,6 +40,10 @@ class LoanTest extends TestCase
         $borrowDate = new DateTime('2023-01-01');
         $loansDateTimes = new LoansDateTimes($borrowDate);
 
-        $this->sut = new Loan('book1', 'user1', $loansDateTimes);
+        $this->sut = new Loan(
+            bookId: 1,
+            userId: 1,
+            loansDateTimes: $loansDateTimes
+        );
     }
 }
