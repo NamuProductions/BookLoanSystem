@@ -3,38 +3,76 @@ declare(strict_types=1);
 
 namespace App\Domain\Model;
 
-readonly class User
-{
-    public function __construct(
-        private string $userName,
-        private string $email,
-        private string $password,
-        private string $role,
-        private string $userId,
-    ) {}
+use DateTime;
 
-    public function getUserName(): string
+class User
+{
+    private int $userId;
+    private string $userName;
+    private string $password;
+    private string $email;
+    private ?string $fullName;
+    private ?int $age;
+    private DateTime $createdAt;
+    private string $role;
+
+    public function __construct(
+        string $userName,
+        string $password,
+        string $email,
+        ?string $fullName = null,
+        ?int $age = null,
+        ?string $role = 'user',
+        ?int $userId = null,
+        ?DateTime $createdAt = null
+    ) {
+        $this->userName = $userName;
+        $this->password = $password;
+        $this->email = $email;
+        $this->fullName = $fullName;
+        $this->age = $age;
+        $this->role = $role ?? 'user';
+        $this->userId = $userId ?? 0;
+        $this->createdAt = $createdAt ?? new DateTime();
+    }
+
+    public function userId(): int
+    {
+        return $this->userId;
+    }
+
+    public function userName(): string
     {
         return $this->userName;
     }
 
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    public function getPassword(): string
+    public function password(): string
     {
         return $this->password;
     }
 
-    public function getRole(): string
+    public function email(): string
     {
-        return $this->role;
+        return $this->email;
     }
 
-    public function getUserId(): string
+    public function fullName(): ?string
     {
-    return $this->userId;
+        return $this->fullName;
+    }
+
+    public function age(): ?int
+    {
+        return $this->age;
+    }
+
+    public function createdAt(): DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function role(): string
+    {
+        return $this->role;
     }
 }
