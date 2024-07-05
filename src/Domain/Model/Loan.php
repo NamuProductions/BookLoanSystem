@@ -8,20 +8,32 @@ use DateTime;
 
 class Loan
 {
+    private int $loanId;
+    private string $status;
     private ?DateTime $loanReturnedAt = null;
 
     public function __construct(
-        private readonly string $bookId,
-        private readonly string $userId,
-        private readonly LoansDateTimes $loansDateTimes
-    ) {}
+        private readonly int $bookId,
+        private readonly int $userId,
+        private readonly LoansDateTimes $loansDateTimes,
+        int $loanId = 0,
+        string $status = 'borrowed'
+    ) {
+        $this->loanId = $loanId;
+        $this->status = $status;
+    }
 
-    public function getBookId(): string
+    public function loanId(): int
+    {
+        return $this->loanId;
+    }
+
+    public function bookId(): int
     {
         return $this->bookId;
     }
 
-    public function getUserId(): string
+    public function userId(): int
     {
         return $this->userId;
     }
@@ -31,14 +43,20 @@ class Loan
         return $this->loansDateTimes;
     }
 
+    public function status(): string
+    {
+        return $this->status;
+    }
+
     public function markAsReturned(DateTime $loanReturnedAt): void
     {
         $this->loanReturnedAt = $loanReturnedAt;
+        $this->status = 'returned';
     }
 
     public function isReturned(): bool
     {
-        return $this->loanReturnedAt() !== null;
+        return $this->loanReturnedAt !== null;
     }
 
     public function loanReturnedAt(): ?DateTime

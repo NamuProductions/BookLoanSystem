@@ -14,8 +14,8 @@ class LoanTest extends TestCase
 
     public function test_it_should_loan_creation_and_properties(): void
     {
-        $this->assertSame('book1', $this->sut->getBookId());
-        $this->assertSame('user1', $this->sut->getUserId());
+        $this->assertSame('book1', $this->sut->bookId());
+        $this->assertSame('user1', $this->sut->userId());
         $this->assertFalse($this->sut->isReturned());
     }
 

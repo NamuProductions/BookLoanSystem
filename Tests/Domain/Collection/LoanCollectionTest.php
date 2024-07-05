@@ -16,7 +16,7 @@ class LoanCollectionTest extends TestCase
         $loan = $this->createMock(Loan::class);
         $this->sut->addLoan($loan);
 
-        $loans = $this->sut->findAllLoansByUser($loan->getUserId());
+        $loans = $this->sut->findAllLoansByUser($loan->userId());
         $this->assertCount(1, $loans);
         $this->assertSame($loan, $loans[0]);
     }
@@ -24,10 +24,10 @@ class LoanCollectionTest extends TestCase
     public function test_it_should_find_all_loans_by_user(): void
     {
         $loan1 = $this->createMock(Loan::class);
-        $loan1->method('getUserId')->willReturn('user1');
+        $loan1->method('userId')->willReturn('user1');
 
         $loan2 = $this->createMock(Loan::class);
-        $loan2->method('getUserId')->willReturn('user2');
+        $loan2->method('userId')->willReturn('user2');
 
         $this->sut->addLoan($loan1);
         $this->sut->addLoan($loan2);
@@ -40,7 +40,7 @@ class LoanCollectionTest extends TestCase
     public function test_it_should_find_active_loan_by_user(): void
     {
         $loan = $this->createMock(Loan::class);
-        $loan->method('getUserId')->willReturn('user1');
+        $loan->method('userId')->willReturn('user1');
         $loan->method('isReturned')->willReturn(false);
 
         $this->sut->addLoan($loan);
@@ -52,7 +52,7 @@ class LoanCollectionTest extends TestCase
     public function test_it_should_return_null_if_no_active_loan_found_by_user(): void
     {
         $loan = $this->createMock(Loan::class);
-        $loan->method('getUserId')->willReturn('user1');
+        $loan->method('userId')->willReturn('user1');
         $loan->method('isReturned')->willReturn(true);
 
         $this->sut->addLoan($loan);
