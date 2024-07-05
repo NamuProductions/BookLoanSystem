@@ -3,68 +3,100 @@ declare(strict_types=1);
 
 namespace App\Domain\Model;
 
-use App\Domain\Collection\LoanCollection;
+use App\Action\Admin\LoanRequestsAction;
 use App\Domain\ValueObject\Year;
-use App\Domain\ValueObject\LoansDateTimes;
 use DateTime;
 use InvalidArgumentException;
 
 class Book
 {
-    private LoanCollection $loans;
+    private int $bookId;
+    private DateTime $createdAt;
+    private bool $isAvailable;
+    private array $loanRequests = [];
 
     public function __construct(
         private readonly string $title,
+        private readonly Year $year,
         private readonly string $author,
+        private readonly ?int $pages,
+        private readonly ?string $genre,
         private readonly string $language,
-        private readonly Year   $year,
-        private readonly string $bookId,
-        private bool            $isAvailable = true
-    )
-    {
-        $this->loans = new LoanCollection();
+        bool $isAvailable = true,
+        ?int $bookId = null,
+        ?DateTime $createdAt = null
+    ) {
+        $this->bookId = $bookId ?? 0;
+        $this->createdAt = $createdAt ?? new DateTime();
+        $this->isAvailable = $isAvailable;
     }
 
-    public function title(): string { return $this->title; }
-    public function author(): string { return $this->author; }
-    public function language(): string { return $this->language; }
-    public function year(): Year { return $this->year; }
-    public function bookId(): string { return $this->bookId; }
-    public function isAvailable(): bool { return $this->isAvailable; }
-
-    private function markAsUnavailable(): void
+    public function bookId(): int
     {
-        $this->isAvailable = false;
+        return $this->bookId;
     }
 
-    private function markAsAvailable(): void
+    public function title(): string
     {
-        $this->isAvailable = true;
+        return $this->title;
     }
 
-    public function borrow(User $user, DateTime $borrowDate = null): Loan
+    public function year(): Year
+    {
+        return $this->year;
+    }
+
+    public function author(): string
+    {
+        return $this->author;
+    }
+
+    public function pages(): ?int
+    {
+        return $this->pages;
+    }
+
+    public function genre(): ?string
+    {
+        return $this->genre;
+    }
+
+    public function language(): string
+    {
+        return $this->language;
+    }
+
+    public function createdAt(): DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function isAvailable(): bool
+    {
+        return $this->isAvailable;
+    }
+
+    public function borrow(User $user, DateTime $borrowDate): void
     {
         if (!$this->isAvailable) {
-            throw new InvalidArgumentException('Book is already borrowed.');
+            throw new InvalidArgumentException('Book is not available for borrowing.');
         }
-        $loan = new Loan($this->bookId, $user->getUserName(), new LoansDateTimes($borrowDate ?? new DateTime()));
-        $this->loans->addLoan($loan);
-        $this->markAsUnavailable();
-        return $loan;
+
+        $loanRequestId = uniqid('loan_', true);
+
+        $this->loanRequests[] = new LoanRequestsAction($loanRequestId, $this->bookId, $user->userId(), $borrowDate);
+        $this->isAvailable = false;
     }
 
     public function returnBook(string $userId): void
     {
-        $activeLoan = $this->loans->findActiveLoanByUser($userId);
-        if ($activeLoan === null) {
-            throw new InvalidArgumentException('No active loan found for this book and user.');
+        foreach ($this->loanRequests as $loanRequest) {
+            if ($loanRequest->userId() === $userId && $loanRequest->returnDate() === null) {
+                $loanRequest->setReturnDate(new DateTime());
+                $this->isAvailable = true;
+                return;
+            }
         }
-        $activeLoan->markAsReturned(new DateTime());
-        $this->markAsAvailable();
-    }
-
-    public function findAllLoansByUser(string $userId): array
-    {
-        return $this->loans->findAllLoansByUser($userId);
+        throw new InvalidArgumentException('No active loan request found for this user.');
     }
 }
