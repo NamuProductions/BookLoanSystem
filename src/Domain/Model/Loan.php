@@ -4,26 +4,27 @@ declare(strict_types=1);
 namespace App\Domain\Model;
 
 use App\Domain\ValueObject\LoansDateTimes;
+use App\Util\UUID;
 use DateTime;
 
 class Loan
 {
-    private int $loanId;
+    private string $loanId;
     private string $status;
     private ?DateTime $loanReturnedAt = null;
 
     public function __construct(
         private readonly string $bookId,
-        private readonly int $userId,
+        private readonly string $userId,
         private readonly LoansDateTimes $loansDateTimes,
-        int $loanId = 0,
+        ?string $loanId = null,
         string $status = 'borrowed'
     ) {
-        $this->loanId = $loanId;
+        $this->loanId = $loanId ?? UUID::generate();
         $this->status = $status;
     }
 
-    public function loanId(): int
+    public function loanId(): string
     {
         return $this->loanId;
     }
@@ -33,7 +34,7 @@ class Loan
         return $this->bookId;
     }
 
-    public function userId(): int
+    public function userId(): string
     {
         return $this->userId;
     }
