@@ -93,7 +93,7 @@ class Book
         $this->isAvailable = false;
     }
 
-    public function returnBook(int $userId): void
+    public function returnBook(string $userId): void
     {
         foreach ($this->loanRequests as $loanRequest) {
             if ($loanRequest->userId() === $userId && !$loanRequest->isReturned()) {

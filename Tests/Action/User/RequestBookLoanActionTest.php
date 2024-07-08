@@ -89,7 +89,7 @@ class RequestBookLoanActionTest extends TestCase
             ->willReturn($book);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Book is already borrowed');
+        $this->expectExceptionMessage('Book is not available for borrowing.');
 
         $this->sut->__invoke('user1', '123');
     }

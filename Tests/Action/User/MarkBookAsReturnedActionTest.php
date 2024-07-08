@@ -8,6 +8,7 @@ use App\Domain\Model\Book;
 use App\Domain\Model\User;
 use App\Domain\Repository\BookRepository;
 use App\Domain\ValueObject\Year;
+use App\Util\UUID;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use DateTime;
@@ -21,9 +22,9 @@ class MarkBookAsReturnedActionTest extends TestCase
     {
         $user = new User('user1', 'user1@test.com', 'testPassword', 'user');
 
-        $bookId = 'ID123';
+        $bookId = UUID::generate();
         $borrowDate = new DateTime('2023-01-01');
-        $book = new Book('Title1', 'Author1', 'Català', new Year(2023), $bookId);
+        $book = new Book('Title1', new Year(2023), 'Author1', 1234 , $bookId, 'Català');
         $book->borrow($user, $borrowDate);
 
         $this->bookRepository->expects($this->once())
@@ -37,24 +38,24 @@ class MarkBookAsReturnedActionTest extends TestCase
                 return $savedBook === $book && $savedBook->isAvailable();
             }));
 
-        $this->sut->__invoke($user->getUserName(), $bookId);
+        $this->sut->__invoke($user->userName(), $bookId);
     }
 
     public function test_it_should_throw_exception_if_no_active_loan_found(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('No active loan found for this book and user.');
+        $this->expectExceptionMessage('No active loan request found for this user.');
 
         $user = new User('user1', 'user1@test.com', 'testPassword', 'user');
-        $bookId = 'ID123';
-        $book = new Book('Title1', 'Author1', 'Català', new Year(2023), $bookId);
+        $bookId = UUID::generate();
+        $book = new Book('Title1', new Year(2023),'Author1', 1234, $bookId, 'Català');
 
         $this->bookRepository->expects($this->once())
             ->method('findById')
             ->with($bookId)
             ->willReturn($book);
 
-        $this->sut->__invoke($user->getUserName(), $bookId);
+        $this->sut->__invoke($user->userName(), $bookId);
     }
 
     public function test_it_should_throw_exception_if_book_not_found(): void
@@ -63,14 +64,14 @@ class MarkBookAsReturnedActionTest extends TestCase
         $this->expectExceptionMessage('Book not found.');
 
         $user = new User('user1', 'user1@test.com', 'testPassword', 'user');
-        $bookId = 'ID123';
+        $bookId = UUID::generate();
 
         $this->bookRepository->expects($this->once())
             ->method('findById')
             ->with($bookId)
             ->willThrowException(new InvalidArgumentException('Book not found.'));
 
-        $this->sut->__invoke($user->getUserName(), $bookId);
+        $this->sut->__invoke($user->userName(), $bookId);
     }
 
     protected function setUp(): void
