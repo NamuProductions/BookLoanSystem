@@ -34,7 +34,7 @@ class RequestBookLoanActionTest extends TestCase
             genre: 'Infantil',
             language: 'Català',
             isAvailable: true,
-            bookId: 123);
+            bookId: '123');
 
         $this->userRepository
             ->expects($this->once())
@@ -45,7 +45,7 @@ class RequestBookLoanActionTest extends TestCase
         $this->bookRepository
             ->expects($this->once())
             ->method('findById')
-            ->with(123)
+            ->with('123')
             ->willReturn($book);
 
         $this->bookRepository
@@ -57,7 +57,7 @@ class RequestBookLoanActionTest extends TestCase
                 return true;
             }));
 
-        $this->sut->__invoke('user1', 123);
+        $this->sut->__invoke('user1', '123');
     }
 
     public function test_it_should_throw_exception_if_book_not_available(): void
@@ -76,7 +76,7 @@ class RequestBookLoanActionTest extends TestCase
             genre: 'Infantil',
             language: 'Català',
             isAvailable: false,
-            bookId: 1);
+            bookId: '1');
 
         $this->userRepository->expects($this->once())
             ->method('findByUserName')
@@ -85,13 +85,13 @@ class RequestBookLoanActionTest extends TestCase
 
         $this->bookRepository->expects($this->once())
             ->method('findById')
-            ->with(123)
+            ->with('123')
             ->willReturn($book);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Book is already borrowed');
 
-        $this->sut->__invoke('user1', 123);
+        $this->sut->__invoke('user1', '123');
     }
 
     public function test_it_should_throw_exception_if_user_not_found(): void
@@ -104,7 +104,7 @@ class RequestBookLoanActionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('User not found');
 
-        $this->sut->__invoke('user1', 123);
+        $this->sut->__invoke('user1', '123');
     }
 
     public function test_it_should_throw_exception_if_book_not_found(): void
@@ -123,13 +123,13 @@ class RequestBookLoanActionTest extends TestCase
 
         $this->bookRepository->expects($this->once())
             ->method('findById')
-            ->with(123)
+            ->with('123')
             ->willReturn(null);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Book not found');
 
-        $this->sut->__invoke('user1', 123);
+        $this->sut->__invoke('user1', '123');
     }
 
     protected function setUp(): void
