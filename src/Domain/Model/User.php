@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Model;
 
+use App\Util\UUID;
 use DateTime;
 
 class User
 {
-    private int $userId;
+    private string $userId;
     private string $userName;
     private string $password;
     private string $email;
@@ -23,7 +24,7 @@ class User
         ?string $fullName = null,
         ?int $age = null,
         ?string $role = 'user',
-        ?int $userId = null,
+        ?string $userId = null,
         ?DateTime $createdAt = null
     ) {
         $this->userName = $userName;
@@ -32,11 +33,11 @@ class User
         $this->fullName = $fullName;
         $this->age = $age;
         $this->role = $role ?? 'user';
-        $this->userId = $userId ?? 0;
+        $this->userId = $userId ?? UUID::generate();
         $this->createdAt = $createdAt ?? new DateTime();
     }
 
-    public function userId(): int
+    public function userId(): string
     {
         return $this->userId;
     }
