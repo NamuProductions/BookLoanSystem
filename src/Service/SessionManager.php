@@ -13,10 +13,10 @@ class SessionManager implements SessionManagerInterface
             session_start();
         }
         $_SESSION['user'] = [
-            'username' => $user->getUserName(),
-            'email' => $user->getEmail(),
-            'password' => $user->getPassword(),
-            'role' => $user->getRole(),
+            'username' => $user->userName(),
+            'email' => $user->email(),
+            'password' => $user->password(),
+            'role' => $user->role(),
         ];
     }
 
