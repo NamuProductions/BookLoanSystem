@@ -5,12 +5,13 @@ namespace App\Domain\Model;
 
 use App\Domain\ValueObject\LoansDateTimes;
 use App\Domain\ValueObject\Year;
+use App\Util\UUID;
 use DateTime;
 use InvalidArgumentException;
 
 class Book
 {
-    private int $bookId;
+    private string $bookId;
     private DateTime $createdAt;
     private bool $isAvailable;
     private array $loanRequests = [];
@@ -23,15 +24,15 @@ class Book
         private readonly ?string $genre,
         private readonly string $language,
         bool $isAvailable = true,
-        ?int $bookId = null,
+        ?string $bookId = null,
         ?DateTime $createdAt = null
     ) {
-        $this->bookId = $bookId ?? 0;
+        $this->bookId = $bookId ?? UUID::generate();
         $this->createdAt = $createdAt ?? new DateTime();
         $this->isAvailable = $isAvailable;
     }
 
-    public function bookId(): int
+    public function bookId(): string
     {
         return $this->bookId;
     }

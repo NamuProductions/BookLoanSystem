@@ -13,7 +13,7 @@ class Loan
     private ?DateTime $loanReturnedAt = null;
 
     public function __construct(
-        private readonly int $bookId,
+        private readonly string $bookId,
         private readonly int $userId,
         private readonly LoansDateTimes $loansDateTimes,
         int $loanId = 0,
@@ -28,7 +28,7 @@ class Loan
         return $this->loanId;
     }
 
-    public function bookId(): int
+    public function bookId(): string
     {
         return $this->bookId;
     }
