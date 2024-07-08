@@ -15,7 +15,7 @@ readonly class RequestBookLoanAction
         private UserRepository $userRepository
     ) {}
 
-    public function __invoke(string $userName, int $bookId): void
+    public function __invoke(string $userName, string $bookId): void
     {
         $user = $this->userRepository->findByUserName($userName);
         if (!$user) {
