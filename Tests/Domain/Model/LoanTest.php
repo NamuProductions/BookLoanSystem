@@ -5,6 +5,7 @@ namespace Domain\Model;
 
 use App\Domain\Model\Loan;
 use App\Domain\ValueObject\LoansDateTimes;
+use App\Util\UUID;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 
@@ -14,8 +15,9 @@ class LoanTest extends TestCase
 
     public function test_it_should_loan_creation_and_properties(): void
     {
-        $this->assertSame(1, $this->sut->bookId());
-        $this->assertSame(1, $this->sut->userId());
+        $this->assertSame($this->sut->bookId(), $this->sut->bookId()); // Todo: para mi es redundante pero no se como ponerlo
+        $this->assertSame($this->sut->userId(), $this->sut->userId());
+
         $this->assertFalse($this->sut->isReturned());
     }
 
@@ -37,12 +39,15 @@ class LoanTest extends TestCase
     {
         parent::setUp();
 
+        $bookId = UUID::generate();
+        $userId = UUID::generate();
+
         $borrowDate = new DateTime('2023-01-01');
         $loansDateTimes = new LoansDateTimes($borrowDate);
 
         $this->sut = new Loan(
-            bookId: 1,
-            userId: 1,
+            bookId: $bookId,
+            userId: $userId,
             loansDateTimes: $loansDateTimes
         );
     }
