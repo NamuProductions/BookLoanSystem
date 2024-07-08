@@ -18,23 +18,23 @@ class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
 
     public function allLoanRequests(): array
     {
-        $statement = $this->databaseConnection->prepare("SELECT lr.book_id, b.title, u.username, u.id AS user_id, lr.borrowed_at, lr.return_date
-                                                        FROM loan_requests lr
-                                                          JOIN users u ON lr.user_id = u.id
-                                                          JOIN books b ON lr.book_id = b.id
-                                                          WHERE lr.status = 'pending'");
+        $statement = $this->databaseConnection->prepare("SELECT l.book_id, b.title, u.user_name, u.user_id AS user_id, l.borrowed_at, l.returned_at, l.status
+                                                        FROM loans l
+                                                          JOIN users u ON l.user_id = u.user_id
+                                                          JOIN books b ON l.book_id = b.book_id
+                                                          WHERE l.status = 'pending'");
         $statement->execute();
         $loanRequests = [];
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $borrowedAt = new DateTime($row['borrowed_at']);
-            $returnAt = $row['return_date'] ? new DateTime($row['return_date']) : null;
-            $dateRange = new LoansDateTimes($borrowedAt, $returnAt);
+            $returnedAt = isset($row['returned_at']) ? new DateTime($row['returned_at']) : null;
+            $dateRange = new LoansDateTimes($borrowedAt, $returnedAt);
 
             $loanRequests[] = new LoanRequestDto(
                 (string)$row['book_id'],
                 (string)$row['title'],
-                (string)$row['username'],
+                (string)$row['user_name'],
                 (string)$row['user_id'],
                 $dateRange
             );
