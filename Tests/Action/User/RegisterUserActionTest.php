@@ -26,17 +26,17 @@ class RegisterUserActionTest extends TestCase
             ->expects($this->once())
             ->method('save')
             ->with($this->callback(function (User $user) use ($userName, $email, $password) {
-                return $user->getUserName() === $userName &&
-                    $user->getEmail() === $email &&
-                    password_verify($password, $user->getPassword());
+                return $user->userName() === $userName &&
+                    $user->email() === $email &&
+                    password_verify($password, $user->password());
             }));
 
         $this->sessionManager
             ->expects($this->once())
             ->method('startSession')
             ->with($this->callback(function (User $user) use ($userName, $email) {
-                return $user->getUserName() === $userName &&
-                    $user->getEmail() === $email;
+                return $user->userName() === $userName &&
+                    $user->email() === $email;
             }));
 
         $this->sut->__invoke($userName, $email, $password);
