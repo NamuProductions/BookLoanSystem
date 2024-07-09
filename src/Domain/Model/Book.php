@@ -105,7 +105,7 @@ class Book
         throw new InvalidArgumentException('No active loan request found for this user.');
     }
 
-    public function findAllLoansByUser(int $userId): array
+    public function findAllLoansByUser(string $userId): array
     {
         return array_filter($this->loanRequests, fn($loanRequest) => $loanRequest->userId() === $userId);
     }
