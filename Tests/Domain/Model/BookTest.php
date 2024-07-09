@@ -13,6 +13,8 @@ use PHPUnit\Framework\TestCase;
 class BookTest extends TestCase
 {
     private Book $sut;
+    private string $fixedBookId;
+    private string $fixedUserId;
 
     public function test_it_should_return_title(): void
     {
@@ -37,7 +39,7 @@ class BookTest extends TestCase
 
     public function test_it_should_return_book_id(): void
     {
-        $this->assertSame(1, $this->sut->bookId());
+        $this->assertSame($this->fixedBookId, $this->sut->bookId());
     }
 
     public function test_it_should_be_available_after_creation(): void
@@ -48,12 +50,13 @@ class BookTest extends TestCase
     public function test_it_should_mark_as_unavailable_when_borrowed(): void
     {
         $user = new User(
-            userName: 'user1',
+            userName: 'user',
             password: 'testPassword',
             email: 'user1@test.com',
             fullName: 'User One',
             age: 25,
-            role: 'user'
+            role: 'user',
+            userId: $this->fixedUserId
         );
         $borrowDate = new DateTime('2023-01-01');
 
@@ -65,32 +68,34 @@ class BookTest extends TestCase
     public function test_it_should_return_loan_details_when_borrowed(): void
     {
         $user = new User(
-            userName: 'user1',
+            userName: 'user',
             password: 'testPassword',
             email: 'user1@test.com',
             fullName: 'User One',
             age: 25,
-            role: 'user'
+            role: 'user',
+            userId: $this->fixedUserId
         );
         $borrowDate = new DateTime('2023-01-01');
         $this->sut->borrow($user, $borrowDate);
 
-        $loan = $this->sut->findAllLoansByUser($user->userId())[0]; // Ajuste para obtener el préstamo
+        $loan = $this->sut->findAllLoansByUser($user->userId())[0];
 
         $this->assertSame($user->userId(), $loan->userId());
-        $this->assertSame(1, $loan->bookId());
+        $this->assertSame($this->fixedBookId, $loan->bookId());
         $this->assertEquals($borrowDate->format('Y-m-d'), $loan->loansDateTimes()->loanBorrowedAt()->format('Y-m-d'));
     }
 
     public function test_it_should_mark_as_available_when_returned(): void
     {
         $user = new User(
-            userName: 'user1',
+            userName: 'user',
             password: 'testPassword',
             email: 'user1@test.com',
             fullName: 'User One',
             age: 25,
-            role: 'user'
+            role: 'user',
+            userId: $this->fixedUserId
         );
         $borrowDate = new DateTime('2023-01-01');
 
@@ -111,7 +116,8 @@ class BookTest extends TestCase
             email: 'user1@test.com',
             fullName: 'User One',
             age: 25,
-            role: 'user'
+            role: 'user',
+            userId: $this->fixedUserId
         );
         $this->sut->returnBook($user->userId());
     }
@@ -125,7 +131,8 @@ class BookTest extends TestCase
             email: 'user1@test.com',
             fullName: 'User One',
             age: 25,
-            role: 'user'
+            role: 'user',
+            userId: $this->fixedUserId
         );
 
         $this->sut->borrow($user, $borrowDate1);
@@ -134,13 +141,17 @@ class BookTest extends TestCase
 
         $this->assertCount(1, $loans);
         $this->assertSame($user->userId(), $loans[0]->userId());
-        $this->assertSame(1, $loans[0]->bookId());
+        $this->assertSame($this->fixedBookId, $loans[0]->bookId());
         $this->assertEquals($borrowDate1->format('Y-m-d'), $loans[0]->loansDateTimes()->loanBorrowedAt()->format('Y-m-d'));
     }
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->fixedBookId = '11111111-1111-1111-1111-111111111111';
+        $this->fixedUserId = '22222222-2222-2222-2222-222222222222';
+
         $this->sut = new Book(
             title: 'Test Book',
             year: new Year(2022),
@@ -149,7 +160,7 @@ class BookTest extends TestCase
             genre: 'Fiction',
             language: 'English',
             isAvailable: true,
-            bookId: 1
+            bookId: $this->fixedBookId
         );
     }
 }
