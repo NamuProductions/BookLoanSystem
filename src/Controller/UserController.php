@@ -44,7 +44,7 @@ class UserController
         $password = $_POST['password'];
 
         $user = $this->userRepository->findByUserName($username);
-        if ($user && password_verify($password, $user->getPassword())) {
+        if ($user && password_verify($password, $user->password())) {
             session_start();
             $_SESSION['user'] = $username;
             header('Location: /books');
