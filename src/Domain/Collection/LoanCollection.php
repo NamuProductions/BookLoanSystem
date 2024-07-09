@@ -27,13 +27,13 @@ class LoanCollection
 
     public function findAllLoansByUser(string $userId): array
     {
-        return array_filter($this->loans, fn($loan) => $loan->getUserId() === $userId);
+        return array_filter($this->loans, fn($loan) => $loan->userId() === $userId);
     }
 
     public function findActiveLoanByUser(string $userId): ?Loan
     {
         foreach ($this->loans as $loan) {
-            if ($loan->getUserId() === $userId && !$loan->isReturned()) {
+            if ($loan->userId() === $userId && !$loan->isReturned()) {
                 return $loan;
             }
         }
