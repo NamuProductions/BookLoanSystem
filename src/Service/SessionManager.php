@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Domain\Model\User;
+use DateTime;
 
 class SessionManager implements SessionManagerInterface
 {
@@ -13,9 +14,13 @@ class SessionManager implements SessionManagerInterface
             session_start();
         }
         $_SESSION['user'] = [
-            'username' => $user->userName(),
-            'email' => $user->email(),
+            'userId' => $user->userId(),
+            'userName' => $user->userName(),
             'password' => $user->password(),
+            'email' => $user->email(),
+            'fullName' => $user->fullName(),
+            'age' => $user->age(),
+            'createdAt' => $user->createdAt()->format('c'),
             'role' => $user->role(),
         ];
     }
@@ -37,7 +42,16 @@ class SessionManager implements SessionManagerInterface
     {
         if (isset($_SESSION['user'])) {
             $userData = $_SESSION['user'];
-            return new User($userData['username'], $userData['email'], $userData['password'], $userData['role']);
+            return new User(
+                $userData['userName'],
+                $userData['password'],
+                $userData['email'],
+                $userData['fullName'],
+                $userData['age'],
+                $userData['role'],
+                $userData['userId'],
+                new DateTime($userData['createdAt'])
+            );
         }
         return null;
     }
