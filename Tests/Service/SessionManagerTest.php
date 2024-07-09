@@ -5,6 +5,7 @@ namespace Service;
 use App\Domain\Model\User;
 use App\Service\SessionManager;
 use PHPUnit\Framework\TestCase;
+use DateTime;
 
 class SessionManagerTest extends TestCase
 {
@@ -12,7 +13,17 @@ class SessionManagerTest extends TestCase
 
     public function test_it_should_start_session()
     {
-        $user = new User('testUser', 'test@email.com', 'testPassword', 'user');
+        $createdAt = new DateTime('2024-07-09T10:12:17.000000+0000');
+        $user = new User(
+            'testUser',
+            'testPassword',
+            'test@email.com',
+            'Test User',
+            25,
+            'user',
+            null,
+            $createdAt
+        );
 
         $this->sut->startSession($user);
 
@@ -22,7 +33,17 @@ class SessionManagerTest extends TestCase
 
     public function test_it_should_end_session()
     {
-        $user = new User('testUser', 'test@email.com', 'testPassword', 'user');
+        $createdAt = new DateTime('2024-07-09T10:12:17.000000+0000');
+        $user = new User(
+            'testUser',
+            'testPassword',
+            'test@email.com',
+            'Test User',
+            25,
+            'user',
+            null,
+            $createdAt
+        );
 
         $this->sut->startSession($user);
         $this->sut->endSession();
@@ -30,7 +51,6 @@ class SessionManagerTest extends TestCase
         $this->assertFalse($this->sut->isAuthenticated());
         $this->assertNull($this->sut->getUser());
     }
-
 
     protected function setUp(): void
     {
