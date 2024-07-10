@@ -18,11 +18,11 @@ class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
 
     public function allLoanRequests(): array
     {
-        $statement = $this->databaseConnection->prepare("SELECT l.book_id, b.title, u.user_name, u.user_id AS user_id, l.borrowed_at, l.returned_at, l.status
-                                                        FROM loans l
-                                                          JOIN users u ON l.user_id = u.user_id
-                                                          JOIN books b ON l.book_id = b.book_id
-                                                          WHERE l.status = 'pending'");
+        $statement = $this->databaseConnection->prepare("SELECT l.book_id, b.title, u.user_name, u.user_id, l.borrowed_at, l.returned_at, l.status
+                                                    FROM loans l
+                                                      JOIN users u ON l.user_id = u.user_id
+                                                      JOIN books b ON l.book_id = b.book_id
+                                                      WHERE l.status IN ('borrowed', 'returned')");
         $statement->execute();
         $loanRequests = [];
 
