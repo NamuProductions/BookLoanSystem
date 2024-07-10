@@ -23,17 +23,19 @@ class MySqlLoanRequestQueryServiceTest extends TestCase
 
         $this->assertInstanceOf(LoanRequestDto::class, $result[0]);
         $this->assertSame('user1', $result[0]->userName);
-        $this->assertSame('1', $result[0]->bookId);
+        $this->assertNotEmpty($result[0]->bookId);
+        $this->assertMatchesRegularExpression('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $result[0]->bookId);
 
         $this->assertInstanceOf(LoanRequestDto::class, $result[1]);
         $this->assertSame('user2', $result[1]->userName);
-        $this->assertSame('2', $result[1]->bookId);
+        $this->assertNotEmpty($result[1]->bookId);
+        $this->assertMatchesRegularExpression('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $result[0]->bookId);
     }
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->pdo =(new DatabaseService())->getDatabaseConnection();
+        $this->pdo = (new DatabaseService())->getDatabaseConnection();
         $this->sut = new MySqlLoanRequestQueryService($this->pdo);
         $this->resetDatabase();
     }
@@ -45,28 +47,28 @@ class MySqlLoanRequestQueryServiceTest extends TestCase
         $this->pdo->exec("DELETE FROM users");
 
         $userId1 = UUID::generate();
-        $this->pdo->exec("INSERT INTO users (user_id, user_name, password, email, full_name) 
-                      VALUES ('$userId1', 'user1', 'password1', 'user1@example.com', 'User One')");
+        $this->pdo->exec("INSERT INTO users (user_id, user_name, password, email, full_name, age, role) 
+                  VALUES ('$userId1', 'user1', 'password1', 'user1@example.com', 'User One', 25, 'user')");
 
         $userId2 = UUID::generate();
-        $this->pdo->exec("INSERT INTO users (user_id, user_name, password, email, full_name) 
-                      VALUES ('$userId2', 'user2', 'password2', 'user2@example.com', 'User Two')");
+        $this->pdo->exec("INSERT INTO users (user_id, user_name, password, email, full_name, age, role) 
+                  VALUES ('$userId2', 'user2', 'password2', 'user2@example.com', 'User Two', 25, 'user')");
 
         $bookId1 = UUID::generate();
         $this->pdo->exec("INSERT INTO books (book_id, title, author, year, pages, genre, language, created_at, is_available) VALUES 
-                      ('$bookId1', 'Test Title 1', 'Author 1', 1989, 1234, 'Fiction', 'Català', '2023-08-08', true)");
+                  ('$bookId1', 'Test Title 1', 'Author 1', 1989, 1234, 'Fiction', 'Català', '2023-08-08', true)");
 
         $bookId2 = UUID::generate();
         $this->pdo->exec("INSERT INTO books (book_id, title, author, year, pages, genre, language, created_at, is_available) VALUES 
-                      ('$bookId2', 'Test Title 2', 'Author 2', 1989, 1234, 'Fiction', 'Català', '2023-08-08', true)");
+                  ('$bookId2', 'Test Title 2', 'Author 2', 1989, 1234, 'Fiction', 'Català', '2023-08-08', true)");
 
         $loanId1 = UUID::generate();
         $this->pdo->exec("INSERT INTO loans (loan_id, book_id, user_id, borrowed_at, status) VALUES 
-                      ('$loanId1', '$bookId1', '$userId1', '2023-05-01 00:00:00', 'pending')");
+                  ('$loanId1', '$bookId1', '$userId1', '2023-05-01 00:00:00', 'borrowed')");
 
         $loanId2 = UUID::generate();
         $this->pdo->exec("INSERT INTO loans (loan_id, book_id, user_id, borrowed_at, status) VALUES 
-                      ('$loanId2', '$bookId2', '$userId2', '2023-05-01 00:00:00', 'pending')");
+                  ('$loanId2', '$bookId2', '$userId2', '2023-05-01 00:00:00', 'returned')");
     }
 
 }
