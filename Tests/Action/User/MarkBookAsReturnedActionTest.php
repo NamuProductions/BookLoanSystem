@@ -20,11 +20,20 @@ class MarkBookAsReturnedActionTest extends TestCase
 
     public function test_it_should_mark_book_as_returned(): void
     {
-        $user = new User('user1', 'user1@test.com', 'testPassword', 'user');
+        $userId = UUID::generate();
+        $user = new User(
+            userName: 'user1',
+            password: 'testPassword',
+            email: 'user1@test.com',
+            fullName: 'User One',
+            age: 25,
+            role: 'user',
+            userId: $userId
+        );
 
         $bookId = UUID::generate();
         $borrowDate = new DateTime('2023-01-01');
-        $book = new Book('Title1', new Year(2023), 'Author1', 1234 , $bookId, 'Català');
+        $book = new Book('Title1', new Year(2023), 'Author1', 1234 , $bookId, 'Català', true);
         $book->borrow($user, $borrowDate);
 
         $this->bookRepository->expects($this->once())
@@ -38,7 +47,7 @@ class MarkBookAsReturnedActionTest extends TestCase
                 return $savedBook === $book && $savedBook->isAvailable();
             }));
 
-        $this->sut->__invoke($user->userName(), $bookId);
+        $this->sut->__invoke($user->userId(), $bookId);
     }
 
     public function test_it_should_throw_exception_if_no_active_loan_found(): void
