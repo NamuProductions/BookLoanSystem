@@ -18,21 +18,38 @@ class ReturnRequestsActionTest extends TestCase
 
     public function test_it_should_list_all_return_requests(): void
     {
-        $user1 = new User('user1', 'user1@test.com', 'testPassword', 'user');
+        $user1 = new User(
+            userName: 'user1',
+            password: 'testPassword',
+            email: 'user1@test.com',
+            fullName: 'User One',
+            age: 25,
+            role: 'user',
+            userId: $this->fixedUserId1
+        );
         $borrowDate1 = new DateTime('2023-01-01');
-        $returnDate1 = new DateTime('2023-01-10');
 
-        $user2 = new User('user2', 'user1@test.com', 'testPassword', 'user');
+        $user2 = new User(
+            userName: 'user2',
+            password: 'testPassword',
+            email: 'user2@test.com',
+            fullName: 'User Two',
+            age: 25,
+            role: 'user',
+            userId: $this->fixedUserId2
+        );
         $borrowDate2 = new DateTime('2023-02-01');
-        $returnDate2 = new DateTime('2023-02-12');
 
-        $book1 = new Book('Test Title', 'Test Author', 'Català', new Year(2021), 'book1');
-        $loan1 = $book1->borrow($user1, $borrowDate1);
-        $loan1->markAsReturned($returnDate1);
+        $book1 = new Book('Test Title', new Year(2021), 'Test Author', 1234, 'Testing','Català', true);
+        $book1->borrow($user1, $borrowDate1);
+        $book1->returnBook($user1->userId());
 
-        $book2 = new Book('Test Title', 'Test Author', 'Català', new Year(2021), 'book2');
-        $loan2 = $book2->borrow($user2, $borrowDate2);
-        $loan2->markAsReturned($returnDate2);
+        $book2 = new Book('Test Title 2', new Year(2021), 'Test Author', 1234, 'Testing','Català', true);
+        $book2->borrow($user2, $borrowDate2);
+        $book2->returnBook($user2->userId());
+
+        $loan1 = $book1->findAllLoansByUser($user1->userId())[0];
+        $loan2 = $book2->findAllLoansByUser($user2->userId())[0];
 
         $this->returnRequestQueryService
             ->expects($this->once())
@@ -62,6 +79,10 @@ class ReturnRequestsActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->fixedUserId1 = '11111111-1111-1111-1111-111111111111';
+        $this->fixedUserId2 = '22222222-2222-2222-2222-222222222222';
+
         $this->returnRequestQueryService = $this->createMock(ReturnRequestQueryServiceInterface::class);
         $this->sut = new ReturnRequestsAction($this->returnRequestQueryService);
     }
