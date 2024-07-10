@@ -18,7 +18,7 @@ readonly class LoginAction
     {
         $user = $this->userRepository->findByUserName($userName);
 
-        if (!$user || !password_verify($password, $user->getPassword())) {
+        if (!$user || !password_verify($password, $user->password())) {
             throw new InvalidArgumentException('Invalid username or password.');
         }
 
