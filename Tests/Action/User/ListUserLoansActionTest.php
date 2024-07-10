@@ -31,13 +31,13 @@ class ListUserLoansActionTest extends TestCase
 
         $this->assertCount(2, $loans);
 
-        $this->assertSame('user1', $loans[0]->getUserId());
-        $this->assertSame('book1', $loans[0]->getBookId());
+        $this->assertSame('user1', $loans[0]->userId());
+        $this->assertSame('book1', $loans[0]->bookId());
         $this->assertEquals($borrowDate->format('Y-m-d'), $loans[0]->loansDateTimes()->loanBorrowedAt()->format('Y-m-d'));
         $this->assertEquals($loansDateTimes->LoanMaximumReturnDate()->format('Y-m-d'), $loans[0]->loansDateTimes()->LoanMaximumReturnDate()->format('Y-m-d'));
 
-        $this->assertSame('user1', $loans[1]->getUserId());
-        $this->assertSame('book2', $loans[1]->getBookId());
+        $this->assertSame('user1', $loans[1]->userId());
+        $this->assertSame('book2', $loans[1]->bookId());
         $this->assertEquals($borrowDate->format('Y-m-d'), $loans[1]->loansDateTimes()->loanBorrowedAt()->format('Y-m-d'));
         $this->assertEquals($loansDateTimes->LoanMaximumReturnDate()->format('Y-m-d'), $loans[1]->loansDateTimes()->LoanMaximumReturnDate()->format('Y-m-d'));
     }
