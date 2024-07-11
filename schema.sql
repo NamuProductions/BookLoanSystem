@@ -2,40 +2,37 @@
 # USE library;
 
 CREATE TABLE IF NOT EXISTS users (
-                                     id INT AUTO_INCREMENT PRIMARY KEY,
-                                     username VARCHAR(255) NOT NULL,
+                                     user_id CHAR(36) PRIMARY KEY,
+                                     user_name VARCHAR(255) NOT NULL,
                                      password VARCHAR(255) NOT NULL,
                                      email VARCHAR(255) NOT NULL,
-                                     full_name VARCHAR(255) NOT NULL,
+                                     full_name VARCHAR(255),
                                      age INT,
                                      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                                     role ENUM('user', 'admin') DEFAULT 'user' NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS books (
-                                     id INT AUTO_INCREMENT PRIMARY KEY,
+                                     book_id CHAR(36) PRIMARY KEY,
                                      title VARCHAR(255) NOT NULL,
                                      author VARCHAR(255) NOT NULL,
-                                     language VARCHAR(255) NOT NULL,
-                                     isbn VARCHAR(13) NOT NULL,
-                                     published_date DATE NOT NULL,
-                                     genre VARCHAR(255),
+                                     year INT NOT NULL,
                                      pages INT,
-                                     available_copies INT DEFAULT 1,
-                                     total_copies INT DEFAULT 1,
+                                     genre VARCHAR(255),
+                                     language VARCHAR(50) NOT NULL,
                                      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                                     is_available TINYINT(1) DEFAULT 1 NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS loan_requests (
-                                             id INT AUTO_INCREMENT PRIMARY KEY,
-                                             book_id INT,
-                                             user_id INT,
-                                             borrowed_at DATETIME NOT NULL,
-                                             return_date DATETIME DEFAULT NULL,
-                                             status ENUM('pending', 'approved', 'returned', 'lost') DEFAULT 'pending',
-                                             FOREIGN KEY (book_id) REFERENCES books(id),
-                                             FOREIGN KEY (user_id) REFERENCES users(id),
-                                             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS loans (
+                                     loan_id CHAR(36) PRIMARY KEY,
+                                     book_id CHAR(36) NOT NULL,
+                                     user_id CHAR(36) NOT NULL,
+                                     borrowed_at DATETIME NOT NULL,
+                                     returned_at DATETIME,
+                                     status ENUM('borrowed', 'returned') DEFAULT 'borrowed',
+                                     FOREIGN KEY (book_id) REFERENCES books(book_id),
+                                     FOREIGN KEY (user_id) REFERENCES users(user_id),
+                                     INDEX (book_id),
+                                     INDEX (user_id)
 );
