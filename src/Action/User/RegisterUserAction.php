@@ -6,6 +6,7 @@ namespace App\Action\User;
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
 use App\Service\SessionManagerInterface;
+use App\Util\UUID;
 use DateTime;
 use InvalidArgumentException;
 
@@ -32,13 +33,13 @@ readonly class RegisterUserAction
 
         $user = new User(
             $userName,
-            $email,
             password_hash($password, PASSWORD_DEFAULT),
+            $email,
             $fullName,
             $age,
             $role,
-            $userId,
-            $createdAt
+            $userId ?? UUID::generate(),
+            $createdAt ?? new DateTime()
         );
 
         $this->userRepository->save($user);
