@@ -86,5 +86,4 @@ class RegisterUserActionTest extends TestCase
         $this->sessionManager = $this->createMock(SessionManagerInterface::class);
         $this->sut = new RegisterUserAction($this->userRepository, $this->sessionManager);
     }
-
 }
