@@ -16,6 +16,9 @@ class ReturnRequestsActionTest extends TestCase
     private ReturnRequestsAction $sut;
     private ReturnRequestQueryServiceInterface $returnRequestQueryService;
 
+    private string $fixedUserId1;
+    private string $fixedUserId2;
+
     public function test_it_should_list_all_return_requests(): void
     {
         $user1 = new User(
