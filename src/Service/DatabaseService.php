@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -13,7 +14,6 @@ class DatabaseService
     private string $userName = 'root';
     private string $password = 'root';
     private PDO $pdo;
-
     public function __construct()
     {
         $this->dbname = getenv('DB_NAME') ?: 'library';

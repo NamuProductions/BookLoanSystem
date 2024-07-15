@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -9,7 +10,6 @@ use Exception;
 class LoanRequestController
 {
     private LoanRequestsAction $loanRequestsAction;
-
     public function __construct(LoanRequestsAction $loanRequestsAction)
     {
         $this->loanRequestsAction = $loanRequestsAction;

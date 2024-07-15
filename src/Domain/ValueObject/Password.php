@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
@@ -8,7 +9,6 @@ use InvalidArgumentException;
 class Password
 {
     private string $value;
-
     public function __construct(string $value)
     {
         if (strlen($value) < 8) {

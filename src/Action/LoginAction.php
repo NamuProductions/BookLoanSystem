@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Action;
@@ -17,7 +18,6 @@ readonly class LoginAction
     public function __invoke(string $userName, string $password): void
     {
         $user = $this->userRepository->findByUserName($userName);
-
         if (!$user || !password_verify($password, $user->password())) {
             throw new InvalidArgumentException('Invalid username or password.');
         }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
@@ -11,7 +12,6 @@ class LoansDateTimes
     private DateTime $LoanMaximumReturnDate;
     private ?DateTime $LoanReturnedAt;
     public const LOAN_DAYS = 14;
-
     public function __construct(DateTime $borrowDate, ?DateTime $realReturnDate = null)
     {
         $this->loanBorrowedAt = $borrowDate;
@@ -44,6 +44,7 @@ class LoansDateTimes
     }
 
     public function includes(DateTime $date): bool // TODO: usarlo si es false para penalizar al usuario
+
     {
         return $date >= $this->loanBorrowedAt && $date <= $this->LoanMaximumReturnDate;
     }

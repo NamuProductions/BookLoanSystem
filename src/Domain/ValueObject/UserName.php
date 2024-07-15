@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
@@ -9,7 +10,6 @@ class UserName
 {
     private string $firstName;
     private string $lastName;
-
     public function __construct(string $firstName, string $lastName)
     {
         if (empty($firstName)) {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -10,7 +11,6 @@ use PDO;
 class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
 {
     private PDO $databaseConnection;
-
     public function __construct(PDO $databaseConnection)
     {
         $this->databaseConnection = $databaseConnection;
@@ -25,12 +25,10 @@ class MySqlLoanRequestQueryService implements LoanRequestQueryServiceInterface
                                                       WHERE l.status IN ('borrowed', 'returned')");
         $statement->execute();
         $loanRequests = [];
-
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $borrowedAt = new DateTime($row['borrowed_at']);
             $returnedAt = isset($row['returned_at']) ? new DateTime($row['returned_at']) : null;
             $dateRange = new LoansDateTimes($borrowedAt, $returnedAt);
-
             $loanRequests[] = new LoanRequestDto(
                 (string)$row['book_id'],
                 (string)$row['title'],

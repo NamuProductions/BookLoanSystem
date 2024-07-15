@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Collection;
@@ -8,7 +9,6 @@ use App\Domain\Model\Loan;
 class LoanCollection
 {
     private array $loans = [];
-
     public function addLoan(Loan $loan): void
     {
         $this->loans[] = $loan;

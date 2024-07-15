@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Action\Admin;
@@ -16,17 +17,16 @@ readonly class AddNewBookAction
     }
 
     public function __invoke(
-        string    $title,
-        string    $author,
-        string    $language,
-        Year      $year,
-        ?int      $pages = null,
-        ?string   $genre = null,
-        ?string   $bookId = null,
+        string $title,
+        string $author,
+        string $language,
+        Year $year,
+        ?int $pages = null,
+        ?string $genre = null,
+        ?string $bookId = null,
         ?DateTime $createdAt = null,
-        bool      $isAvailable = true
-    ): void
-    {
+        bool $isAvailable = true
+    ): void {
         if (empty($title)) {
             throw new InvalidArgumentException('Title is required');
         }

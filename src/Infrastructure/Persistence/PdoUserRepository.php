@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence;
@@ -10,7 +11,6 @@ use PDO;
 class PdoUserRepository implements UserRepository
 {
     private PDO $pdo;
-
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
@@ -18,10 +18,9 @@ class PdoUserRepository implements UserRepository
 
     public function findById(string $userId): ?User
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE userId = :userId');
+        $stmt = $this->pdo->prepare('SELECT * FROM library.users WHERE user_id = :userId');
         $stmt->execute(['userId' => $userId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
         if ($row === false) {
             return null;
         }
@@ -31,22 +30,21 @@ class PdoUserRepository implements UserRepository
 
     public function save(User $user): void
     {
-        $stmt = $this->pdo->prepare('REPLACE INTO users (userId, userName, email, password, role) VALUES (:userId, :userName, :email, :password, :role)');
+        $stmt = $this->pdo->prepare('REPLACE INTO users (user_id, user_name, email, password, role) VALUES (:userId, :userName, :email, :password, :role)');
         $stmt->execute([
-            'userId' => $user->getUserId(),
-            'userName' => $user->getUserName(),
-            'email' => $user->getEmail(),
-            'password' => $user->getPassword(),
-            'role' => $user->getRole(),
+            'userId' => $user->userId(),
+            'userName' => $user->userName(),
+            'email' => $user->email(),
+            'password' => $user->password(),
+            'role' => $user->role(),
         ]);
     }
 
     public function findByUserName(string $username): ?User
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE userName = :userName');
+        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE user_name = :userName');
         $stmt->execute(['userName' => $username]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
         if ($row === false) {
             return null;
         }

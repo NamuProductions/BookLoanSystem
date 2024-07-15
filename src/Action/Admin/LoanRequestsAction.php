@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Action\Admin;
@@ -9,7 +10,6 @@ use Exception;
 class LoanRequestsAction
 {
     private LoanRequestQueryServiceInterface $loanRequestQueryService;
-
     public function __construct(LoanRequestQueryServiceInterface $loanRequestQueryService)
     {
         $this->loanRequestQueryService = $loanRequestQueryService;

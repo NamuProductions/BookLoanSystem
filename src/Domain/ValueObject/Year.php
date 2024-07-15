@@ -1,19 +1,18 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
 
-
 class Year
 {
     private int $year;
-
     public function __construct(int $year)
     {
         $this->year = $year;
     }
 
-        public function value(): int
+    public function value(): int
     {
         return $this->year;
     }

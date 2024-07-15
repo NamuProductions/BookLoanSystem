@@ -3,7 +3,7 @@
         'name' => 'namuproductions/book-loan-system',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '0b416966dcfb9381d58b5b360af37715fdebb403',
+        'reference' => '51adf90a151c7e4dc085df8eed5d2ed4e79aaa51',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -130,7 +130,7 @@
         'namuproductions/book-loan-system' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '0b416966dcfb9381d58b5b360af37715fdebb403',
+            'reference' => '51adf90a151c7e4dc085df8eed5d2ed4e79aaa51',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -439,6 +439,15 @@
             'install_path' => __DIR__ . '/../slim/slim',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'squizlabs/php_codesniffer' => array(
+            'pretty_version' => '3.10.1',
+            'version' => '3.10.1.0',
+            'reference' => '8f90f7a53ce271935282967f53d0894f8f1ff877',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../squizlabs/php_codesniffer',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'symfony/console' => array(
             'pretty_version' => 'v7.1.1',

@@ -4,5 +4,5 @@ namespace App\Service;
 
 interface ReturnRequestQueryServiceInterface
 {
-public function returnRequests(): array;
+    public function returnRequests(): array;
 }
