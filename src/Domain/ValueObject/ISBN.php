@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace \Domain\ValueObject\ISBN.php;
+namespace App\Domain\ValueObject;
+
+use InvalidArgumentException;
 
 class ISBN
 {
