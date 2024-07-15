@@ -29,10 +29,10 @@ class PdoUserRepository implements UserRepository
         return new User(
             $row['user_id'],
             $row['user_name'],
-            $row['email'],
             $row['password'],
+            $row['email'],
+            isset($row['age']) ? (int)$row['age'] : null,
             $row['role'],
-            isset($row['age']) ? (int)$row['age'] : null
         );
     }
 
@@ -45,7 +45,7 @@ class PdoUserRepository implements UserRepository
             'email' => $user->email(),
             'password' => $user->password(),
             'role' => $user->role(),
-            'age' => $user->age(),
+            'age' => $user->age()
         ]);
     }
 
