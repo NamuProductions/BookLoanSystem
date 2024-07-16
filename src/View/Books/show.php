@@ -9,7 +9,7 @@
     <h1><?= $book->title(); ?></h1>
     <p>Author: <?= $book->author(); ?></p>
     <p>Language: <?= $book->language(); ?></p>
-    <p>Year: <?= $book->year()->getValue(); ?></p>
+    <p>Year: <?= $book->year()->value(); ?></p>
     <form action="/books/<?= $book->bookId(); ?>/borrow" method="POST">
         <button type="submit" <?= $book->isAvailable() ? '' : 'disabled'; ?>>Borrow</button>
     </form>
