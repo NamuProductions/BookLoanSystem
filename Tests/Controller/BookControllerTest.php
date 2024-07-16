@@ -4,18 +4,14 @@ namespace Controller;
 
 use App\Controller\BookController;
 use App\Domain\Model\Book;
-use App\Domain\Model\User;
 use App\Domain\Repository\BookRepository;
 use App\Domain\Repository\UserRepository;
 use App\Domain\ValueObject\Year;
-use DateTime;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class BookControllerTest extends TestCase
 {
     private BookRepository $bookRepository;
-    private UserRepository $userRepository;
     private BookController $controller;
 
     protected function setUp(): void
@@ -23,8 +19,8 @@ class BookControllerTest extends TestCase
         parent::setUp();
 
         $this->bookRepository = $this->createMock(BookRepository::class);
-        $this->userRepository = $this->createMock(UserRepository::class);
-        $this->controller = new BookController($this->bookRepository, $this->userRepository);
+        $userRepository = $this->createMock(UserRepository::class);
+        $this->controller = new BookController($this->bookRepository, $userRepository);
     }
 
     public function test_index(): void
