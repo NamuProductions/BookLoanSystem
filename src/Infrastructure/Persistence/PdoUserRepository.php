@@ -38,14 +38,15 @@ class PdoUserRepository implements UserRepository
 
     public function save(User $user): void
     {
-        $stmt = $this->pdo->prepare('REPLACE INTO users (user_id, user_name, password, email, role, age) VALUES (:userId, :userName, :password, :email, :role, :age)');
+        $stmt = $this->pdo->prepare('REPLACE INTO users (user_id, user_name, password, email, full_name, age, role) VALUES (:userId, :userName, :password, :email, full_name, age, :role)');
         $stmt->execute([
             'userId' => $user->userId(),
             'userName' => $user->userName(),
             'password' => $user->password(),
             'email' => $user->email(),
+            'fullName' => $user->fullName(),
+            'age' => $user->age(),
             'role' => $user->role(),
-            'age' => $user->age()
         ]);
     }
 
@@ -59,12 +60,13 @@ class PdoUserRepository implements UserRepository
         }
 
         return new User(
-            $row['user_id'],
             $row['user_name'],
             $row['password'],
             $row['email'],
+            $row['full_name'],
+            isset($row['age']) ? (int)$row['age'] : null,
             $row['role'],
-            isset($row['age']) ? (int)$row['age'] : null
+            $row['user_id'],
         );
     }
 }
