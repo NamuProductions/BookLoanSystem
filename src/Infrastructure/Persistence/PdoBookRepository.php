@@ -19,8 +19,8 @@ class PdoBookRepository implements BookRepository
     public function save(Book $book): void
     {
         $stmt = $this->pdo->prepare('
-            INSERT INTO books (id, title, author, language, year, is_available)
-            VALUES (:id, :title, :author, :language, :year, :is_available)
+            INSERT INTO books (book_id, title, author, language, year, is_available)
+            VALUES (:book_id, :title, :author, :language, :year, :is_available)
             ON DUPLICATE KEY UPDATE
                 title = VALUES(title),
                 author = VALUES(author),
@@ -29,19 +29,19 @@ class PdoBookRepository implements BookRepository
                 is_available = VALUES(is_available)
         ');
         $stmt->execute([
-            'id' => $book->bookId(),
+            'book_id' => $book->bookId(),
             'title' => $book->title(),
             'author' => $book->author(),
             'language' => $book->language(),
-            'year' => $book->year()->getValue(),
+            'year' => $book->year()->value(),
             'is_available' => $book->isAvailable() ? 1 : 0,
         ]);
     }
 
-    public function findById(string $id): ?Book
+    public function findById(string $bookId): ?Book
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM books WHERE id = :id');
-        $stmt->execute(['id' => $id]);
+        $stmt = $this->pdo->prepare('SELECT * FROM books WHERE book_id = :book_id');
+        $stmt->execute(['book_id' => $bookId]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$result) {
@@ -49,11 +49,11 @@ class PdoBookRepository implements BookRepository
         }
 
         return new Book(
+            $result['book_id'],
             $result['title'],
             $result['author'],
             $result['language'],
             new Year((int)$result['year']),
-            $result['id'],
             (bool)$result['is_available']
         );
     }
@@ -64,11 +64,11 @@ class PdoBookRepository implements BookRepository
         $books = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $books[] = new Book(
+                $row['book_id'],
                 $row['title'],
                 $row['author'],
                 $row['language'],
                 new Year((int)$row['year']),
-                $row['id'],
                 (bool)$row['is_available']
             );
         }
@@ -81,11 +81,11 @@ class PdoBookRepository implements BookRepository
         $books = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $books[] = new Book(
+                $row['book_id'],
                 $row['title'],
                 $row['author'],
                 $row['language'],
                 new Year((int)$row['year']),
-                $row['id'],
                 (bool)$row['is_available']
             );
         }
@@ -100,11 +100,11 @@ class PdoBookRepository implements BookRepository
         $books = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $books[] = new Book(
+                $row['book_id'],
                 $row['title'],
                 $row['author'],
                 $row['language'],
                 new Year((int)$row['year']),
-                $row['id'],
                 (bool)$row['is_available']
             );
         }
@@ -116,18 +116,18 @@ class PdoBookRepository implements BookRepository
         $stmt = $this->pdo->prepare('
             SELECT b.*
             FROM books b
-            INNER JOIN loans l ON b.id = l.book_id
-            WHERE l.user_id = :userId AND l.return_date IS NULL
+            INNER JOIN loans l ON b.book_id = l.book_id
+            WHERE l.user_id = :userId AND l.returned_at IS NULL
         ');
         $stmt->execute(['userId' => $userId]);
         $books = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $books[] = new Book(
+                $row['book_id'],
                 $row['title'],
                 $row['author'],
                 $row['language'],
                 new Year((int)$row['year']),
-                $row['id'],
                 (bool)$row['is_available']
             );
         }
