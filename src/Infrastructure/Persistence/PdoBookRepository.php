@@ -48,14 +48,7 @@ class PdoBookRepository implements BookRepository
             return null;
         }
 
-        return new Book(
-            $result['book_id'],
-            $result['title'],
-            $result['author'],
-            $result['language'],
-            new Year((int)$result['year']),
-            (bool)$result['is_available']
-        );
+        return $this->mapRowToBook($result);
     }
 
     public function findAvailableBooks(): array
@@ -63,14 +56,7 @@ class PdoBookRepository implements BookRepository
         $stmt = $this->pdo->query('SELECT * FROM books WHERE is_available = 1');
         $books = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $books[] = new Book(
-                $row['book_id'],
-                $row['title'],
-                $row['author'],
-                $row['language'],
-                new Year((int)$row['year']),
-                (bool)$row['is_available']
-            );
+            $books[] = $this->mapRowToBook($row);
         }
         return $books;
     }
@@ -80,14 +66,7 @@ class PdoBookRepository implements BookRepository
         $stmt = $this->pdo->query('SELECT * FROM books');
         $books = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $books[] = new Book(
-                $row['book_id'],
-                $row['title'],
-                $row['author'],
-                $row['language'],
-                new Year((int)$row['year']),
-                (bool)$row['is_available']
-            );
+            $books[] = $this->mapRowToBook($row);
         }
         return $books;
     }
@@ -99,14 +78,7 @@ class PdoBookRepository implements BookRepository
         $stmt->execute(['query' => $query]);
         $books = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $books[] = new Book(
-                $row['book_id'],
-                $row['title'],
-                $row['author'],
-                $row['language'],
-                new Year((int)$row['year']),
-                (bool)$row['is_available']
-            );
+            $books[] = $this->mapRowToBook($row);
         }
         return $books;
     }
@@ -122,15 +94,22 @@ class PdoBookRepository implements BookRepository
         $stmt->execute(['userId' => $userId]);
         $books = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $books[] = new Book(
-                $row['book_id'],
-                $row['title'],
-                $row['author'],
-                $row['language'],
-                new Year((int)$row['year']),
-                (bool)$row['is_available']
-            );
+            $books[] = $this->mapRowToBook($row);
         }
         return $books;
+    }
+
+    private function mapRowToBook(array $row): Book
+    {
+        return new Book(
+            $row['book_id'],
+            new Year((int)$row['year']),
+            $row['title'],
+            isset($row['pages']) ? (int)$row['pages'] : null,
+            $row['author'],
+            $row['genre'],
+            $row['language'],
+            (bool)$row['is_available']
+        );
     }
 }
