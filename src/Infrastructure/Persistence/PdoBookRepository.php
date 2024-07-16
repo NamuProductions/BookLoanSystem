@@ -102,14 +102,14 @@ class PdoBookRepository implements BookRepository
     private function mapRowToBook(array $row): Book
     {
         return new Book(
-            $row['book_id'],
-            new Year((int)$row['year']),
             $row['title'],
-            isset($row['pages']) ? (int)$row['pages'] : null,
+            new Year((int)$row['year']),
             $row['author'],
+            isset($row['pages']) ? (int)$row['pages'] : null,
             $row['genre'],
             $row['language'],
-            (bool)$row['is_available']
+            (bool)$row['is_available'],
+            $row['book_id'],
         );
     }
 }
