@@ -21,7 +21,7 @@ class BookController
     public function index(): void
     {
         $books = $this->bookRepository->findAll();
-        require __DIR__ . '/../View/books/index.php';
+        require __DIR__ . '/../View/books/books.php';
     }
 
     public function show(int $id): void
@@ -37,7 +37,6 @@ class BookController
 
     public function borrow(int $id): void
     {
-        session_start();
         $username = $_SESSION['user'];
         $user = $this->userRepository->findByUserName($username);
         $book = $this->bookRepository->findById((string)$id);
@@ -54,8 +53,6 @@ class BookController
 
     public function return(int $bookId): void
     {
-        session_start();
-
         if (!isset($_SESSION['userId'])) {
             http_response_code(400);
             echo "User not logged in";
