@@ -44,5 +44,5 @@ if ($requestUri === '/' && $requestMethod === 'GET') {
     $bookController->return((int)$matches[1]);
 } else {
     http_response_code(404);
-    echo "Page not found mecaguen to";
+    echo "Page not found mecaguen to de index.php";
 }
