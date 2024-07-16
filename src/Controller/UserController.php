@@ -22,11 +22,13 @@ class UserController
 
     #[NoReturn] public function register(): void
     {
-        $username = $_POST['username'];
+        $userName = $_POST['user_name'];
         $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
         $email = $_POST['email'];
+        $fullName = $_POST['full_name'];
+        $age = $_POST['age'];
 
-        $user = new User($username, $password, $email, 'user');
+        $user = new User($userName, $password, $email, $fullName, $age, 'user');
         $this->userRepository->save($user);
 
         header('Location: /login');

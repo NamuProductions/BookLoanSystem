@@ -6,6 +6,7 @@ namespace App\Infrastructure\Persistence;
 
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
+use DateTime;
 use PDO;
 
 class PdoUserRepository implements UserRepository
@@ -26,28 +27,22 @@ class PdoUserRepository implements UserRepository
             return null;
         }
 
-        return new User(
-            $row['user_id'],
-            $row['user_name'],
-            $row['password'],
-            $row['email'],
-            isset($row['age']) ? (int)$row['age'] : null,
-            $row['role'],
-        );
+        return $this->mapRowToUser($row);
     }
 
     public function save(User $user): void
     {
-        $stmt = $this->pdo->prepare('REPLACE INTO users (user_id, user_name, password, email, full_name, age, role) VALUES (:userId, :userName, :password, :email, full_name, age, :role)');
-        $stmt->execute([
-            'userId' => $user->userId(),
-            'userName' => $user->userName(),
-            'password' => $user->password(),
-            'email' => $user->email(),
-            'fullName' => $user->fullName(),
-            'age' => $user->age(),
-            'role' => $user->role(),
-        ]);
+            $stmt = $this->pdo->prepare('REPLACE INTO users (user_id, user_name, password, email, full_name, age, role) 
+                                         VALUES (:userId, :userName, :password, :email, :fullName, :age, :role)');
+            $stmt->execute([
+                'userId' => $user->userId(),
+                'userName' => $user->userName(),
+                'password' => $user->password(),
+                'email' => $user->email(),
+                'fullName' => $user->fullName(),
+                'age' => $user->age(),
+                'role' => $user->role(),
+            ]);
     }
 
     public function findByUserName(string $username): ?User
@@ -55,18 +50,25 @@ class PdoUserRepository implements UserRepository
         $stmt = $this->pdo->prepare('SELECT * FROM users WHERE user_name = :user_name');
         $stmt->execute(['user_name' => $username]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
         if ($row === false) {
             return null;
         }
 
+        return $this->mapRowToUser($row);
+    }
+
+    private function mapRowToUser(array $row): User
+    {
         return new User(
-            $row['user_name'],
-            $row['password'],
-            $row['email'],
-            $row['full_name'],
-            isset($row['age']) ? (int)$row['age'] : null,
-            $row['role'],
-            $row['user_id'],
+            userName: $row['user_name'],
+            password: $row['password'],
+            email: $row['email'],
+            fullName: $row['full_name'],
+            age: isset($row['age']) ? (int)$row['age'] : null,
+            role: $row['role'],
+            userId: $row['user_id'],
+            createdAt: new DateTime($row['created_at'])
         );
     }
 }
