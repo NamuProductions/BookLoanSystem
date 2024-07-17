@@ -5,7 +5,6 @@ namespace App\Controller;
 
 use App\Domain\Repository\BookRepository;
 use App\Domain\Repository\UserRepository;
-use DateTime;
 use InvalidArgumentException;
 
 class BookController
@@ -28,7 +27,7 @@ class BookController
     public function show(string $bookId): void
     {
         $book = $this->bookRepository->findById($bookId);
-        if (!$bookId) {
+        if (!$book) {
             http_response_code(404);
             echo "Book not found";
             return;
@@ -39,12 +38,10 @@ class BookController
     public function borrow(string $bookId): void
     {
         $userId = $_SESSION['userId'];
-        $user = $this->userRepository->findById($userId);
         $book = $this->bookRepository->findById($bookId);
 
-        if ($book->isAvailable()) {
-            $book->borrow($user, new DateTime());
-            $this->bookRepository->save($book);
+        if ($book && $book->isAvailable()) {
+            $this->bookRepository->borrowBook($bookId, $userId);
             header('Location: /books');
             exit;
         } else {
@@ -76,8 +73,7 @@ class BookController
             return;
         }
         try {
-            $book->returnBook($user->userId());
-            $this->bookRepository->save($book);
+            $this->bookRepository->returnBook($bookId, $userId);
             header('Location: /books');
             echo 'Book returned successfully';
         } catch (InvalidArgumentException $e) {
