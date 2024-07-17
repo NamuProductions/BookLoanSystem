@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence;
 use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
 use App\Domain\ValueObject\Year;
+use DateTime;
 use PDO;
 
 class PdoBookRepository implements BookRepository
@@ -97,6 +98,31 @@ class PdoBookRepository implements BookRepository
             $books[] = $this->mapRowToBook($row);
         }
         return $books;
+    }
+    public function borrowBook(string $bookId, string $userId): void
+    {
+        $stmt = $this->pdo->prepare('UPDATE books SET is_available = 0 WHERE book_id = :book_id');
+        $stmt->execute(['book_id' => $bookId]);
+
+        $stmt = $this->pdo->prepare('INSERT INTO loans (book_id, user_id, borrowed_at) VALUES (:book_id, :user_id, :borrowed_at)');
+        $stmt->execute([
+            'book_id' => $bookId,
+            'user_id' => $userId,
+            'borrowed_at' => (new DateTime())->format('Y-m-d H:i:s')
+        ]);
+    }
+
+    public function returnBook(string $bookId, string $userId): void
+    {
+        $stmt = $this->pdo->prepare('UPDATE books SET is_available = 1 WHERE book_id = :book_id');
+        $stmt->execute(['book_id' => $bookId]);
+
+        $stmt = $this->pdo->prepare('UPDATE loans SET returned_at = :returned_at WHERE book_id = :book_id AND user_id = :user_id AND returned_at IS NULL');
+        $stmt->execute([
+            'book_id' => $bookId,
+            'user_id' => $userId,
+            'returned_at' => (new DateTime())->format('Y-m-d H:i:s')
+        ]);
     }
 
     private function mapRowToBook(array $row): Book
