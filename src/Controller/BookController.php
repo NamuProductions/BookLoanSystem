@@ -24,10 +24,10 @@ class BookController
         require __DIR__ . '/../View/books/books.php';
     }
 
-    public function show(int $id): void
+    public function show(int $bookId): void
     {
-        $book = $this->bookRepository->findById((string)$id);
-        if (!$book) {
+        $book = $this->bookRepository->findById((string)$bookId);
+        if (!$bookId) {
             http_response_code(404);
             echo "Book not found";
             return;
@@ -35,11 +35,11 @@ class BookController
         require __DIR__ . '/../View/books/show.php';
     }
 
-    public function borrow(int $id): void
+    public function borrow(int $bookId): void
     {
-        $username = $_SESSION['user'];
-        $user = $this->userRepository->findByUserName($username);
-        $book = $this->bookRepository->findById((string)$id);
+        $userId = $_SESSION['userId'];
+        $user = $this->userRepository->findById($userId);
+        $book = $this->bookRepository->findById((string)$bookId);
 
         if ($book->isAvailable()) {
             $book->borrow($user, new DateTime());
