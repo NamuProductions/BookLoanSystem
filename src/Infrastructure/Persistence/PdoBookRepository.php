@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence;
 use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
 use App\Domain\ValueObject\Year;
+use App\Util\UUID;
 use DateTime;
 use PDO;
 
@@ -104,8 +105,11 @@ class PdoBookRepository implements BookRepository
         $stmt = $this->pdo->prepare('UPDATE books SET is_available = 0 WHERE book_id = :book_id');
         $stmt->execute(['book_id' => $bookId]);
 
-        $stmt = $this->pdo->prepare('INSERT INTO loans (book_id, user_id, borrowed_at) VALUES (:book_id, :user_id, :borrowed_at)');
+        $loanId = UUID::generate();
+
+        $stmt = $this->pdo->prepare('INSERT INTO loans (loan_id, book_id, user_id, borrowed_at) VALUES (:loan_id, :book_id, :user_id, :borrowed_at)');
         $stmt->execute([
+            'loan_id' => $loanId,
             'book_id' => $bookId,
             'user_id' => $userId,
             'borrowed_at' => (new DateTime())->format('Y-m-d H:i:s')
