@@ -42,7 +42,12 @@ if ($requestUri === '/' && $requestMethod === 'GET') {
     $bookController->borrow((int)$matches[1]);
 } elseif (preg_match('/^\/books\/(\d+)\/return$/', $requestUri, $matches) && $requestMethod === 'POST') {
     $bookController->return((int)$matches[1]);
+} elseif ($requestUri === '/logout' && $requestMethod === 'GET') {
+    session_destroy();
+    header('Location: /');
+    exit;
 } else {
     http_response_code(404);
-    echo "Page not found mecaguen to de index.php";
+    echo "Page not found";
 }
+

@@ -1,0 +1,129 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 1em;
+    padding: 5em;
+    color: #438628;
+}
+
+h1 {
+    color: #132075;
+    text-align: center;
+    margin-top: 40px;
+}
+
+a {
+    text-decoration: rebeccapurple;
+    color: #ee0b2d;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Navigation Menu */
+nav {
+    background-color: #e03535;
+    color: #fff;
+    padding: 0.5em 1em;
+    width: 100%;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 1em;
+}
+
+nav ul li a {
+    color: #fff;
+    padding: 0.5em;
+}
+
+nav ul li a:hover {
+    background-color: #132075;
+    border-radius: 4px;
+}
+
+/* Content Styles */
+.container {
+    width: 80%;
+    max-width: 800px;
+    margin: 120px auto 20px auto; /* Ajuste para espacio del menú fijo y centrado vertical */
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(37, 71, 208, 0.1);
+    border-radius: 8px;
+    text-align: center; /* Centrar el contenido */
+}
+
+/* Book List Styles */
+ul {
+    padding: 1em;
+    margin: 1em;
+    text-align: -moz-left; /* Alinear lista de libros */
+}
+
+ul li {
+    list-style-type: -moz-telugu;
+    padding: 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.available {
+    color: green;
+}
+
+.borrowed {
+    color: red;
+}
+
+/* Buttons */
+button {
+    background-color: #e24a78;
+    color: #fff;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1em;
+}
+
+button:disabled {
+    background-color: #ccc;
+}
+
+button:hover:not(:disabled) {
+    background-color: #357ab7;
+}
+
+/* Forms */
+form {
+    display: run-in;
+    flex-direction: column;
+    text-align: center;
+}
+
+form label {
+    margin: 0.5em 0 0.2em;
+}
+
+form input {
+    padding: 0.5em;
+    margin-bottom: 1em;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}

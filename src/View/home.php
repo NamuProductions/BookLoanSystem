@@ -1,3 +1,4 @@
+<?php include __DIR__ . '/./Partials/navbar.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
