@@ -49,8 +49,10 @@ class UserController
         if ($user && password_verify($password, $user->password())) {
             session_start();
             $_SESSION['userId'] = $user->userId();
+            error_log("User ID stored in session: " . $_SESSION['userId']);
             header('Location: /books');
         } else {
+            error_log("Login failed for user: " . $username);
             header('Location: /login');
         }
         exit;
