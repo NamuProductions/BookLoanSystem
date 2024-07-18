@@ -54,8 +54,7 @@ $routes = [
         "GET" => function() {
             session_destroy();
             header('Location: /');
-            exit;
-        }
+            }
     ],
 ];
 
