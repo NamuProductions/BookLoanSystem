@@ -41,20 +41,20 @@ class BookControllerTest extends TestCase
         $this->assertStringContainsString('Test Title', $output);
     }
 
-//    public function test_show_book_not_found(): void
-//    {
-//        $this->bookRepository
-//            ->expects($this->once())
-//            ->method('findById')
-//            ->with('1')
-//            ->willReturn(null);
-//
-//        ob_start();
-//        $this->controller->show(1);
-//        $output = ob_get_clean();
-//
-//        $this->assertStringContainsString('Book not found', $output);
-//    }
+    public function test_show_book_not_found(): void
+    {
+        $this->bookRepository
+            ->expects($this->once())
+            ->method('findById')
+            ->with('1')
+            ->willReturn(null);
+
+        ob_start();
+        $this->controller->show(1);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('Book not found', $output);
+    }
 //
 //    public function test_show_book_found(): void
 //    {
