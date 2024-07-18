@@ -32,7 +32,6 @@ class UserController
         $this->userRepository->save($user);
 
         header('Location: /login');
-        exit;
     }
 
     public function showLoginForm(): void
@@ -55,6 +54,5 @@ class UserController
             error_log("Login failed for user: " . $username);
             header('Location: /login');
         }
-        exit;
     }
 }
