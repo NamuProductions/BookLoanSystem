@@ -24,30 +24,56 @@ if (str_starts_with($requestUri, $basePath)) {
     $requestUri = substr($requestUri, strlen($basePath));
 }
 
-if ($requestUri === '/' && $requestMethod === 'GET') {
-    include __DIR__ . '/../src/View/home.php';
-} elseif ($requestUri === '/register' && $requestMethod === 'GET') {
-    $userController->showRegistrationForm();
-} elseif ($requestUri === '/register' && $requestMethod === 'POST') {
-    $userController->register();
-} elseif ($requestUri === '/login' && $requestMethod === 'GET') {
-    $userController->showLoginForm();
-} elseif ($requestUri === '/login' && $requestMethod === 'POST') {
-    $userController->login();
-} elseif ($requestUri === '/books' && $requestMethod === 'GET') {
-    $bookController->index();
-} elseif (preg_match('/^\/books\/(\d+)$/', $requestUri, $matches) && $requestMethod === 'GET') {
-    $bookController->show((int)$matches[1]);
-} elseif (preg_match('/^\/books\/(\d+)\/borrow$/', $requestUri, $matches) && $requestMethod === 'POST') {
-    $bookController->borrow((int)$matches[1]);
-} elseif (preg_match('/^\/books\/(\d+)\/return$/', $requestUri, $matches) && $requestMethod === 'POST') {
-    $bookController->return((int)$matches[1]);
-} elseif ($requestUri === '/logout' && $requestMethod === 'GET') {
-    session_destroy();
-    header('Location: /');
-    exit;
-} else {
+$routes = [
+    '/^\/$/' => [
+        "GET" => function() {
+            include __DIR__ . '/../src/View/home.php';
+        },
+    ],
+    '/^\/register$/' => [
+        "GET" => [$userController, 'showRegistrationForm'],
+        "POST" => [$userController, 'register'],
+    ],
+    '/^\/login$/' => [
+        "GET" => [$userController, 'showLoginForm'],
+        "POST" => [$userController, 'login'],
+    ],
+    '/^\/books$/' => [
+        "GET" => [$bookController, 'index'],
+    ],
+    '/^\/books\/(\d+)$/' => [
+        "GET" => [$bookController, 'show'],
+    ],
+    '/^\/books\/(\d+)\/borrow$/' => [
+        "POST" => [$bookController, 'borrow'],
+    ],
+    '/^\/books\/(\d+)\/return$/' => [
+        "POST" => [$bookController, 'return'],
+    ],
+    '/^\/logout$/' => [
+        "GET" => function() {
+            session_destroy();
+            header('Location: /');
+            exit;
+        }
+    ],
+];
+
+$routeFound = false;
+foreach ($routes as $route => $routeConfig) {
+    if (preg_match($route, $requestUri, $matches)) {
+        foreach ($routeConfig as $method => $action) {
+            if ($requestMethod === $method) {
+                array_shift($matches);
+                call_user_func($action, ...$matches);
+                $routeFound = true;
+                break 2;
+            }
+        }
+    }
+}
+
+if (!$routeFound) {
     http_response_code(404);
     echo "Page not found";
 }
-

@@ -31,7 +31,7 @@ class UserController
         $user = new User($userName, $password, $email, $fullName, $age, 'user');
         $this->userRepository->save($user);
 
-        header('Location: /login');
+        header('Location: /books');
     }
 
     public function showLoginForm(): void
