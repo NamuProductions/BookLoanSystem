@@ -6,6 +6,8 @@ use App\Controller\BookController;
 use App\Controller\UserController;
 use App\Infrastructure\Persistence\PdoBookRepository;
 use App\Infrastructure\Persistence\PdoUserRepository;
+use App\Action\User\RegisterUserAction;
+use App\Service\SessionManager;
 
 $pdo = new PDO('mysql:host=localhost;port=3307;dbname=library', 'root', 'root');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -13,8 +15,11 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $bookRepository = new PdoBookRepository($pdo);
 $userRepository = new PdoUserRepository($pdo);
 
+$sessionManager = new SessionManager();
+$registerUserAction = new RegisterUserAction($userRepository, $sessionManager);
+
 $bookController = new BookController($bookRepository, $userRepository);
-$userController = new UserController($userRepository);
+$userController = new UserController($userRepository, $registerUserAction);
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $requestMethod = $_SERVER['REQUEST_METHOD'];
