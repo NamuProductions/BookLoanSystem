@@ -31,6 +31,10 @@ class UserController
         $user = new User($userName, $password, $email, $fullName, $age, 'user');
         $this->userRepository->save($user);
 
+        session_start();
+        $_SESSION['userId'] = $user->userId();
+        error_log("User ID stored in session after registration: " . $_SESSION['userId']);
+
         header('Location: /books');
     }
 
