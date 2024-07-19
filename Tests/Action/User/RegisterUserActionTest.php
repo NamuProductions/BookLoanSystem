@@ -20,7 +20,7 @@ class RegisterUserActionTest extends TestCase
     {
         $userName = 'testUser';
         $email = 'correct@email.com';
-        $password = 'testPassword';
+        $password = 'testPassword1!';
 
         $this->userRepository
             ->expects($this->once())
@@ -49,7 +49,7 @@ class RegisterUserActionTest extends TestCase
 
         $userName = 'testUser';
         $invalidEmail = 'invalid-email';
-        $password = 'testPassword';
+        $password = 'testPassword1!';
 
         $this->sut->__invoke($userName, $invalidEmail, $password);
     }
@@ -61,7 +61,7 @@ class RegisterUserActionTest extends TestCase
 
         $userName = '';
         $email = 'correct@email.com';
-        $password = 'correctPassword';
+        $password = 'correctPassword1!';
 
         $this->sut->__invoke($userName, $email, $password);
     }
@@ -69,11 +69,11 @@ class RegisterUserActionTest extends TestCase
     public function test_it_should_throw_exception_for_invalid_password_data(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Password cannot be empty');
+        $this->expectExceptionMessage('Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.');
 
         $userName = 'testUser';
         $email = 'correct@email.com';
-        $password = '';
+        $password = '1';
 
         $this->sut->__invoke($userName, $email, $password);
     }
