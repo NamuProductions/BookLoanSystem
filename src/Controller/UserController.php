@@ -32,11 +32,15 @@ class UserController
         $age = $_POST['age'];
 
         try {
-            $this->registerUserAction->__invoke($userName, $email, $password, $fullName, $age);
+            $user = $this->registerUserAction->__invoke($userName, $email, $password, $fullName, $age);
+
+            session_start();
+            $_SESSION['userId'] = $user->userId();
+            error_log("User ID stored in session: " . $_SESSION['userId']);
             header('Location: /books');
         } catch (InvalidArgumentException $e) {
             error_log($e->getMessage());
-            header('Location: /books');
+            header('Location: /register');
         }
     }
 
