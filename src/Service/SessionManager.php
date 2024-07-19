@@ -36,7 +36,7 @@ class SessionManager implements SessionManagerInterface
 
     public function isAuthenticated(): bool
     {
-        return isset($_SESSION['user']);
+        return isset($_SESSION['userId']);
     }
 
     public function getUser(): ?User
