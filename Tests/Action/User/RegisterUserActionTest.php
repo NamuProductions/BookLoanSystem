@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Action\User;
@@ -6,7 +7,6 @@ namespace Action\User;
 use App\Action\User\RegisterUserAction;
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
-use App\Service\SessionManagerInterface;
 use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,6 @@ class RegisterUserActionTest extends TestCase
 {
     private UserRepository $userRepository;
     private RegisterUserAction $sut;
-    private SessionManagerInterface $sessionManager;
     private string $fixedUserId;
 
     public function test_it_should_register_a_user(): void
@@ -33,15 +32,11 @@ class RegisterUserActionTest extends TestCase
                     password_verify($password, $user->password());
             }));
 
-        $this->sessionManager
-            ->expects($this->once())
-            ->method('startSession')
-            ->with($this->callback(function (User $user) use ($userName, $email) {
-                return $user->userName() === $userName &&
-                    $user->email() === $email;
-            }));
+        $user = $this->sut->__invoke($userName, $email, $password);
 
-        $this->sut->__invoke($userName, $email, $password);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($userName, $user->userName());
+        $this->assertEquals($email, $user->email());
     }
 
     public function test_it_should_throw_exception_for_invalid_email(): void
@@ -79,6 +74,7 @@ class RegisterUserActionTest extends TestCase
 
         $this->sut->__invoke($userName, $email, $password);
     }
+
     public function test_it_should_throw_exception_for_trying_to_register_new_user_data_with_equal_userName(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -97,7 +93,7 @@ class RegisterUserActionTest extends TestCase
             'user',
             $this->fixedUserId,
             new DateTime(),
-            );
+        );
 
         $this->userRepository
             ->expects($this->once())
@@ -107,6 +103,7 @@ class RegisterUserActionTest extends TestCase
 
         $this->sut->__invoke($userName, $email, $password);
     }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -114,7 +111,6 @@ class RegisterUserActionTest extends TestCase
         $this->fixedUserId = '22222222-2222-2222-2222-222222222222';
 
         $this->userRepository = $this->createMock(UserRepository::class);
-        $this->sessionManager = $this->createMock(SessionManagerInterface::class);
-        $this->sut = new RegisterUserAction($this->userRepository, $this->sessionManager);
+        $this->sut = new RegisterUserAction($this->userRepository);
     }
 }
