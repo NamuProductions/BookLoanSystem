@@ -6,7 +6,6 @@ namespace App\Action\User;
 
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
-use App\Service\SessionManagerInterface;
 use App\Util\UUID;
 use DateTime;
 use InvalidArgumentException;
@@ -15,7 +14,6 @@ readonly class RegisterUserAction
 {
     public function __construct(
         private UserRepository          $userRepository,
-        private SessionManagerInterface $sessionManager
     )
     {
     }
@@ -29,7 +27,7 @@ readonly class RegisterUserAction
         ?string $role = 'user',
         ?string $userId = null,
         ?DateTime $createdAt = null
-    ): void {
+    ): User {
         $this->validateUserData($userName, $email, $password);
 
         if ($this->userRepository->findByUserName($userName)) {
@@ -48,7 +46,8 @@ readonly class RegisterUserAction
         );
 
         $this->userRepository->save($user);
-        $this->sessionManager->startSession($user);
+
+        return $user;
     }
 
     private function validateUserData(string $userName, string $email, string $password): void
