@@ -3,6 +3,7 @@ session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Action\LoginAction;
+use App\Action\User\RequestBookLoanAction;
 use App\Controller\BookController;
 use App\Controller\UserController;
 use App\Infrastructure\Persistence\PdoBookRepository;
@@ -19,8 +20,9 @@ $userRepository = new PdoUserRepository($pdo);
 $sessionManager = new SessionManager();
 $registerUserAction = new RegisterUserAction($userRepository);
 $loginAction = new LoginAction($userRepository);
+$requestBookLoanAction = new RequestBookLoanAction($bookRepository, $userRepository);
 
-$bookController = new BookController($bookRepository, $sessionManager);
+$bookController = new BookController($bookRepository, $sessionManager, $requestBookLoanAction);
 $userController = new UserController($registerUserAction, $loginAction, $sessionManager);
 
 
