@@ -36,8 +36,20 @@ class BookControllerTest extends TestCase
 
     public function test_should_display_book_details_when_show_is_called_with_valid_bookId(): void
     {
+        $book = new Book('Test Title', new Year(1989), 'Test Author', 123, 'Test Genre', 'English', 1, $this->bookId);
+        $this->bookRepository
+            ->expects($this->once())
+            ->method('findById')
+            ->with($this->bookId)
+            ->willReturn($book);
 
+        ob_start();
+        $this->sut->show($this->bookId);
+        $output = ob_get_clean();
 
+        $this->assertStringContainsString('Test Title', $output);
+        $this->assertStringContainsString('Test Author', $output);
+        $this->assertStringContainsString('1989', $output);
     }
 
 
