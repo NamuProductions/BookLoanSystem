@@ -4,10 +4,12 @@ namespace Controller;
 
 use App\Controller\BookController;
 use App\Domain\Model\Book;
+use App\Domain\Model\User;
 use App\Domain\Repository\BookRepository;
 use App\Domain\ValueObject\Year;
 use App\Service\SessionManager;
 use App\Util\UUID;
+use JetBrains\PhpStorm\NoReturn;
 use PHPUnit\Framework\TestCase;
 
 class BookControllerTest extends TestCase
@@ -52,15 +54,59 @@ class BookControllerTest extends TestCase
         $this->assertStringContainsString('1989', $output);
     }
 
+    #[NoReturn] public function test_should_allow_user_to_borrow_book_when_book_is_available(): void
+    {
+        $user = new User('UserName', 'UserPassword1!', 'user@test.com', 'UserName Full', '40', 'user', $this->userId);
+        $availableBook = new Book('Test Title', new Year(1989), 'Test Author', 123, 'Test Genre', 'English', 1, $this->bookId);
+
+        $this->sessionManager
+            ->expects($this->once())
+            ->method('getUser')
+            ->willReturn($user);
+
+        $this->sessionManager
+            ->expects($this->once())
+            ->method('isAuthenticated')
+            ->willReturn(true);
+
+        $this->bookRepository
+            ->expects($this->once())
+            ->method('findById')
+            ->with($this->bookId)
+            ->willReturn($availableBook);
+
+        $availableBook
+            ->expects($this->once())
+            ->method('isAvailable')
+            ->willReturn(true);
+
+        $availableBook
+            ->expects($this->once())
+            ->method('borrow')
+            ->with($this->userId);
+
+        ob_start();
+        $this->sut->borrow($this->bookId);
+        ob_get_clean();
+
+        $headers = $this->getHeaders();
+        $this->assertContains('Location: /books', $headers);
+    }
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->bookId = UUID::generate();
+        $this->userId = UUID::generate();
 
         $this->bookRepository = $this->createMock(BookRepository::class);
-        $sessionManager = $this->createMock(SessionManager::class);
-        $this->sut = new BookController($this->bookRepository, $sessionManager);
+        $this->sessionManager = $this->createMock(SessionManager::class);
+        $this->sut = new BookController($this->bookRepository, $this->sessionManager);
+    }
+
+    private function getHeaders(): array
+    {
+        return headers_list();
     }
 }
