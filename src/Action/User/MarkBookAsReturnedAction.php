@@ -20,7 +20,7 @@ readonly class MarkBookAsReturnedAction
             throw new InvalidArgumentException('Book not found.');
         }
 
-        $book->returnBook($userId);
+        $book->return($userId);
         $this->bookRepository->save($book);
     }
 }
