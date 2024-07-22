@@ -4,18 +4,18 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Domain\Repository\BookRepository;
-use App\Domain\Repository\UserRepository;
+use App\Service\SessionManager;
 use InvalidArgumentException;
 
 class BookController
 {
     private BookRepository $bookRepository;
-    private UserRepository $userRepository;
+    private SessionManager $sessionManager;
 
-    public function __construct(BookRepository $bookRepository, UserRepository $userRepository)
+    public function __construct(BookRepository $bookRepository, SessionManager $sessionManager)
     {
         $this->bookRepository = $bookRepository;
-        $this->userRepository = $userRepository;
+        $this->sessionManager = $sessionManager;
     }
 
     public function index(): void
@@ -37,11 +37,22 @@ class BookController
 
     public function borrow(string $bookId): void
     {
-        $userId = $_SESSION['userId'];
-        $book = $this->bookRepository->findById($bookId);
+        if (!$this->sessionManager->isAuthenticated()) {
+            http_response_code(403);
+            echo "User not logged in";
+            return;
+        }
 
+        $user = $this->sessionManager->getUser();
+        if (!$user) {
+            http_response_code(404);
+            echo "User not found";
+            return;
+        }
+
+        $book = $this->bookRepository->findById($bookId);
         if ($book && $book->isAvailable()) {
-            $this->bookRepository->borrowBook($bookId, $userId);
+            $this->bookRepository->borrowBook($bookId, $user->userId());
             header('Location: /books');
             exit;
         } else {
@@ -51,15 +62,13 @@ class BookController
 
     public function return(string $bookId): void
     {
-        if (!isset($_SESSION['userId'])) {
-            http_response_code(400);
+        if (!$this->sessionManager->isAuthenticated()) {
+            http_response_code(403);
             echo "User not logged in";
             return;
         }
 
-        $userId = $_SESSION['userId'];
-        $user = $this->userRepository->findById($userId);
-
+        $user = $this->sessionManager->getUser();
         if (!$user) {
             http_response_code(404);
             echo "User not found";
@@ -73,7 +82,7 @@ class BookController
             return;
         }
         try {
-            $this->bookRepository->returnBook($bookId, $userId);
+            $this->bookRepository->returnBook($bookId, $user->userId());
             header('Location: /books');
             echo 'Book returned successfully';
         } catch (InvalidArgumentException $e) {
