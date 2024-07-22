@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
-use App\Action\LoginAction;
 use App\Action\User\RegisterUserAction;
+use App\Action\LoginAction;
+use App\Service\SessionManagerInterface;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\NoReturn;
 
@@ -11,11 +12,16 @@ class UserController
 {
     private RegisterUserAction $registerUserAction;
     private LoginAction $loginAction;
+    private SessionManagerInterface $sessionManager;
 
-    public function __construct(RegisterUserAction $registerUserAction, LoginAction $loginAction)
-    {
+    public function __construct(
+        RegisterUserAction $registerUserAction,
+        LoginAction $loginAction,
+        SessionManagerInterface $sessionManager
+    ) {
         $this->registerUserAction = $registerUserAction;
         $this->loginAction = $loginAction;
+        $this->sessionManager = $sessionManager;
     }
 
     public function showRegistrationForm(): void
@@ -33,10 +39,8 @@ class UserController
 
         try {
             $user = $this->registerUserAction->__invoke($userName, $email, $password, $fullName, $age);
-
-            session_start();
-            $_SESSION['userId'] = $user->userId();
-            error_log("User ID stored in session: " . $_SESSION['userId']);
+            $this->sessionManager->startSession($user);
+            error_log("User ID stored in session: " . $_SESSION['user']['userId']);
             header('Location: /books');
         } catch (InvalidArgumentException $e) {
             error_log($e->getMessage());
@@ -56,9 +60,8 @@ class UserController
 
         try {
             $user = $this->loginAction->__invoke($username, $password);
-            session_start();
-            $_SESSION['userId'] = $user->userId();
-            error_log("User ID stored in session: " . $_SESSION['userId']);
+            $this->sessionManager->startSession($user);
+            error_log("User ID stored in session: " . $_SESSION['user']['userId']);
             header('Location: /books');
         } catch (InvalidArgumentException $e) {
             error_log($e->getMessage());
