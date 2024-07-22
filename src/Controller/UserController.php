@@ -2,20 +2,20 @@
 
 namespace App\Controller;
 
+use App\Action\LoginAction;
 use App\Action\User\RegisterUserAction;
-use App\Domain\Repository\UserRepository;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\NoReturn;
 
 class UserController
 {
-    private UserRepository $userRepository;
     private RegisterUserAction $registerUserAction;
+    private LoginAction $loginAction;
 
-    public function __construct(UserRepository $userRepository, RegisterUserAction $registerUserAction)
+    public function __construct(RegisterUserAction $registerUserAction, LoginAction $loginAction)
     {
-        $this->userRepository = $userRepository;
         $this->registerUserAction = $registerUserAction;
+        $this->loginAction = $loginAction;
     }
 
     public function showRegistrationForm(): void
@@ -54,14 +54,14 @@ class UserController
         $username = $_POST['username'];
         $password = $_POST['password'];
 
-        $user = $this->userRepository->findByUserName($username);
-        if ($user && password_verify($password, $user->password())) {
+        try {
+            $user = $this->loginAction->__invoke($username, $password);
             session_start();
             $_SESSION['userId'] = $user->userId();
             error_log("User ID stored in session: " . $_SESSION['userId']);
             header('Location: /books');
-        } else {
-            error_log("Login failed for user: " . $username);
+        } catch (InvalidArgumentException $e) {
+            error_log($e->getMessage());
             header('Location: /login');
         }
     }
