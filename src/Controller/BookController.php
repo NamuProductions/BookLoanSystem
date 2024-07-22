@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Action\User\RequestBookLoanAction;
 use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
 use App\Service\SessionManager;
@@ -13,11 +14,13 @@ class BookController
 {
     private BookRepository $bookRepository;
     private SessionManager $sessionManager;
+    private RequestBookLoanAction $requestBookLoanAction;
 
-    public function __construct(BookRepository $bookRepository, SessionManager $sessionManager)
+    public function __construct(BookRepository $bookRepository, SessionManager $sessionManager, RequestBookLoanAction $requestBookLoanAction)
     {
         $this->bookRepository = $bookRepository;
         $this->sessionManager = $sessionManager;
+        $this->requestBookLoanAction = $requestBookLoanAction;
     }
 
     public function index(): void
@@ -37,13 +40,11 @@ class BookController
         $this->ensureAuthenticated();
         $user = $this->sessionManager->getUser();
 
-        $book = $this->findBookOrFail($bookId);
-
-        if ($book->isAvailable()) {
-            $this->bookRepository->borrowBook($bookId, $user->userId());
+        try{
+            $this->requestBookLoanAction->__invoke($user->userName(), $bookId);
             $this->redirect();
-        } else {
-            $this->sendResponse(400, 'Book is not available.');
+        } catch (InvalidArgumentException $e){
+            $this->sendResponse(400, $e->getMessage());
         }
     }
 
