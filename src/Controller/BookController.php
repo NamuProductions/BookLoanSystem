@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
 use App\Service\SessionManager;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\NoReturn;
 
 class BookController
 {
@@ -26,68 +28,67 @@ class BookController
 
     public function show(string $bookId): void
     {
-        $book = $this->bookRepository->findById($bookId);
-        if (!$book) {
-            http_response_code(404);
-            echo "Book not found";
-            return;
-        }
+        $book = $this->findBookOrFail($bookId);
         require __DIR__ . '/../View/books/show.php';
     }
 
-    public function borrow(string $bookId): void
+    #[NoReturn] public function borrow(string $bookId): void
     {
-        if (!$this->sessionManager->isAuthenticated()) {
-            http_response_code(403);
-            echo "User not logged in";
-            return;
-        }
-
+        $this->ensureAuthenticated();
         $user = $this->sessionManager->getUser();
-        if (!$user) {
-            http_response_code(404);
-            echo "User not found";
-            return;
-        }
 
-        $book = $this->bookRepository->findById($bookId);
-        if ($book && $book->isAvailable()) {
+        $book = $this->findBookOrFail($bookId);
+
+        if ($book->isAvailable()) {
             $this->bookRepository->borrowBook($bookId, $user->userId());
-            header('Location: /books');
-            exit;
+            $this->redirect();
         } else {
-            echo "Book is not available.";
+            $this->sendResponse(400, 'Book is not available.');
         }
     }
 
     public function return(string $bookId): void
     {
-        if (!$this->sessionManager->isAuthenticated()) {
-            http_response_code(403);
-            echo "User not logged in";
-            return;
-        }
-
+        $this->ensureAuthenticated();
         $user = $this->sessionManager->getUser();
-        if (!$user) {
-            http_response_code(404);
-            echo "User not found";
-            return;
-        }
-
-        $book = $this->bookRepository->findById($bookId);
-        if ($book === null) {
-            http_response_code(404);
-            echo "Book not found";
-            return;
-        }
         try {
             $this->bookRepository->returnBook($bookId, $user->userId());
-            header('Location: /books');
-            echo 'Book returned successfully';
+            $this->redirect();
         } catch (InvalidArgumentException $e) {
-            http_response_code(400);
-            echo $e->getMessage();
+            $this->sendResponse(400, $e->getMessage());
         }
+    }
+
+    private function ensureAuthenticated(): void
+    {
+        if (!$this->sessionManager->isAuthenticated()) {
+            $this->sendResponse(403, 'User not logged in');
+        }
+
+        if (!$this->sessionManager->getUser()) {
+            $this->sendResponse(404, 'User not found');
+        }
+    }
+
+    private function findBookOrFail(string $bookId): Book
+    {
+        $book = $this->bookRepository->findById($bookId);
+        if (!$book) {
+            $this->sendResponse(404, 'Book not found');
+        }
+        return $book;
+    }
+
+    #[NoReturn] private function sendResponse(int $statusCode, string $message): void
+    {
+        http_response_code($statusCode);
+        echo $message;
+        exit;
+    }
+
+    #[NoReturn] private function redirect(): void
+    {
+        header('Location: ' . '/books');
+        exit;
     }
 }
