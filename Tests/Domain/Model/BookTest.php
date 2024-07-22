@@ -100,7 +100,7 @@ class BookTest extends TestCase
         $borrowDate = new DateTime('2023-01-01');
 
         $this->sut->borrow($user, $borrowDate);
-        $this->sut->returnBook($user->userId());
+        $this->sut->return($user->userId());
 
         $this->assertTrue($this->sut->isAvailable());
     }
@@ -119,7 +119,7 @@ class BookTest extends TestCase
             role: 'user',
             userId: $this->fixedUserId
         );
-        $this->sut->returnBook($user->userId());
+        $this->sut->return($user->userId());
     }
 
     public function test_it_should_find_all_loans_by_user(): void
