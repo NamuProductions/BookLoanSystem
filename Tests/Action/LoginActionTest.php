@@ -6,20 +6,18 @@ namespace Action;
 use App\Action\LoginAction;
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
-use App\Service\SessionManagerInterface;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class LoginActionTest extends TestCase
 {
     private UserRepository $userRepository;
-    private SessionManagerInterface $sessionManager;
     private LoginAction $sut;
 
     public function test_it_should_login_a_registered_user(): void
     {
         $userName = 'testUser';
-        $password = 'testPassword';
+        $password = 'testPassword1!';
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $user = new User($userName, $passwordHash, 'testUser@example.com', 'Test User One', 35, 'user');
 
@@ -29,20 +27,17 @@ class LoginActionTest extends TestCase
             ->with($userName)
             ->willReturn($user);
 
-        $this->sessionManager
-            ->expects($this->once())
-            ->method('startSession')
-            ->with($user);
+        $authenticatedUser = $this->sut->__invoke($userName, $password);
 
-        $this->sut->__invoke($userName, $password);
+        $this->assertSame($user, $authenticatedUser);
     }
 
     public function test_it_should_login_an_admin(): void
     {
         $userName = 'adminUser';
-        $password = 'adminPassword';
+        $password = 'adminPassword1!';
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $user = new User($userName, $passwordHash, 'admin@example.com','Admin User', 34,'admin');
+        $user = new User($userName, $passwordHash, 'admin@example.com', 'Admin User', 34, 'admin');
 
         $this->userRepository
             ->expects($this->once())
@@ -50,12 +45,9 @@ class LoginActionTest extends TestCase
             ->with($userName)
             ->willReturn($user);
 
-        $this->sessionManager
-            ->expects($this->once())
-            ->method('startSession')
-            ->with($user);
+        $authenticatedUser = $this->sut->__invoke($userName, $password);
 
-        $this->sut->__invoke($userName, $password);
+        $this->assertSame($user, $authenticatedUser);
     }
 
     public function test_it_should_throw_exception_for_invalid_credentials(): void
@@ -64,7 +56,7 @@ class LoginActionTest extends TestCase
         $this->expectExceptionMessage('Invalid username or password.');
 
         $userName = 'testUser';
-        $password = 'wrongPassword';
+        $password = 'wrongPassword1!';
 
         $this->userRepository
             ->expects($this->once())
@@ -80,7 +72,6 @@ class LoginActionTest extends TestCase
         parent::setUp();
 
         $this->userRepository = $this->createMock(UserRepository::class);
-        $this->sessionManager = $this->createMock(SessionManagerInterface::class);
-        $this->sut = new LoginAction($this->userRepository, $this->sessionManager);
+        $this->sut = new LoginAction($this->userRepository);
     }
 }
