@@ -45,11 +45,11 @@ class ReturnRequestsActionTest extends TestCase
 
         $book1 = new Book('Test Title', new Year(2021), 'Test Author', 1234, 'Testing','Català', true);
         $book1->borrow($user1, $borrowDate1);
-        $book1->returnBook($user1->userId());
+        $book1->return($user1->userId());
 
         $book2 = new Book('Test Title 2', new Year(2021), 'Test Author', 1234, 'Testing','Català', true);
         $book2->borrow($user2, $borrowDate2);
-        $book2->returnBook($user2->userId());
+        $book2->return($user2->userId());
 
         $loan1 = $book1->findAllLoansByUser($user1->userId())[0];
         $loan2 = $book2->findAllLoansByUser($user2->userId())[0];
