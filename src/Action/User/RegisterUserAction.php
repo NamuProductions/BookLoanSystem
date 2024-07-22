@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Action\User;
 
 use App\Domain\Model\User;
+use App\Domain\ValueObject\Password;
 use App\Domain\Repository\UserRepository;
 use App\Util\UUID;
 use DateTime;
@@ -34,9 +35,11 @@ readonly class RegisterUserAction
             throw new InvalidArgumentException('Username already exists.');
         }
 
+        $passwordValueObject = new Password($password);
+
         $user = new User(
             $userName,
-            password_hash($password, PASSWORD_DEFAULT),
+            password_hash($passwordValueObject->getValue(), PASSWORD_DEFAULT),
             $email,
             $fullName,
             $age,
@@ -56,17 +59,11 @@ readonly class RegisterUserAction
             throw new InvalidArgumentException('Username cannot be empty');
         }
 
-        if (empty($password) || !$this->isValidPassword($password)) {
-            throw new InvalidArgumentException('Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.');
-        }
-
         if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^.+@[^-][A-Za-z0-9.-]+\.[A-Za-z]{2,}$/', $email)) {
             throw new InvalidArgumentException('Invalid email address.');
         }
+        new Password($password);
     }
 
-    private function isValidPassword(string $password): bool
-    {
-        return strlen($password) >= 8 && preg_match('/[A-Za-z]/', $password) && preg_match('/[0-9]/', $password);
-    }
+
 }

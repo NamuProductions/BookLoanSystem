@@ -66,7 +66,7 @@ class RegisterUserActionTest extends TestCase
     public function test_it_should_throw_exception_for_invalid_password_data(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.');
+        $this->expectExceptionMessage('Password must be at least 8 characters long');
 
         $userName = 'testUser';
         $email = 'correct@email.com';
