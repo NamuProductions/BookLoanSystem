@@ -121,13 +121,19 @@ class PdoBookRepository implements BookRepository
         $stmt = $this->pdo->prepare('UPDATE books SET is_available = 1 WHERE book_id = :book_id');
         $stmt->execute(['book_id' => $bookId]);
 
-        $stmt = $this->pdo->prepare('UPDATE loans SET returned_at = :returned_at WHERE book_id = :book_id AND user_id = :user_id AND returned_at IS NULL');
+        $stmt = $this->pdo->prepare('
+        UPDATE loans
+        SET returned_at = :returned_at, status = :status
+        WHERE book_id = :book_id AND user_id = :user_id AND returned_at IS NULL
+    ');
         $stmt->execute([
             'book_id' => $bookId,
             'user_id' => $userId,
-            'returned_at' => (new DateTime())->format('Y-m-d H:i:s')
+            'returned_at' => (new DateTime())->format('Y-m-d H:i:s'),
+            'status' => 'returned'
         ]);
     }
+
 
     private function mapRowToBook(array $row): Book
     {
