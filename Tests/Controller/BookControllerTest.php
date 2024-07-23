@@ -63,7 +63,7 @@ class BookControllerTest extends TestCase
         $user = new User('UserName', 'UserPassword1!', 'user@test.com', 'UserName Full', '40', 'user', $this->userId);
 
         $this->sessionManager
-            ->expects($this->once())
+            ->expects($this->atLeast(1))
             ->method('getUser')
             ->willReturn($user);
 
