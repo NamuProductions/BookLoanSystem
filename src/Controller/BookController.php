@@ -35,7 +35,7 @@ class BookController
         require __DIR__ . '/../View/books/show.php';
     }
 
-    #[NoReturn] public function borrow(string $bookId): void
+    public function borrow(string $bookId): void
     {
         $this->ensureAuthenticated();
         $user = $this->sessionManager->getUser();
@@ -84,10 +84,12 @@ class BookController
     {
         http_response_code($statusCode);
         echo $message;
+        exit;
     }
 
     #[NoReturn] private function redirect(): void
     {
         header('Location: ' . '/books');
+        exit;
     }
 }
