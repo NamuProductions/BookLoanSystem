@@ -8,7 +8,7 @@
 <body>
 <nav>
     <ul>
-        <?php if (isset($_SESSION['userId'])): ?>
+        <?php if (isset($_SESSION['user'])): ?>
             <li><a href="/books">Books</a></li>
             <li><a href="/loans">Loans</a></li>
             <li><a href="/logout">Logout</a></li>
