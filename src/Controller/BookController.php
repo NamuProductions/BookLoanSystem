@@ -84,12 +84,10 @@ class BookController
     {
         http_response_code($statusCode);
         echo $message;
-        exit;
     }
 
     #[NoReturn] private function redirect(): void
     {
         header('Location: ' . '/books');
-        exit;
     }
 }
