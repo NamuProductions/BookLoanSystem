@@ -10,7 +10,6 @@ use App\Domain\Repository\BookRepository;
 use App\Domain\ValueObject\Year;
 use App\Service\SessionManager;
 use App\Util\UUID;
-use JetBrains\PhpStorm\NoReturn;
 use PHPUnit\Framework\TestCase;
 
 class BookControllerTest extends TestCase
@@ -95,10 +94,8 @@ class BookControllerTest extends TestCase
         $this->bookRepository = $this->createMock(BookRepository::class);
         $this->sessionManager = $this->createMock(SessionManager::class);
         $this->requestBookLoanAction = $this->createMock(RequestBookLoanAction::class);
-        $this->sut = new BookController(
-            $this->bookRepository,
-            $this->sessionManager,
-            $this->requestBookLoanAction);
+        $this->sut = new BookController($this->bookRepository, $this->sessionManager, $this->requestBookLoanAction);
+        $this->sut->setTesting(true);
     }
 
     private function getHeaders(): array
