@@ -8,19 +8,24 @@ use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
 use App\Service\SessionManager;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\NoReturn;
 
 class BookController
 {
     private BookRepository $bookRepository;
     private SessionManager $sessionManager;
     private RequestBookLoanAction $requestBookLoanAction;
+    private bool $isTesting = false;
 
     public function __construct(BookRepository $bookRepository, SessionManager $sessionManager, RequestBookLoanAction $requestBookLoanAction)
     {
         $this->bookRepository = $bookRepository;
         $this->sessionManager = $sessionManager;
         $this->requestBookLoanAction = $requestBookLoanAction;
+    }
+
+    public function setTesting(bool $isTesting): void
+    {
+        $this->isTesting = $isTesting;
     }
 
     public function index(): void
@@ -40,10 +45,10 @@ class BookController
         $this->ensureAuthenticated();
         $user = $this->sessionManager->getUser();
 
-        try{
+        try {
             $this->requestBookLoanAction->__invoke($user->userName(), $bookId);
             $this->redirect();
-        } catch (InvalidArgumentException $e){
+        } catch (InvalidArgumentException $e) {
             $this->sendResponse(400, $e->getMessage());
         }
     }
@@ -80,16 +85,22 @@ class BookController
         return $book;
     }
 
-    #[NoReturn] private function sendResponse(int $statusCode, string $message): void
+    private function sendResponse(int $statusCode, string $message): void
     {
         http_response_code($statusCode);
         echo $message;
-        exit;
+
+        if (!$this->isTesting) {
+            exit;
+        }
     }
 
-    #[NoReturn] private function redirect(): void
+    private function redirect(): void
     {
-        header('Location: ' . '/books');
-        exit;
+        header('Location: /books');
+
+        if (!$this->isTesting) {
+            exit;
+        }
     }
 }
