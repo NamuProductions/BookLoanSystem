@@ -74,7 +74,9 @@ foreach ($routes as $route => $routeConfig) {
         foreach ($routeConfig as $method => $action) {
             if ($requestMethod === $method) {
                 array_shift($matches);
-                call_user_func($action, ...$matches);
+                $response = call_user_func($action, ...$matches);
+                $response = send();
+
                 $routeFound = true;
                 break 2;
             }

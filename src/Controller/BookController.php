@@ -14,7 +14,6 @@ class BookController
     private BookRepository $bookRepository;
     private SessionManager $sessionManager;
     private RequestBookLoanAction $requestBookLoanAction;
-    private bool $isTesting = false;
 
     public function __construct(BookRepository $bookRepository, SessionManager $sessionManager, RequestBookLoanAction $requestBookLoanAction)
     {
@@ -23,57 +22,56 @@ class BookController
         $this->requestBookLoanAction = $requestBookLoanAction;
     }
 
-    public function setTesting(bool $isTesting): void
+    public function index(): Response
     {
-        $this->isTesting = $isTesting;
-    }
-
-    public function index(): void
-    {
+        ob_start();
         $books = $this->bookRepository->findAll();
         require __DIR__ . '/../View/books/books.php';
+        $body = ob_get_clean();
+        return new Response($body);
     }
 
-    public function show(string $bookId): void
+    public function show(string $bookId): Response
     {
+        ob_start();
         $book = $this->findBookOrFail($bookId);
         require __DIR__ . '/../View/books/show.php';
+        $body = ob_get_clean();
+        return new Response($body);
     }
 
-    public function borrow(string $bookId): void
+    public function borrow(string $bookId): Response
     {
-        $this->ensureAuthenticated();
-        $user = $this->sessionManager->getUser();
-
         try {
+            $this->ensureAuthenticated();
+            $user = $this->sessionManager->getUser();
             $this->requestBookLoanAction->__invoke($user->userName(), $bookId);
-            return new Response('', 302, ['Location' => '/books']);
+            return new RedirectResponse('/books');
         } catch (InvalidArgumentException $e) {
-            $this->sendResponse(400, $e->getMessage());
+            return new Response($e->getMessage(), 400);
+        } catch (NotAuthenticatedException) {
+            return new RedirectResponse('/login');
         }
     }
 
-    public function return(string $bookId): void
+    public function return(string $bookId): Response
     {
-        $this->ensureAuthenticated();
-        $user = $this->sessionManager->getUser();
         try {
+            $this->ensureAuthenticated();
+            $user = $this->sessionManager->getUser();
             $this->bookRepository->returnBook($bookId, $user->userId());
-            $this->redirect();
+            return new RedirectResponse('/books');
         } catch (InvalidArgumentException $e) {
-            $this->sendResponse(400, $e->getMessage());
+            return new Response($e->getMessage(), 400);
+        } catch (NotAuthenticatedException) {
+            return new RedirectResponse('/login');
         }
     }
 
     private function ensureAuthenticated(): void
     {
-        if (!$this->sessionManager->isAuthenticated()) {
-            $this->sendResponse(403, 'User not logged in');
-            // todo: lanzar error
-        }
-
-        if (!$this->sessionManager->getUser()) {
-            $this->sendResponse(404, 'User not found');
+        if (!$this->sessionManager->isAuthenticated() || !$this->sessionManager->getUser()) {
+            throw new NotAuthenticatedException();
         }
     }
 
@@ -81,27 +79,8 @@ class BookController
     {
         $book = $this->bookRepository->findById($bookId);
         if (!$book) {
-            $this->sendResponse(404, 'Book not found');
+            throw new InvalidArgumentException('Book not found', 404);
         }
         return $book;
-    }
-
-    private function sendResponse(int $statusCode, string $message): void
-    {
-        http_response_code($statusCode);
-        echo $message;
-
-        if (!$this->isTesting) {
-            exit;
-        }
-    }
-
-    private function redirect(): void
-    {
-        header('Location: /books');
-
-        if (!$this->isTesting) {
-            exit;
-        }
     }
 }
