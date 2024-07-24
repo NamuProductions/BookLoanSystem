@@ -47,7 +47,7 @@ class BookController
 
         try {
             $this->requestBookLoanAction->__invoke($user->userName(), $bookId);
-            $this->redirect();
+            return new Response('', 302, ['Location' => '/books']);
         } catch (InvalidArgumentException $e) {
             $this->sendResponse(400, $e->getMessage());
         }
@@ -69,6 +69,7 @@ class BookController
     {
         if (!$this->sessionManager->isAuthenticated()) {
             $this->sendResponse(403, 'User not logged in');
+            // todo: lanzar error
         }
 
         if (!$this->sessionManager->getUser()) {
