@@ -5,6 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Action\LoginAction;
 use App\Action\User\RequestBookLoanAction;
 use App\Controller\BookController;
+use App\Controller\Response;
 use App\Controller\UserController;
 use App\Infrastructure\Persistence\PdoBookRepository;
 use App\Infrastructure\Persistence\PdoUserRepository;
@@ -36,8 +37,10 @@ if (str_starts_with($requestUri, $basePath)) {
 
 $routes = [
     '/^\/$/' => [
-        "GET" => function() {
+        "GET" => function () {
+            $body = '';
             include __DIR__ . '/../src/View/home.php';
+            return new Response($body);
         },
     ],
     '/^\/register$/' => [
@@ -61,10 +64,12 @@ $routes = [
         "POST" => [$bookController, 'return'],
     ],
     '/^\/logout$/' => [
-        "GET" => function() {
+        "GET" => function () {
+            $body = '';
             session_destroy();
             header('Location: /');
-            }
+            return new Response($body);
+        }
     ],
 ];
 
@@ -75,7 +80,7 @@ foreach ($routes as $route => $routeConfig) {
             if ($requestMethod === $method) {
                 array_shift($matches);
                 $response = call_user_func($action, ...$matches);
-                $response = send();
+                $response->send();
 
                 $routeFound = true;
                 break 2;
