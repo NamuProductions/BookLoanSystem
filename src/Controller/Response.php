@@ -11,7 +11,7 @@ class Response
     public function send(): void
     {
         foreach ($this->headers as $name => $value) {
-            header("name: $value");
+            header("$name: $value");
         }
         http_response_code($this->statusCode);
         echo $this->body;
