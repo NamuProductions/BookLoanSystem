@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Action\User\MarkBookAsReturnedAction;
 use App\Action\User\RequestBookLoanAction;
 use App\Domain\Model\Book;
 use App\Domain\Repository\BookRepository;
@@ -14,12 +15,14 @@ class BookController
     private BookRepository $bookRepository;
     private SessionManager $sessionManager;
     private RequestBookLoanAction $requestBookLoanAction;
+    private MarkBookAsReturnedAction $markBookAsReturnedAction;
 
-    public function __construct(BookRepository $bookRepository, SessionManager $sessionManager, RequestBookLoanAction $requestBookLoanAction)
+    public function __construct(BookRepository $bookRepository, SessionManager $sessionManager, RequestBookLoanAction $requestBookLoanAction, MarkBookAsReturnedAction $markBookAsReturnedAction)
     {
         $this->bookRepository = $bookRepository;
         $this->sessionManager = $sessionManager;
         $this->requestBookLoanAction = $requestBookLoanAction;
+        $this->markBookAsReturnedAction = $markBookAsReturnedAction;
     }
 
     public function index(): Response
@@ -59,7 +62,7 @@ class BookController
         try {
             $this->ensureAuthenticated();
             $user = $this->sessionManager->getUser();
-            $this->bookRepository->returnBook($bookId, $user->userId());
+            $this->markBookAsReturnedAction->__invoke($user->userId(), $bookId);
             return new RedirectResponse('/books');
         } catch (InvalidArgumentException $e) {
             return new Response($e->getMessage(), 400);
