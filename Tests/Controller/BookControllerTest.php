@@ -12,6 +12,7 @@ use App\Service\SessionManager;
 use App\Util\UUID;
 use PHPUnit\Framework\TestCase;
 
+
 class BookControllerTest extends TestCase
 {
     private BookRepository $bookRepository;
@@ -32,9 +33,8 @@ class BookControllerTest extends TestCase
             ->method('findAll')
             ->willReturn($books);
 
-        ob_start();
-        $this->sut->index();
-        $output = ob_get_clean();
+        $response = $this->sut->index();
+        $output = $response->body();
 
         $this->assertStringContainsString('Test Title', $output);
     }
@@ -48,16 +48,15 @@ class BookControllerTest extends TestCase
             ->with($this->bookId)
             ->willReturn($book);
 
-        ob_start();
-        $this->sut->show($this->bookId);
-        $output = ob_get_clean();
+        $response = $this->sut->show($this->bookId);
+        $output = $response->body();
 
         $this->assertStringContainsString('Test Title', $output);
         $this->assertStringContainsString('Test Author', $output);
         $this->assertStringContainsString('1989', $output);
     }
 
-    #[NoReturn] public function test_should_allow_user_to_borrow_book_when_book_is_available(): void
+    public function test_should_allow_user_to_borrow_book_when_book_is_available(): void
     {
         $user = new User('UserName', 'UserPassword1!', 'user@test.com', 'UserName Full', '40', 'user', $this->userId);
 
@@ -76,12 +75,10 @@ class BookControllerTest extends TestCase
             ->method('__invoke')
             ->with($user->userName(), $this->bookId);
 
-        ob_start();
-        $this->sut->borrow($this->bookId);
-        ob_end_clean();
+        $response = $this->sut->borrow($this->bookId);
+        $headers = $response->headers();
 
-        $headers = $this->getHeaders();
-        $this->assertContains('Location: /books', $headers);
+        $this->assertContains('/books', $headers);
     }
 
     protected function setUp(): void
@@ -95,11 +92,5 @@ class BookControllerTest extends TestCase
         $this->sessionManager = $this->createMock(SessionManager::class);
         $this->requestBookLoanAction = $this->createMock(RequestBookLoanAction::class);
         $this->sut = new BookController($this->bookRepository, $this->sessionManager, $this->requestBookLoanAction);
-        $this->sut->setTesting(true);
-    }
-
-    private function getHeaders(): array
-    {
-        return headers_list();
     }
 }
