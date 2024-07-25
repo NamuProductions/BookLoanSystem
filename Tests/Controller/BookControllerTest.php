@@ -11,6 +11,7 @@ use App\Domain\Repository\BookRepository;
 use App\Domain\ValueObject\Year;
 use App\Service\SessionManager;
 use App\Util\UUID;
+use DateTime;
 use PHPUnit\Framework\TestCase;
 
 
@@ -61,6 +62,9 @@ class BookControllerTest extends TestCase
     public function test_should_allow_user_to_borrow_book_when_book_is_available(): void
     {
         $user = new User('UserName', 'UserPassword1!', 'user@test.com', 'UserName Full', '40', 'user', $this->userId);
+        $book = $this->createMock(Book::class);
+        $book->method('isAvailable')->willReturn(true);
+        $book->expects($this->once())->method('borrow');
 
         $this->sessionManager
             ->expects($this->atLeast(1))
@@ -75,7 +79,10 @@ class BookControllerTest extends TestCase
         $this->requestBookLoanAction
             ->expects($this->once())
             ->method('__invoke')
-            ->with($user->userName(), $this->bookId);
+            ->with($user->userName(), $this->bookId)
+            ->willReturnCallback(function () use ($user, $book) {
+                $book->borrow($user, new DateTime());
+            });
 
         $response = $this->sut->borrow($this->bookId);
         $headers = $response->headers();
@@ -86,6 +93,9 @@ class BookControllerTest extends TestCase
     public function test_should_allow_user_to_return_book_when_book_is_borrowed(): void
     {
         $user = new User('UserName', 'UserPassword1!', 'user@test.com', 'UserName Full', '40', 'user', $this->userId);
+        $book = $this->createMock(Book::class);
+        $book->method('isAvailable')->willReturn(false);
+        $book->expects($this->once())->method('return');
 
         $this->sessionManager
             ->expects($this->atLeast(1))
@@ -100,13 +110,17 @@ class BookControllerTest extends TestCase
         $this->markBookAsReturnedAction
             ->expects($this->once())
             ->method('__invoke')
-            ->with($user->userId(), $this->bookId);
+            ->with($user->userId(), $this->bookId)
+            ->willReturnCallback(function () use ($book) {
+                $book->return($this->userId);
+            });
 
         $response = $this->sut->return($this->bookId);
         $headers = $response->headers();
 
         $this->assertContains('/books', $headers);
     }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -122,6 +136,7 @@ class BookControllerTest extends TestCase
             $this->bookRepository,
             $this->sessionManager,
             $this->requestBookLoanAction,
-            $this->markBookAsReturnedAction);
+            $this->markBookAsReturnedAction
+        );
     }
 }
