@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -6,7 +7,7 @@ use App\Action\User\RegisterUserAction;
 use App\Action\LoginAction;
 use App\Service\SessionManagerInterface;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\NoReturn;
+
 
 class UserController
 {
@@ -24,12 +25,15 @@ class UserController
         $this->sessionManager = $sessionManager;
     }
 
-    public function showRegistrationForm(): void
+    public function showRegistrationForm(): Response
     {
+        ob_start();
         require __DIR__ . '/../View/users/register.php';
+        $body = ob_get_clean();
+        return new Response($body);
     }
 
-    #[NoReturn] public function register(): void
+    public function register(): Response
     {
         $userName = $_POST['user_name'];
         $password = $_POST['password'];
@@ -41,19 +45,22 @@ class UserController
             $user = $this->registerUserAction->__invoke($userName, $email, $password, $fullName, $age);
             $this->sessionManager->startSession($user);
             error_log("User ID stored in session: " . $_SESSION['user']['userId']);
-            header('Location: /books');
+            return new redirectResponse('/books');
         } catch (InvalidArgumentException $e) {
             error_log($e->getMessage());
-            header('Location: /register');
+            return new redirectResponse('/register');
         }
     }
 
-    public function showLoginForm(): void
+    public function showLoginForm(): Response
     {
+        ob_start();
         require __DIR__ . '/../View/users/login.php';
+        $body = ob_get_clean();
+        return new Response($body);
     }
 
-    #[NoReturn] public function login(): void
+    public function login(): Response
     {
         $username = $_POST['username'];
         $password = $_POST['password'];
@@ -62,10 +69,10 @@ class UserController
             $user = $this->loginAction->__invoke($username, $password);
             $this->sessionManager->startSession($user);
             error_log("User ID stored in session: " . $_SESSION['user']['userId']);
-            header('Location: /books');
+            return new redirectResponse('/books');
         } catch (InvalidArgumentException $e) {
             error_log($e->getMessage());
-            header('Location: /login');
+            return new redirectResponse('/login');
         }
     }
 }
