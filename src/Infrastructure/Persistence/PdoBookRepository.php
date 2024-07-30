@@ -148,4 +148,10 @@ class PdoBookRepository implements BookRepository
             $row['book_id'],
         );
     }
+
+    public function findAllLoanRequests(): array
+    {
+        $stmt = $this->pdo->query('SELECT * FROM loans');
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
