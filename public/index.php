@@ -3,6 +3,7 @@ session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Action\LoginAction;
+use App\Action\User\MarkBookAsReturnedAction;
 use App\Action\User\RequestBookLoanAction;
 use App\Controller\BookController;
 use App\Controller\Response;
@@ -22,8 +23,9 @@ $sessionManager = new SessionManager();
 $registerUserAction = new RegisterUserAction($userRepository);
 $loginAction = new LoginAction($userRepository);
 $requestBookLoanAction = new RequestBookLoanAction($bookRepository, $userRepository);
+$markBookAsReturnedAction = new MarkBookAsReturnedAction($bookRepository);
 
-$bookController = new BookController($bookRepository, $sessionManager, $requestBookLoanAction);
+$bookController = new BookController($bookRepository, $sessionManager, $requestBookLoanAction, $markBookAsReturnedAction);
 $userController = new UserController($registerUserAction, $loginAction, $sessionManager);
 
 
