@@ -10,6 +10,7 @@ use Exception;
 class LoanRequestsAction
 {
     private LoanRequestQueryServiceInterface $loanRequestQueryService;
+
     public function __construct(LoanRequestQueryServiceInterface $loanRequestQueryService)
     {
         $this->loanRequestQueryService = $loanRequestQueryService;
