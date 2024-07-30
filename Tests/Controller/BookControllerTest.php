@@ -1,19 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Controller;
 
+use App\Action\Admin\AddNewBookAction;
+use App\Action\User\ListAvailableBooksAction;
 use App\Action\User\MarkBookAsReturnedAction;
 use App\Action\User\RequestBookLoanAction;
+use App\Action\User\SearchBooksAction;
 use App\Controller\BookController;
+use App\Controller\NotAuthenticatedException;
 use App\Domain\Model\Book;
 use App\Domain\Model\User;
 use App\Domain\Repository\BookRepository;
 use App\Domain\ValueObject\Year;
 use App\Service\SessionManager;
 use App\Util\UUID;
-use DateTime;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-
 
 class BookControllerTest extends TestCase
 {
@@ -28,7 +33,7 @@ class BookControllerTest extends TestCase
     public function test_should_display_all_books_on_index_page(): void
     {
         $books = [
-            new Book('Test Title', new Year(1989), 'Test Author', 123, 'Test Genre', 'English', 1, $this->bookId)
+            new Book('Test Title', new Year(1989), 'Test Author', 123, 'Test Genre', 'English', true, $this->bookId)
         ];
 
         $this->bookRepository
@@ -44,7 +49,7 @@ class BookControllerTest extends TestCase
 
     public function test_should_display_book_details_when_show_is_called_with_valid_bookId(): void
     {
-        $book = new Book('Test Title', new Year(1989), 'Test Author', 123, 'Test Genre', 'English', 1, $this->bookId);
+        $book = new Book('Test Title', new Year(1989), 'Test Author', 123, 'Test Genre', 'English', true, $this->bookId);
         $this->bookRepository
             ->expects($this->once())
             ->method('findById')
@@ -61,13 +66,11 @@ class BookControllerTest extends TestCase
 
     public function test_should_allow_user_to_borrow_book_when_book_is_available(): void
     {
-        $user = new User('UserName', 'UserPassword1!', 'user@test.com', 'UserName Full', '40', 'user', $this->userId);
-        $book = $this->createMock(Book::class);
-        $book->method('isAvailable')->willReturn(true);
-        $book->expects($this->once())->method('borrow');
+        $user = $this->createMock(User::class);
+        $user->method('userName')->willReturn('user123');
 
         $this->sessionManager
-            ->expects($this->atLeast(1))
+            ->expects($this->once())
             ->method('getUser')
             ->willReturn($user);
 
@@ -79,26 +82,22 @@ class BookControllerTest extends TestCase
         $this->requestBookLoanAction
             ->expects($this->once())
             ->method('__invoke')
-            ->with($user->userName(), $this->bookId)
-            ->willReturnCallback(function () use ($user, $book) {
-                $book->borrow($user, new DateTime());
-            });
+            ->with($user->userName(), $this->bookId);
 
         $response = $this->sut->borrow($this->bookId);
         $headers = $response->headers();
 
-        $this->assertContains('/books', $headers);
+        $this->assertEquals(302, $response->StatusCode());
+        $this->assertStringContainsString('/books', $headers['Location']);
     }
 
     public function test_should_allow_user_to_return_book_when_book_is_borrowed(): void
     {
-        $user = new User('UserName', 'UserPassword1!', 'user@test.com', 'UserName Full', '40', 'user', $this->userId);
-        $book = $this->createMock(Book::class);
-        $book->method('isAvailable')->willReturn(false);
-        $book->expects($this->once())->method('return');
+        $user = $this->createMock(User::class);
+        $user->method('userId')->willReturn('user123');
 
         $this->sessionManager
-            ->expects($this->atLeast(1))
+            ->expects($this->once())
             ->method('getUser')
             ->willReturn($user);
 
@@ -110,15 +109,39 @@ class BookControllerTest extends TestCase
         $this->markBookAsReturnedAction
             ->expects($this->once())
             ->method('__invoke')
-            ->with($user->userId(), $this->bookId)
-            ->willReturnCallback(function () use ($book) {
-                $book->return($this->userId);
-            });
+            ->with($user->userId(), $this->bookId);
 
         $response = $this->sut->return($this->bookId);
         $headers = $response->headers();
 
-        $this->assertContains('/books', $headers);
+        $this->assertEquals(302, $response->StatusCode());
+        $this->assertStringContainsString('/books', $headers['Location']);
+    }
+
+    public function test_should_return_error_when_book_not_found(): void
+    {
+        $this->bookRepository
+            ->expects($this->once())
+            ->method('findById')
+            ->with($this->bookId)
+            ->willReturn(null);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Book not found');
+
+        $this->sut->show($this->bookId);
+    }
+
+    public function test_should_return_error_when_not_authenticated_on_borrow(): void
+    {
+        $this->sessionManager
+            ->expects($this->once())
+            ->method('isAuthenticated')
+            ->willReturn(false);
+
+        $this->expectException(NotAuthenticatedException::class);
+
+        $this->sut->borrow($this->bookId);
     }
 
     protected function setUp(): void
@@ -130,13 +153,19 @@ class BookControllerTest extends TestCase
 
         $this->bookRepository = $this->createMock(BookRepository::class);
         $this->sessionManager = $this->createMock(SessionManager::class);
+        $this->addNewBookAction = $this->createMock(AddNewBookAction::class);
+        $this->listAvailableBookAction = $this->createMock(ListAvailableBooksAction::class);
+        $this->searchBookAction = $this->createMock(SearchBooksAction::class);
         $this->requestBookLoanAction = $this->createMock(RequestBookLoanAction::class);
         $this->markBookAsReturnedAction = $this->createMock(MarkBookAsReturnedAction::class);
         $this->sut = new BookController(
             $this->bookRepository,
             $this->sessionManager,
+            $this->addNewBookAction,
+            $this->listAvailableBookAction,
+            $this->searchBookAction,
             $this->requestBookLoanAction,
-            $this->markBookAsReturnedAction
+            $this->markBookAsReturnedAction,
         );
     }
 }
