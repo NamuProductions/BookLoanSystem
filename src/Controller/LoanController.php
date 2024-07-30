@@ -7,7 +7,7 @@ namespace App\Controller;
 use App\Action\Admin\LoanRequestsAction;
 use Exception;
 
-class LoanRequestController
+class LoanController
 {
     private LoanRequestsAction $loanRequestsAction;
     public function __construct(LoanRequestsAction $loanRequestsAction)

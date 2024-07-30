@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace Controller;
 
 use App\Action\Admin\LoanRequestsAction;
-use App\Controller\LoanRequestController;
+use App\Controller\LoanController;
 use PHPUnit\Framework\TestCase;
 use Exception;
 
 class LoanRequestControllerTest extends TestCase
 {
     private LoanRequestsAction $loanRequestsAction;
-    private LoanRequestController $sut;
+    private LoanController $sut;
 
 
     public function test_it_should_return_loan_requests(): void
@@ -46,7 +46,7 @@ class LoanRequestControllerTest extends TestCase
     {
         parent::setUp();
         $this->loanRequestsAction = $this->createMock(LoanRequestsAction::class);
-        $this->sut = new LoanRequestController($this->loanRequestsAction);
+        $this->sut = new LoanController($this->loanRequestsAction);
     }
 }
 
