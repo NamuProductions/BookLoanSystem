@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -74,5 +75,11 @@ class UserController
             error_log($e->getMessage());
             return new redirectResponse('/login');
         }
+    }
+
+    public function logout(): Response
+    {
+        $this->sessionManager->destroy();
+        return new RedirectResponse('/login');
     }
 }
