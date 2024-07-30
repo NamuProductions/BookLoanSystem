@@ -29,6 +29,8 @@ readonly class RegisterUserAction
         ?string $userId = null,
         ?DateTime $createdAt = null
     ): User {
+        $age = !empty($age) ? $age : null;
+
         $this->validateUserData($userName, $email, $password);
 
         if ($this->userRepository->findByUserName($userName)) {
