@@ -79,7 +79,7 @@ class UserController
 
     public function logout(): Response
     {
-        $this->sessionManager->destroy();
+        $this->sessionManager->endSession();
         return new RedirectResponse('/login');
     }
 }
