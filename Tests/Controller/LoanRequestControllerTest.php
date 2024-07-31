@@ -14,7 +14,6 @@ class LoanRequestControllerTest extends TestCase
     private LoanRequestsAction $loanRequestsAction;
     private LoanController $sut;
 
-
     public function test_it_should_return_loan_requests(): void
     {
         $loanRequests = [
@@ -26,7 +25,10 @@ class LoanRequestControllerTest extends TestCase
             ->method('__invoke')
             ->willReturn($loanRequests);
 
-        $result = $this->sut->index();
+        $response = $this->sut->index();
+        $result = json_decode($response->body(), true);
+
+        $this->assertNotNull($result, 'JSON decode failed: ' . json_last_error_msg());
 
         $this->assertSame($loanRequests, $result);
     }
@@ -37,7 +39,10 @@ class LoanRequestControllerTest extends TestCase
             ->method('__invoke')
             ->willThrowException(new Exception('Error retrieving loan requests'));
 
-        $result = $this->sut->index();
+        $response = $this->sut->index();
+        $result = json_decode($response->body(), true);
+
+        $this->assertNotNull($result, 'JSON decode failed: ' . json_last_error_msg());
 
         $this->assertArrayHasKey('error', $result);
         $this->assertSame('Error retrieving loan requests', $result['error']);
@@ -47,8 +52,7 @@ class LoanRequestControllerTest extends TestCase
     {
         parent::setUp();
         $this->loanRequestsAction = $this->createMock(LoanRequestsAction::class);
-        $this->listUserLoansAction = $this->createMock(ListUserLoansAction::class);
-        $this->sut = new LoanController($this->loanRequestsAction, $this->listUserLoansAction);
+        $listUserLoansAction = $this->createMock(ListUserLoansAction::class);
+        $this->sut = new LoanController($this->loanRequestsAction, $listUserLoansAction);
     }
 }
-
