@@ -12,4 +12,6 @@ interface SessionManagerInterface
     public function endSession(): void;
     public function isAuthenticated(): bool;
     public function getUser(): ?User;
+
+    public function destroy();
 }
