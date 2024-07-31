@@ -28,7 +28,7 @@ class BookControllerTest extends TestCase
     private MarkBookAsReturnedAction $markBookAsReturnedAction;
     private BookController $sut;
     private string $bookId;
-    private string $userId;
+//    private string $userId;
 
     public function test_should_display_all_books_on_index_page(): void
     {
