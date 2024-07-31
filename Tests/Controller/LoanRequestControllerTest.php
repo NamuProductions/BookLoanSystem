@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Controller;
 
 use App\Action\Admin\LoanRequestsAction;
+use App\Action\User\ListUserLoansAction;
 use App\Controller\LoanController;
 use PHPUnit\Framework\TestCase;
 use Exception;
@@ -46,7 +47,8 @@ class LoanRequestControllerTest extends TestCase
     {
         parent::setUp();
         $this->loanRequestsAction = $this->createMock(LoanRequestsAction::class);
-        $this->sut = new LoanController($this->loanRequestsAction);
+        $this->listUserLoansAction = $this->createMock(ListUserLoansAction::class);
+        $this->sut = new LoanController($this->loanRequestsAction, $this->listUserLoansAction);
     }
 }
 
