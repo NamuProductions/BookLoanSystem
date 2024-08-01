@@ -8,34 +8,23 @@ use InvalidArgumentException;
 
 class UserName
 {
-    private string $firstName;
-    private string $lastName;
-    public function __construct(string $firstName, string $lastName)
+    private string $userName;
+
+    public function __construct(string $userName)
     {
-        if (empty($firstName)) {
-            throw new InvalidArgumentException('First name cannot be empty.');
+        if (empty($userName)) {
+            throw new InvalidArgumentException('Username cannot be empty.');
         }
 
-        if (empty($lastName)) {
-            throw new InvalidArgumentException('Last name cannot be empty.');
+        if (!preg_match('/^[a-zA-Z0-9_]{3,20}$/', $userName)) {
+            throw new InvalidArgumentException('Invalid username format.');
         }
 
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
+        $this->userName = $userName;
     }
 
-    public function firstName(): string
+    public function value(): string
     {
-        return $this->firstName;
-    }
-
-    public function lastName(): string
-    {
-        return $this->lastName;
-    }
-
-    public function fullName(): string
-    {
-        return "{$this->firstName} {$this->lastName}";
+        return $this->userName;
     }
 }
