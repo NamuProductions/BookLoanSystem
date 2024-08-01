@@ -7,9 +7,10 @@ namespace App\Controller;
 use App\Action\User\RegisterUserAction;
 use App\Action\LoginAction;
 use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\UserName;
 use App\Service\SessionManagerInterface;
+use App\Exception\ValidationException;
 use InvalidArgumentException;
-
 
 class UserController
 {
@@ -27,7 +28,7 @@ class UserController
         $this->sessionManager = $sessionManager;
     }
 
-    public function showRegistrationForm(): Response
+    public function showRegistrationForm(array $errors = [], array $oldValues = []): Response
     {
         ob_start();
         require __DIR__ . '/../View/users/register.php';
@@ -35,46 +36,125 @@ class UserController
         return new Response($body);
     }
 
-    public function register(): Response
+    public function register(array $errors = [], array $oldValues = []): Response
     {
-        $userName = $_POST['user_name'];
-        $password = $_POST['password'];
-        $email = $_POST['email'];
-        $fullName = $_POST['full_name'];
-        $age = isset($_POST['age']) ? new Age((int) $_POST['age']) : null;
+        $errors = [];
+        $oldValues = [
+            'user_name' => $_POST['user_name'] ?? '',
+            'email' => $_POST['email'] ?? '',
+            'full_name' => $_POST['full_name'] ?? '',
+            'age' => $_POST['age'] ?? ''
+        ];
 
+        $userName = null;
+        $password = $_POST['password'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $fullName = $_POST['full_name'] ?? '';
+        $age = null;
+
+        // Validar nombre de usuario
         try {
-            $user = $this->registerUserAction->__invoke($userName, $email, $password, $fullName, $age);
+            $userName = new UserName($_POST['user_name'] ?? '');
+        } catch (InvalidArgumentException $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        // Validar contraseña
+        if (empty($password)) {
+            $errors[] = 'Password cannot be empty.';
+        }
+
+        // Validar email
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Invalid email address.';
+        }
+
+        // Validar edad
+        if (isset($_POST['age'])) {
+            try {
+                $age = new Age((int) $_POST['age']);
+            } catch (InvalidArgumentException $e) {
+                $errors[] = $e->getMessage();
+            }
+        }
+
+        // Si hay errores, mostrar el formulario con los errores y valores antiguos
+        if (!empty($errors)) {
+            return $this->showRegistrationForm($errors, $oldValues);
+        }
+
+        // Verificar que $userName no sea null antes de continuar
+        if ($userName === null) {
+            $errors[] = 'Invalid username.';
+            return $this->showRegistrationForm($errors, $oldValues);
+        }
+
+        // Intentar registrar al usuario
+        try {
+            $user = $this->registerUserAction->__invoke(
+                $userName,
+                $email,
+                $password,
+                $fullName,
+                $age
+            );
             $this->sessionManager->startSession($user);
             error_log("User ID stored in session: " . $_SESSION['user']['userId']);
-            return new redirectResponse('/books');
+            return new RedirectResponse('/books');
+        } catch (ValidationException $e) {
+            return $this->showRegistrationForm($e->getErrors(), $oldValues);
         } catch (InvalidArgumentException $e) {
-            error_log($e->getMessage());
-            return new redirectResponse('/register');
+            return $this->showRegistrationForm([$e->getMessage()], $oldValues);
         }
     }
 
-    public function showLoginForm(): Response
+    public function showLoginForm(array $errors = [], array $oldValues = []): Response
     {
         ob_start();
-        require __DIR__ . '/../View/users/login.php';
+        require __DIR__ . '/../View/users/login.php'; // Pasar errores y valores antiguos a la vista.
         $body = ob_get_clean();
         return new Response($body);
     }
 
     public function login(): Response
     {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
+        $errors = [];
+        $oldValues = ['username' => $_POST['username'] ?? ''];
 
+        $username = null;
+        $password = $_POST['password'] ?? '';
+
+        // Validar nombre de usuario
+        try {
+            $username = new UserName($_POST['username'] ?? '');
+        } catch (InvalidArgumentException $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        // Validar contraseña
+        if (empty($password)) {
+            $errors[] = 'Password cannot be empty.';
+        }
+
+        // Si hay errores, mostrar el formulario de inicio de sesión con errores y valores antiguos
+        if (!empty($errors)) {
+            return $this->showLoginForm($errors, $oldValues);
+        }
+
+        // Verificar que $username no sea null antes de continuar
+        if ($username === null) {
+            $errors[] = 'Invalid username.';
+            return $this->showLoginForm($errors, $oldValues);
+        }
+
+        // Intentar iniciar sesión
         try {
             $user = $this->loginAction->__invoke($username, $password);
             $this->sessionManager->startSession($user);
             error_log("User ID stored in session: " . $_SESSION['user']['userId']);
-            return new redirectResponse('/books');
+            return new RedirectResponse('/books');
         } catch (InvalidArgumentException $e) {
-            error_log($e->getMessage());
-            return new redirectResponse('/login');
+            return $this->showLoginForm([$e->getMessage()], $oldValues);
         }
     }
 
