@@ -18,9 +18,7 @@ readonly class RegisterUserAction
 {
     public function __construct(
         private UserRepository $userRepository,
-    )
-    {
-    }
+    ) {}
 
     public function __invoke(
         UserName $userName,
@@ -66,12 +64,6 @@ readonly class RegisterUserAction
 
         if (empty($userName->value())) {
             $errors[] = 'Username cannot be empty';
-        } else {
-            try {
-                new UserName($userName->value());
-            } catch (InvalidArgumentException $e) {
-                $errors[] = $e->getMessage();
-            }
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^.+@[^-][A-Za-z0-9.-]+\.[A-Za-z]{2,}$/', $email)) {
