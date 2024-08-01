@@ -7,7 +7,9 @@ namespace App\Action\User;
 use App\Domain\Model\User;
 use App\Domain\ValueObject\Age;
 use App\Domain\ValueObject\Password;
+use App\Domain\ValueObject\UserName;
 use App\Domain\Repository\UserRepository;
+use App\Exception\ValidationException;
 use App\Util\UUID;
 use DateTime;
 use InvalidArgumentException;
@@ -15,13 +17,13 @@ use InvalidArgumentException;
 readonly class RegisterUserAction
 {
     public function __construct(
-        private UserRepository          $userRepository,
+        private UserRepository $userRepository,
     )
     {
     }
 
     public function __invoke(
-        string $userName,
+        UserName $userName,
         string $email,
         string $password,
         ?string $fullName = null,
@@ -30,23 +32,27 @@ readonly class RegisterUserAction
         ?string $userId = null,
         ?DateTime $createdAt = null
     ): User {
-        $this->validateUserData($userName, $email, $password);
+        $errors = $this->validateUserData($userName, $email, $password);
 
-        if ($this->userRepository->findByUserName($userName)) {
-            throw new InvalidArgumentException('Username already exists.');
+        if ($this->userRepository->findByUserName($userName->value())) {
+            $errors[] = 'Username already exists.';
+        }
+
+        if (!empty($errors)) {
+            throw new ValidationException($errors);
         }
 
         $passwordValueObject = new Password($password);
 
         $user = new User(
-            $userName,
+            $userName->value(),
             password_hash($passwordValueObject->getValue(), PASSWORD_DEFAULT),
             $email,
             $fullName,
-            $age?->value(),
+            $age->value(),
             $role,
             $userId ?? UUID::generate(),
-            $createdAt ?? new DateTime()
+            $createdAt ?? new DateTime(),
         );
 
         $this->userRepository->save($user);
@@ -54,17 +60,30 @@ readonly class RegisterUserAction
         return $user;
     }
 
-    private function validateUserData(string $userName, string $email, string $password): void
+    private function validateUserData(UserName $userName, string $email, string $password): array
     {
-        if (empty($userName)) {
-            throw new InvalidArgumentException('Username cannot be empty');
+        $errors = [];
+
+        if (empty($userName->value())) {
+            $errors[] = 'Username cannot be empty';
+        } else {
+            try {
+                new UserName($userName->value());
+            } catch (InvalidArgumentException $e) {
+                $errors[] = $e->getMessage();
+            }
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^.+@[^-][A-Za-z0-9.-]+\.[A-Za-z]{2,}$/', $email)) {
-            throw new InvalidArgumentException('Invalid email address.');
+            $errors[] = 'Invalid email address.';
         }
-        new Password($password);
+
+        try {
+            new Password($password);
+        } catch (InvalidArgumentException $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        return $errors;
     }
-
-
 }
