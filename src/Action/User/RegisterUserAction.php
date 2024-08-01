@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Action\User;
 
 use App\Domain\Model\User;
+use App\Domain\ValueObject\Age;
 use App\Domain\ValueObject\Password;
 use App\Domain\Repository\UserRepository;
 use App\Util\UUID;
@@ -24,7 +25,7 @@ readonly class RegisterUserAction
         string $email,
         string $password,
         ?string $fullName = null,
-        ?int $age = null,
+        ?Age $age = null,
         ?string $role = 'user',
         ?string $userId = null,
         ?DateTime $createdAt = null
@@ -42,7 +43,7 @@ readonly class RegisterUserAction
             password_hash($passwordValueObject->getValue(), PASSWORD_DEFAULT),
             $email,
             $fullName,
-            $age,
+            $age?->value(),
             $role,
             $userId ?? UUID::generate(),
             $createdAt ?? new DateTime()

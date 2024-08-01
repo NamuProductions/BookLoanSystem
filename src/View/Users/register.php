@@ -29,7 +29,7 @@
     </div>
     <div>
         <label for="age">Age:</label>
-        <input type="text" id="age" name="age" value="<?= htmlspecialchars($age ?? '') ?>">
+        <input type="number" id="age" name="age" value="<?= htmlspecialchars($age ?? '') ?>">
     </div>
     <button type="submit">Register</button>
 </form>

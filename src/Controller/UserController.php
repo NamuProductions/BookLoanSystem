@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Action\User\RegisterUserAction;
 use App\Action\LoginAction;
+use App\Domain\ValueObject\Age;
 use App\Service\SessionManagerInterface;
 use InvalidArgumentException;
 
@@ -40,7 +41,7 @@ class UserController
         $password = $_POST['password'];
         $email = $_POST['email'];
         $fullName = $_POST['full_name'];
-        $age = $_POST['age'];
+        $age = isset($_POST['age']) ? new Age((int) $_POST['age']) : null;
 
         try {
             $user = $this->registerUserAction->__invoke($userName, $email, $password, $fullName, $age);
