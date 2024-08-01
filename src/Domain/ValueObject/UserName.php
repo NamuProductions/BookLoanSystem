@@ -17,7 +17,7 @@ class UserName
         }
 
         if (!preg_match('/^[a-zA-Z0-9_]{3,20}$/', $userName)) {
-            throw new InvalidArgumentException('Invalid username format.');
+            throw new InvalidArgumentException('Invalid username format, from 3 to 20 characters.');
         }
 
         $this->userName = $userName;
