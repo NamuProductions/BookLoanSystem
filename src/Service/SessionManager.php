@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Domain\Model\User;
+use App\Domain\ValueObject\UserName;
+use App\Domain\ValueObject\Age; // Asegúrate de incluir el valor del objeto Age
 use DateTime;
 
 class SessionManager implements SessionManagerInterface
@@ -16,11 +18,11 @@ class SessionManager implements SessionManagerInterface
         }
         $_SESSION['user'] = [
             'userId' => $user->userId(),
-            'userName' => $user->userName(),
+            'userName' => $user->userName()->value(),
             'password' => $user->password(),
             'email' => $user->email(),
             'fullName' => $user->fullName(),
-            'age' => $user->age(),
+            'age' => $user->age()->value(),
             'createdAt' => $user->createdAt()->format('c'),
             'role' => $user->role(),
         ];
@@ -44,11 +46,11 @@ class SessionManager implements SessionManagerInterface
         if (isset($_SESSION['user'])) {
             $userData = $_SESSION['user'];
             return new User(
-                $userData['userName'],
+                new UserName($userData['userName']),
                 $userData['password'],
                 $userData['email'],
                 $userData['fullName'],
-                $userData['age'],
+                new Age((int)$userData['age']),
                 $userData['role'],
                 $userData['userId'],
                 new DateTime($userData['createdAt'])

@@ -6,6 +6,8 @@ namespace App\Infrastructure\Persistence;
 
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
+use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\UserName;
 use DateTime;
 use PDO;
 
@@ -36,19 +38,19 @@ class PdoUserRepository implements UserRepository
                                          VALUES (:userId, :userName, :password, :email, :fullName, :age, :role)');
             $stmt->execute([
                 'userId' => $user->userId(),
-                'userName' => $user->userName(),
+                'userName' => $user->userName()->value(),
                 'password' => $user->password(),
                 'email' => $user->email(),
                 'fullName' => $user->fullName(),
-                'age' => $user->age(),
+                'age' => $user->age()->value(),
                 'role' => $user->role(),
             ]);
     }
 
-    public function findByUserName(string $username): ?User
+    public function findByUserName(UserName $username): ?User
     {
         $stmt = $this->pdo->prepare('SELECT * FROM users WHERE user_name = :user_name');
-        $stmt->execute(['user_name' => $username]);
+        $stmt->execute(['user_name' => $username->value()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row === false) {
@@ -61,11 +63,11 @@ class PdoUserRepository implements UserRepository
     private function mapRowToUser(array $row): User
     {
         return new User(
-            userName: $row['user_name'],
+            userName: new UserName($row['user_name']),
             password: $row['password'],
             email: $row['email'],
             fullName: $row['full_name'],
-            age: isset($row['age']) ? (int)$row['age'] : null,
+            age: new Age((int)$row['age']),
             role: $row['role'],
             userId: $row['user_id'],
             createdAt: new DateTime($row['created_at'])
