@@ -6,6 +6,7 @@ namespace Action;
 use App\Action\LoginAction;
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
+use App\Domain\ValueObject\UserName;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -16,10 +17,10 @@ class LoginActionTest extends TestCase
 
     public function test_it_should_login_a_registered_user(): void
     {
-        $userName = 'testUser';
+        $userName = new UserName('testUser');
         $password = 'testPassword1!';
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $user = new User($userName, $passwordHash, 'testUser@example.com', 'Test User One', 35, 'user');
+        $user = new User($userName->value(), $passwordHash, 'testUser@example.com', 'Test User One', 35, 'user');
 
         $this->userRepository
             ->expects($this->once())
@@ -34,10 +35,10 @@ class LoginActionTest extends TestCase
 
     public function test_it_should_login_an_admin(): void
     {
-        $userName = 'adminUser';
+        $userName = new UserName('adminUser');
         $password = 'adminPassword1!';
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $user = new User($userName, $passwordHash, 'admin@example.com', 'Admin User', 34, 'admin');
+        $user = new User($userName->value(), $passwordHash, 'admin@example.com', 'Admin User', 34, 'admin');
 
         $this->userRepository
             ->expects($this->once())
@@ -55,7 +56,7 @@ class LoginActionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid username or password.');
 
-        $userName = 'testUser';
+        $userName = new UserName('testUser');
         $password = 'wrongPassword1!';
 
         $this->userRepository
