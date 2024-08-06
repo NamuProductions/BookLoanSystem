@@ -6,6 +6,7 @@ namespace App\Action\User;
 
 use App\Domain\Repository\BookRepository;
 use App\Domain\Repository\UserRepository;
+use App\Domain\ValueObject\UserName;
 use DateTime;
 use InvalidArgumentException;
 
@@ -16,7 +17,7 @@ readonly class RequestBookLoanAction
         private UserRepository $userRepository
     ) {}
 
-    public function __invoke(string $userName, string $bookId): void
+    public function __invoke(UserName $userName, string $bookId): void
     {
         $user = $this->userRepository->findByUserName($userName);
         if (!$user) {

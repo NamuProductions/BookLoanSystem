@@ -6,13 +6,13 @@ namespace App\Action\User;
 
 use App\Domain\Model\User;
 use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\Password;
 use App\Domain\ValueObject\UserName;
 use App\Domain\Repository\UserRepository;
 use App\Exception\ValidationException;
 use App\Util\UUID;
 use DateTime;
-use InvalidArgumentException;
 
 readonly class RegisterUserAction
 {
@@ -22,17 +22,17 @@ readonly class RegisterUserAction
 
     public function __invoke(
         UserName $userName,
-        string $email,
-        string $password,
-        ?string $fullName = null,
-        ?Age $age = null,
+        Email $email,
+        Password $password,
+        string $fullName,
+        Age $age,
         ?string $role = 'user',
         ?string $userId = null,
         ?DateTime $createdAt = null
     ): User {
-        $errors = $this->validateUserData($userName, $email, $password);
+        $errors = $this->validateUserData($userName);
 
-        if ($this->userRepository->findByUserName($userName->value())) {
+        if ($this->userRepository->findByUserName($userName)) {
             $errors[] = 'Username already exists.';
         }
 
@@ -40,14 +40,12 @@ readonly class RegisterUserAction
             throw new ValidationException($errors);
         }
 
-        $passwordValueObject = new Password($password);
-
         $user = new User(
-            $userName->value(),
-            password_hash($passwordValueObject->getValue(), PASSWORD_DEFAULT),
-            $email,
+            $userName,
+            password_hash($password->value(), PASSWORD_DEFAULT),
+            $email->value(),
             $fullName,
-            $age->value(),
+            $age,
             $role,
             $userId ?? UUID::generate(),
             $createdAt ?? new DateTime(),
@@ -58,7 +56,7 @@ readonly class RegisterUserAction
         return $user;
     }
 
-    private function validateUserData(UserName $userName, string $email, string $password): array
+    private function validateUserData(UserName $userName): array
     {
         $errors = [];
 
@@ -66,15 +64,6 @@ readonly class RegisterUserAction
             $errors[] = 'Username cannot be empty';
         }
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^.+@[^-][A-Za-z0-9.-]+\.[A-Za-z]{2,}$/', $email)) {
-            $errors[] = 'Invalid email address.';
-        }
-
-        try {
-            new Password($password);
-        } catch (InvalidArgumentException $e) {
-            $errors[] = $e->getMessage();
-        }
 
         return $errors;
     }

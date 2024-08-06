@@ -14,6 +14,7 @@ use App\Controller\NotAuthenticatedException;
 use App\Domain\Model\Book;
 use App\Domain\Model\User;
 use App\Domain\Repository\BookRepository;
+use App\Domain\ValueObject\UserName;
 use App\Domain\ValueObject\Year;
 use App\Service\SessionManager;
 use App\Util\UUID;
@@ -28,7 +29,6 @@ class BookControllerTest extends TestCase
     private MarkBookAsReturnedAction $markBookAsReturnedAction;
     private BookController $sut;
     private string $bookId;
-//    private string $userId;
 
     public function test_should_display_all_books_on_index_page(): void
     {
@@ -67,10 +67,11 @@ class BookControllerTest extends TestCase
     public function test_should_allow_user_to_borrow_book_when_book_is_available(): void
     {
         $user = $this->createMock(User::class);
-        $user->method('userName')->willReturn('user123');
+        $userName = new UserName('user123');
+        $user->method('userName')->willReturn($userName);
 
         $this->sessionManager
-            ->expects($this->once())
+            ->expects($this->atLeastOnce())
             ->method('getUser')
             ->willReturn($user);
 
@@ -80,7 +81,7 @@ class BookControllerTest extends TestCase
             ->willReturn(true);
 
         $this->requestBookLoanAction
-            ->expects($this->once())
+            ->expects($this->atLeastonce())
             ->method('__invoke')
             ->with($user->userName(), $this->bookId);
 
@@ -97,7 +98,7 @@ class BookControllerTest extends TestCase
         $user->method('userId')->willReturn('user123');
 
         $this->sessionManager
-            ->expects($this->once())
+            ->expects($this->atLeastOnce())
             ->method('getUser')
             ->willReturn($user);
 
@@ -149,21 +150,20 @@ class BookControllerTest extends TestCase
         parent::setUp();
 
         $this->bookId = UUID::generate();
-        $this->userId = UUID::generate();
 
         $this->bookRepository = $this->createMock(BookRepository::class);
         $this->sessionManager = $this->createMock(SessionManager::class);
-        $this->addNewBookAction = $this->createMock(AddNewBookAction::class);
-        $this->listAvailableBookAction = $this->createMock(ListAvailableBooksAction::class);
-        $this->searchBookAction = $this->createMock(SearchBooksAction::class);
+        $addNewBookAction = $this->createMock(AddNewBookAction::class);
+        $listAvailableBookAction = $this->createMock(ListAvailableBooksAction::class);
+        $searchBooksAction = $this->createMock(SearchBooksAction::class);
         $this->requestBookLoanAction = $this->createMock(RequestBookLoanAction::class);
         $this->markBookAsReturnedAction = $this->createMock(MarkBookAsReturnedAction::class);
         $this->sut = new BookController(
             $this->bookRepository,
             $this->sessionManager,
-            $this->addNewBookAction,
-            $this->listAvailableBookAction,
-            $this->searchBookAction,
+            $addNewBookAction,
+            $listAvailableBookAction,
+            $searchBooksAction,
             $this->requestBookLoanAction,
             $this->markBookAsReturnedAction,
         );

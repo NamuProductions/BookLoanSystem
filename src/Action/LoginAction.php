@@ -6,6 +6,7 @@ namespace App\Action;
 
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
+use App\Domain\ValueObject\Password;
 use App\Domain\ValueObject\UserName;
 use InvalidArgumentException;
 
@@ -15,7 +16,7 @@ readonly class LoginAction
         private UserRepository $userRepository,
     ) {}
 
-    public function __invoke(UserName $userName, string $password): User
+    public function __invoke(UserName $userName, Password $password): User
     {
         $user = $this->userRepository->findByUserName($userName->value());
 
@@ -23,7 +24,7 @@ readonly class LoginAction
             throw new InvalidArgumentException('Invalid username.');
         }
 
-        if (!password_verify($password, $user->password())) {
+        if (!password_verify($password->value(), $user->password())) {
             throw new InvalidArgumentException('Incorrect password');
         }
 

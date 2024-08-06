@@ -6,8 +6,12 @@ namespace Action\User;
 
 use App\Action\User\RegisterUserAction;
 use App\Domain\Model\User;
+use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\Password;
+use App\Domain\ValueObject\UserName;
 use App\Domain\Repository\UserRepository;
-use DateTime;
+use App\Exception\ValidationException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -15,28 +19,33 @@ class RegisterUserActionTest extends TestCase
 {
     private UserRepository $userRepository;
     private RegisterUserAction $sut;
-    private string $fixedUserId;
 
     public function test_it_should_register_a_user(): void
     {
-        $userName = 'testUser';
-        $email = 'correct@email.com';
-        $password = 'testPassword1!';
+        $userName = new UserName('testUser');
+        $email = new Email('correct@email.com');
+        $password = new Password('TestPassword1!');
+        $fullName = 'Test User';
+        $age = new Age(30);
 
         $this->userRepository
             ->expects($this->once())
             ->method('save')
-            ->with($this->callback(function (User $user) use ($userName, $email, $password) {
-                return $user->userName() === $userName &&
-                    $user->email() === $email &&
-                    password_verify($password, $user->password());
+            ->with($this->callback(function (User $user) use ($userName, $email, $password, $fullName, $age) {
+                return $user->userName()->value() === $userName->value() &&
+                    $user->email() === $email->value() &&
+                    password_verify($password->value(), $user->password()) &&
+                    $user->fullName() === $fullName &&
+                    $user->age()->value() === $age->value();
             }));
 
-        $user = $this->sut->__invoke($userName, $email, $password);
+        $user = $this->sut->__invoke($userName, $email, $password, $fullName, $age);
 
         $this->assertInstanceOf(User::class, $user);
-        $this->assertEquals($userName, $user->userName());
-        $this->assertEquals($email, $user->email());
+        $this->assertEquals($userName->value(), $user->userName()->value());
+        $this->assertEquals($email->value(), $user->email());
+        $this->assertEquals($fullName, $user->fullName());
+        $this->assertEquals($age->value(), $user->age()->value());
     }
 
     public function test_it_should_throw_exception_for_invalid_email(): void
@@ -44,11 +53,9 @@ class RegisterUserActionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid email address.');
 
-        $userName = 'testUser';
         $invalidEmail = 'invalid-email';
-        $password = 'testPassword1!';
 
-        $this->sut->__invoke($userName, $invalidEmail, $password);
+        new Email($invalidEmail);
     }
 
     public function test_it_should_throw_exception_for_invalid_user_data(): void
@@ -56,59 +63,57 @@ class RegisterUserActionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Username cannot be empty');
 
-        $userName = '';
-        $email = 'correct@email.com';
-        $password = 'correctPassword1!';
+        $userName = new UserName('');
+        $email = new Email('correct@email.com');
+        $password = new Password('TestPassword1!');
+        $fullName = 'Test User';
+        $age = new Age(30);
 
-        $this->sut->__invoke($userName, $email, $password);
+        $this->sut->__invoke($userName, $email, $password, $fullName, $age);
     }
 
     public function test_it_should_throw_exception_for_invalid_password_data(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Password must be at least 8 characters long');
+        $this->expectExceptionMessage('Password must be at least 8 characters long.');
 
-        $userName = 'testUser';
-        $email = 'correct@email.com';
-        $password = '1';
+        $userName = new UserName('CorrectUserName');
+        $email = new Email('correct@email.com');
+        $password = new Password('1');
+        $fullName = 'Test User';
+        $age = new Age(30);
 
-        $this->sut->__invoke($userName, $email, $password);
+        $this->sut->__invoke($userName, $email, $password, $fullName, $age);
     }
 
     public function test_it_should_throw_exception_for_trying_to_register_new_user_data_with_equal_userName(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Username already exists');
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Validation errors occurred');
 
-        $userName = 'existingUser';
-        $email = 'correct@email.com';
-        $password = 'correctPassword1!';
-
-        $existingUser = new User(
-            $userName,
-            password_hash($password, PASSWORD_DEFAULT),
-            $email,
-            'fullName',
-            25,
-            'user',
-            $this->fixedUserId,
-            new DateTime(),
-        );
+        $userName = new UserName('existingUser');
+        $email = new Email('correct@email.com');
+        $password = new Password('TestPassword1!');
+        $fullName = 'Test User';
+        $age = new Age(30);
 
         $this->userRepository
             ->expects($this->once())
             ->method('findByUserName')
-            ->with($userName)
-            ->willReturn($existingUser);
+            ->willReturn(new User(
+                new UserName('existingUser'),
+                'hashedPassword',
+                $email->value(),
+                $fullName,
+                $age
+            ));
 
-        $this->sut->__invoke($userName, $email, $password);
+        $this->sut->__invoke($userName, $email, $password, $fullName, $age);
     }
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->fixedUserId = '22222222-2222-2222-2222-222222222222';
 
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->sut = new RegisterUserAction($this->userRepository);

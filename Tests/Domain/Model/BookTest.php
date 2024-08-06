@@ -6,6 +6,8 @@ namespace Domain\Model;
 use App\Domain\Model\Book;
 use App\Domain\Model\User;
 use App\Domain\ValueObject\Year;
+use App\Domain\ValueObject\UserName;
+use App\Domain\ValueObject\Age;
 use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -50,11 +52,11 @@ class BookTest extends TestCase
     public function test_it_should_mark_as_unavailable_when_borrowed(): void
     {
         $user = new User(
-            userName: 'user',
+            userName: new UserName('user'),
             password: 'testPassword',
             email: 'user1@test.com',
             fullName: 'User One',
-            age: 25,
+            age: new Age(25),
             role: 'user',
             userId: $this->fixedUserId
         );
@@ -68,11 +70,11 @@ class BookTest extends TestCase
     public function test_it_should_return_loan_details_when_borrowed(): void
     {
         $user = new User(
-            userName: 'user',
+            userName: new UserName('user'),
             password: 'testPassword',
             email: 'user1@test.com',
             fullName: 'User One',
-            age: 25,
+            age: new Age(25),
             role: 'user',
             userId: $this->fixedUserId
         );
@@ -89,11 +91,11 @@ class BookTest extends TestCase
     public function test_it_should_mark_as_available_when_returned(): void
     {
         $user = new User(
-            userName: 'user',
+            userName: new UserName('user'),
             password: 'testPassword',
             email: 'user1@test.com',
             fullName: 'User One',
-            age: 25,
+            age: new Age(25),
             role: 'user',
             userId: $this->fixedUserId
         );
@@ -111,11 +113,11 @@ class BookTest extends TestCase
         $this->expectExceptionMessage('No active loan request found for this user.');
 
         $user = new User(
-            userName: 'user1',
+            userName: new UserName('user1'),
             password: 'testPassword',
             email: 'user1@test.com',
             fullName: 'User One',
-            age: 25,
+            age: new Age(25),
             role: 'user',
             userId: $this->fixedUserId
         );
@@ -126,11 +128,11 @@ class BookTest extends TestCase
     {
         $borrowDate1 = new DateTime('2023-01-01');
         $user = new User(
-            userName: 'user1',
+            userName: new UserName('user1'),
             password: 'testPassword',
             email: 'user1@test.com',
             fullName: 'User One',
-            age: 25,
+            age: new Age(25),
             role: 'user',
             userId: $this->fixedUserId
         );

@@ -6,6 +6,8 @@ namespace Action;
 use App\Action\LoginAction;
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
+use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\Password;
 use App\Domain\ValueObject\UserName;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -18,14 +20,15 @@ class LoginActionTest extends TestCase
     public function test_it_should_login_a_registered_user(): void
     {
         $userName = new UserName('testUser');
-        $password = 'testPassword1!';
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $user = new User($userName->value(), $passwordHash, 'testUser@example.com', 'Test User One', 35, 'user');
+        $age = new Age(35);
+        $password = new Password('testPassword1!');
+        $passwordHash = password_hash($password->value(), PASSWORD_DEFAULT);
+        $user = new User($userName, $passwordHash, 'testUser@example.com', 'Test User One', $age, 'user');
 
         $this->userRepository
             ->expects($this->once())
             ->method('findByUserName')
-            ->with($userName)
+            ->with($userName->value())
             ->willReturn($user);
 
         $authenticatedUser = $this->sut->__invoke($userName, $password);
@@ -36,14 +39,15 @@ class LoginActionTest extends TestCase
     public function test_it_should_login_an_admin(): void
     {
         $userName = new UserName('adminUser');
-        $password = 'adminPassword1!';
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $user = new User($userName->value(), $passwordHash, 'admin@example.com', 'Admin User', 34, 'admin');
+        $age = new Age(34);
+        $password = new Password('adminPassword1!');
+        $passwordHash = password_hash($password->value(), PASSWORD_DEFAULT);
+        $user = new User($userName, $passwordHash, 'admin@example.com', 'Admin User', $age, 'admin');
 
         $this->userRepository
             ->expects($this->once())
             ->method('findByUserName')
-            ->with($userName)
+            ->with($userName->value())
             ->willReturn($user);
 
         $authenticatedUser = $this->sut->__invoke($userName, $password);
@@ -54,15 +58,15 @@ class LoginActionTest extends TestCase
     public function test_it_should_throw_exception_for_invalid_credentials(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid username or password.');
+        $this->expectExceptionMessage('Invalid password.');
 
         $userName = new UserName('testUser');
-        $password = 'wrongPassword1!';
+        $password = new Password('wrongPassword1!');
 
         $this->userRepository
             ->expects($this->once())
             ->method('findByUserName')
-            ->with($userName)
+            ->with($userName->value())
             ->willReturn(null);
 
         $this->sut->__invoke($userName, $password);
