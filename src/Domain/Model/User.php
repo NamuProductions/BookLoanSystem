@@ -4,26 +4,28 @@ declare(strict_types=1);
 
 namespace App\Domain\Model;
 
+use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\UserName;
 use App\Util\UUID;
 use DateTime;
 
 class User
 {
     private string $userId;
-    private string $userName;
+    private UserName $userName;
     private string $password;
     private string $email;
     private ?string $fullName;
-    private ?int $age;
+    private Age $age;
     private DateTime $createdAt;
     private string $role;
 
     public function __construct(
-        string $userName,
+        UserName $userName,
         string $password,
         string $email,
-        ?string $fullName = null,
-        ?int $age = null,
+        string $fullName,
+        Age $age,
         ?string $role = 'user',
         ?string $userId = null,
         ?DateTime $createdAt = null
@@ -43,7 +45,7 @@ class User
         return $this->userId;
     }
 
-    public function userName(): string
+    public function userName(): UserName
     {
         return $this->userName;
     }
@@ -58,12 +60,12 @@ class User
         return $this->email;
     }
 
-    public function fullName(): ?string
+    public function fullName(): string
     {
         return $this->fullName;
     }
 
-    public function age(): ?int
+    public function age(): Age
     {
         return $this->age;
     }
