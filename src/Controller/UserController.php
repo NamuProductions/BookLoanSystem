@@ -155,6 +155,7 @@ class UserController
 
         // Intentar iniciar sesión
         try {
+            $password = new Password($password);
             $user = $this->loginAction->__invoke($username, $password);
             $this->sessionManager->startSession($user);
             error_log("User ID stored in session: " . $_SESSION['user']['userId']);
