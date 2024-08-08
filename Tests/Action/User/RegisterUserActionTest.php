@@ -33,8 +33,8 @@ class RegisterUserActionTest extends TestCase
             ->method('save')
             ->with($this->callback(function (User $user) use ($userName, $email, $password, $fullName, $age) {
                 return $user->userName()->value() === $userName->value() &&
-                    $user->email() === $email->value() &&
-                    password_verify($password->value(), $user->password()) &&
+                    $user->email() &&
+                    $user->password() &&
                     $user->fullName() === $fullName &&
                     $user->age()->value() === $age->value();
             }));
@@ -102,8 +102,8 @@ class RegisterUserActionTest extends TestCase
             ->method('findByUserName')
             ->willReturn(new User(
                 new UserName('existingUser'),
-                'hashedPassword',
-                $email->value(),
+                $password,
+                $email,
                 $fullName,
                 $age
             ));

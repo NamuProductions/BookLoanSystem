@@ -121,26 +121,28 @@ class BookControllerTest extends TestCase
 
     public function test_should_return_error_when_book_not_found(): void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Book not found');
+
         $this->bookRepository
             ->expects($this->once())
             ->method('findById')
             ->with($this->bookId)
             ->willReturn(null);
 
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Book not found');
-
         $this->sut->show($this->bookId);
+
     }
 
     public function test_should_return_error_when_not_authenticated_on_borrow(): void
     {
+        $this->expectException(NotAuthenticatedException::class);
+
         $this->sessionManager
             ->expects($this->once())
             ->method('isAuthenticated')
             ->willReturn(false);
 
-        $this->expectException(NotAuthenticatedException::class);
 
         $this->sut->borrow($this->bookId);
     }

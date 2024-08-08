@@ -10,6 +10,8 @@ use App\Domain\Model\User;
 use App\Domain\Repository\BookRepository;
 use App\Domain\Repository\UserRepository;
 use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\Password;
 use App\Domain\ValueObject\UserName;
 use App\Domain\ValueObject\Year;
 use InvalidArgumentException;
@@ -25,8 +27,8 @@ class RequestBookLoanActionTest extends TestCase
     {
         $user = new User(
             userName: new UserName('user1'),
-            password: 'password',
-            email: 'user1@example.com',
+            password: new Password('Password!1'),
+            email: new Email('user1@example.com'),
             fullName: 'user1 and2',
             age: new Age(30)
         );
@@ -70,8 +72,8 @@ class RequestBookLoanActionTest extends TestCase
     {
         $user = new User(
             userName: new UserName('user1'),
-            password: 'password',
-            email: 'user1@example.com',
+            password: new Password('Password1!'),
+            email: new Email('user1@example.com'),
             fullName: 'user1 and2',
             age: new Age(30)
         );
@@ -125,8 +127,8 @@ class RequestBookLoanActionTest extends TestCase
     {
         $user = new User(
             userName: new UserName('user1'),
-            password: 'password',
-            email: 'user1@example.com',
+            password: new Password('Password1!'),
+            email: new Email('user1@example.com'),
             fullName: 'user1 and2',
             age: new Age(30)
         );

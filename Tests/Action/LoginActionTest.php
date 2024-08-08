@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Action;
@@ -7,6 +8,7 @@ use App\Action\LoginAction;
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
 use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\Password;
 use App\Domain\ValueObject\UserName;
 use InvalidArgumentException;
@@ -22,8 +24,7 @@ class LoginActionTest extends TestCase
         $userName = new UserName('testUser');
         $age = new Age(35);
         $password = new Password('testPassword1!');
-        $passwordHash = password_hash($password->value(), PASSWORD_DEFAULT);
-        $user = new User($userName, $passwordHash, 'testUser@example.com', 'Test User One', $age, 'user');
+        $user = new User($userName, $password, new Email('testUser@example.com'), 'Test User One', $age, 'user');
 
         $this->userRepository
             ->expects($this->once())
@@ -41,8 +42,7 @@ class LoginActionTest extends TestCase
         $userName = new UserName('adminUser');
         $age = new Age(34);
         $password = new Password('adminPassword1!');
-        $passwordHash = password_hash($password->value(), PASSWORD_DEFAULT);
-        $user = new User($userName, $passwordHash, 'admin@example.com', 'Admin User', $age, 'admin');
+        $user = new User($userName, $password, new Email('admin@example.com'), 'Admin User', $age, 'admin');
 
         $this->userRepository
             ->expects($this->once())
@@ -66,7 +66,7 @@ class LoginActionTest extends TestCase
         $this->userRepository
             ->expects($this->once())
             ->method('findByUserName')
-            ->with($userName->value())
+            ->with($userName)
             ->willReturn(null);
 
         $this->sut->__invoke($userName, $password);

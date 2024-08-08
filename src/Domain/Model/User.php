@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\Model;
 
 use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\Password;
 use App\Domain\ValueObject\UserName;
 use App\Util\UUID;
 use DateTime;
@@ -13,8 +15,8 @@ class User
 {
     private string $userId;
     private UserName $userName;
-    private string $password;
-    private string $email;
+    private Password $password;
+    private Email $email;
     private ?string $fullName;
     private Age $age;
     private DateTime $createdAt;
@@ -22,8 +24,8 @@ class User
 
     public function __construct(
         UserName $userName,
-        string $password,
-        string $email,
+        Password $password,
+        Email $email,
         string $fullName,
         Age $age,
         ?string $role = 'user',
@@ -50,12 +52,12 @@ class User
         return $this->userName;
     }
 
-    public function password(): string
+    public function password(): Password
     {
         return $this->password;
     }
 
-    public function email(): string
+    public function email(): Email
     {
         return $this->email;
     }

@@ -8,6 +8,8 @@ use App\Action\Admin\ReturnRequestsAction;
 use App\Domain\Model\Book;
 use App\Domain\Model\User;
 use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\Password;
 use App\Domain\ValueObject\UserName;
 use App\Domain\ValueObject\Year;
 use App\Service\ReturnRequestQueryServiceInterface;
@@ -69,8 +71,8 @@ class ReturnRequestsActionTest extends TestCase
 
         $this->user1 = new User(
             new UserName('user1'),
-            'testPassword',
-            'user1@test.com',
+            new Password('testPassword1!'),
+            new Email('user1@test.com'),
             'User One',
             new Age(25),
             'user',
@@ -79,8 +81,8 @@ class ReturnRequestsActionTest extends TestCase
 
         $this->user2 = new User(
             new UserName('user2'),
-            'testPassword',
-            'user2@test.com',
+            new Password('testPassword1!'),
+            new Email('user2@test.com'),
             'User Two',
             new Age(25),
             'user',

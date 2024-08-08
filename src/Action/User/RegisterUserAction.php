@@ -42,8 +42,8 @@ readonly class RegisterUserAction
 
         $user = new User(
             $userName,
-            password_hash($password->value(), PASSWORD_DEFAULT),
-            $email->value(),
+            $password,
+            $email,
             $fullName,
             $age,
             $role,
