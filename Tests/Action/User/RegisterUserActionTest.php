@@ -43,7 +43,7 @@ class RegisterUserActionTest extends TestCase
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals($userName->value(), $user->userName()->value());
-        $this->assertEquals($email->value(), $user->email());
+        $this->assertEquals($email->value(), $user->email()->value());
         $this->assertEquals($fullName, $user->fullName());
         $this->assertEquals($age->value(), $user->age()->value());
     }

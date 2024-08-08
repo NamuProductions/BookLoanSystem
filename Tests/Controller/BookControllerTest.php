@@ -72,7 +72,7 @@ class BookControllerTest extends TestCase
 
         $this->sessionManager
             ->expects($this->atLeastOnce())
-            ->method('getUser')
+            ->method('user')
             ->willReturn($user);
 
         $this->sessionManager
@@ -99,7 +99,7 @@ class BookControllerTest extends TestCase
 
         $this->sessionManager
             ->expects($this->atLeastOnce())
-            ->method('getUser')
+            ->method('user')
             ->willReturn($user);
 
         $this->sessionManager

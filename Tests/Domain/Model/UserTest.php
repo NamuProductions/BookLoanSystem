@@ -5,6 +5,8 @@ namespace Domain\Model;
 
 use App\Domain\Model\User;
 use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\Password;
 use App\Domain\ValueObject\UserName;
 use PHPUnit\Framework\TestCase;
 
@@ -19,12 +21,12 @@ class UserTest extends TestCase
 
     public function test_it_should_return_email(): void
     {
-        $this->assertSame('ryan@example.com', $this->sut->email());
+        $this->assertSame('ryan@example.com', $this->sut->email()->value());
     }
 
     public function test_it_should_return_password(): void
     {
-        $this->assertSame('securePassword', $this->sut->password());
+        $this->assertSame('securePassword1!', $this->sut->password());
     }
 
     public function test_it_should_return_role(): void
@@ -42,8 +44,8 @@ class UserTest extends TestCase
 
         $this->sut = new User(
             userName: $userName,
-            password: 'securePassword',
-            email: 'ryan@example.com',
+            password: new Password('securePassword1!'),
+            email: new Email('ryan@example.com'),
             fullName: 'Ryan Martínez',
             age: $age,
             role: 'admin',

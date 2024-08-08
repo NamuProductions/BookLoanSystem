@@ -52,9 +52,9 @@ class User
         return $this->userName;
     }
 
-    public function password(): Password
+    public function password(): string
     {
-        return $this->password;
+        return $this->password->value();
     }
 
     public function email(): Email

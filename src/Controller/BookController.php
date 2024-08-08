@@ -113,7 +113,7 @@ class BookController
     {
         try {
             $this->ensureAuthenticated();
-            $user = $this->sessionManager->getUser();
+            $user = $this->sessionManager->user();
             $this->requestBookLoanAction->__invoke($user->userName(), $bookId);
             return new RedirectResponse('/books');
         } catch (InvalidArgumentException $e) {
@@ -127,7 +127,7 @@ class BookController
     {
         try {
             $this->ensureAuthenticated();
-            $user = $this->sessionManager->getUser();
+            $user = $this->sessionManager->user();
             $this->markBookAsReturnedAction->__invoke($user->userId(), $bookId);
             return new RedirectResponse('/books');
         } catch (InvalidArgumentException $e) {
@@ -139,7 +139,7 @@ class BookController
 
     private function ensureAuthenticated(): void
     {
-        if (!$this->sessionManager->isAuthenticated() || !$this->sessionManager->getUser()) {
+        if (!$this->sessionManager->isAuthenticated() || !$this->sessionManager->user()) {
             throw new NotAuthenticatedException();
         }
     }
