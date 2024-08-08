@@ -7,6 +7,8 @@ namespace App\Controller;
 use App\Action\User\RegisterUserAction;
 use App\Action\LoginAction;
 use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\Password;
 use App\Domain\ValueObject\UserName;
 use App\Service\SessionManagerInterface;
 use App\Exception\ValidationException;
@@ -47,8 +49,8 @@ class UserController
         ];
 
         $userName = null;
-        $password = $_POST['password'] ?? '';
-        $email = $_POST['email'] ?? '';
+        $password = null;
+        $email = null;
         $fullName = $_POST['full_name'] ?? '';
         $age = null;
 
@@ -60,13 +62,17 @@ class UserController
         }
 
         // Validar contraseña
-        if (empty($password)) {
-            $errors[] = 'Password cannot be empty.';
+        try {
+            $password = new Password($_POST['password'] ?? '');
+        } catch (InvalidArgumentException $e) {
+            $errors[] = $e->getMessage();
         }
 
         // Validar email
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = 'Invalid email address.';
+        try {
+            $email = new Email($_POST['email'] ?? '');
+        } catch (InvalidArgumentException $e) {
+            $errors[] = $e->getMessage();
         }
 
         // Validar edad

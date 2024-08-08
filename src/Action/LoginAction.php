@@ -18,7 +18,7 @@ readonly class LoginAction
 
     public function __invoke(UserName $userName, Password $password): User
     {
-        $user = $this->userRepository->findByUserName($userName->value());
+        $user = $this->userRepository->findByUserName($userName);
 
         if (!$user) {
             throw new InvalidArgumentException('Invalid username.');
