@@ -5,6 +5,8 @@ namespace Domain\Model;
 
 use App\Domain\Model\Book;
 use App\Domain\Model\User;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\Password;
 use App\Domain\ValueObject\Year;
 use App\Domain\ValueObject\UserName;
 use App\Domain\ValueObject\Age;
@@ -16,7 +18,6 @@ class BookTest extends TestCase
 {
     private Book $sut;
     private string $fixedBookId;
-    private string $fixedUserId;
 
     public function test_it_should_return_title(): void
     {
@@ -51,58 +52,31 @@ class BookTest extends TestCase
 
     public function test_it_should_mark_as_unavailable_when_borrowed(): void
     {
-        $user = new User(
-            userName: new UserName('user'),
-            password: 'testPassword',
-            email: 'user1@test.com',
-            fullName: 'User One',
-            age: new Age(25),
-            role: 'user',
-            userId: $this->fixedUserId
-        );
         $borrowDate = new DateTime('2023-01-01');
 
-        $this->sut->borrow($user, $borrowDate);
+        $this->sut->borrow($this->user, $borrowDate);
 
         $this->assertFalse($this->sut->isAvailable());
     }
 
     public function test_it_should_return_loan_details_when_borrowed(): void
     {
-        $user = new User(
-            userName: new UserName('user'),
-            password: 'testPassword',
-            email: 'user1@test.com',
-            fullName: 'User One',
-            age: new Age(25),
-            role: 'user',
-            userId: $this->fixedUserId
-        );
         $borrowDate = new DateTime('2023-01-01');
-        $this->sut->borrow($user, $borrowDate);
+        $this->sut->borrow($this->user, $borrowDate);
 
-        $loan = $this->sut->findAllLoansByUser($user->userId())[0];
+        $loan = $this->sut->findAllLoansByUser($this->user->userId())[0];
 
-        $this->assertSame($user->userId(), $loan->userId());
+        $this->assertSame($this->user->userId(), $loan->userId());
         $this->assertSame($this->fixedBookId, $loan->bookId());
         $this->assertEquals($borrowDate->format('Y-m-d'), $loan->loansDateTimes()->loanBorrowedAt()->format('Y-m-d'));
     }
 
     public function test_it_should_mark_as_available_when_returned(): void
     {
-        $user = new User(
-            userName: new UserName('user'),
-            password: 'testPassword',
-            email: 'user1@test.com',
-            fullName: 'User One',
-            age: new Age(25),
-            role: 'user',
-            userId: $this->fixedUserId
-        );
         $borrowDate = new DateTime('2023-01-01');
 
-        $this->sut->borrow($user, $borrowDate);
-        $this->sut->return($user->userId());
+        $this->sut->borrow($this->user, $borrowDate);
+        $this->sut->return($this->user->userId());
 
         $this->assertTrue($this->sut->isAvailable());
     }
@@ -112,37 +86,20 @@ class BookTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('No active loan request found for this user.');
 
-        $user = new User(
-            userName: new UserName('user1'),
-            password: 'testPassword',
-            email: 'user1@test.com',
-            fullName: 'User One',
-            age: new Age(25),
-            role: 'user',
-            userId: $this->fixedUserId
-        );
-        $this->sut->return($user->userId());
+        $this->sut->return($this->user->userId());
     }
 
     public function test_it_should_find_all_loans_by_user(): void
     {
         $borrowDate1 = new DateTime('2023-01-01');
-        $user = new User(
-            userName: new UserName('user1'),
-            password: 'testPassword',
-            email: 'user1@test.com',
-            fullName: 'User One',
-            age: new Age(25),
-            role: 'user',
-            userId: $this->fixedUserId
-        );
 
-        $this->sut->borrow($user, $borrowDate1);
 
-        $loans = $this->sut->findAllLoansByUser($user->userId());
+        $this->sut->borrow($this->user, $borrowDate1);
+
+        $loans = $this->sut->findAllLoansByUser($this->user->userId());
 
         $this->assertCount(1, $loans);
-        $this->assertSame($user->userId(), $loans[0]->userId());
+        $this->assertSame($this->user->userId(), $loans[0]->userId());
         $this->assertSame($this->fixedBookId, $loans[0]->bookId());
         $this->assertEquals($borrowDate1->format('Y-m-d'), $loans[0]->loansDateTimes()->loanBorrowedAt()->format('Y-m-d'));
     }
@@ -153,6 +110,16 @@ class BookTest extends TestCase
 
         $this->fixedBookId = '11111111-1111-1111-1111-111111111111';
         $this->fixedUserId = '22222222-2222-2222-2222-222222222222';
+
+        $this->user = new User(
+            userName: new UserName('user1'),
+            password: new Password('testPassword1!'),
+            email: new Email('user1@test.com'),
+            fullName: 'User One',
+            age: new Age(25),
+            role: 'user',
+            userId: $this->fixedUserId
+        );
 
         $this->sut = new Book(
             title: 'Test Book',
