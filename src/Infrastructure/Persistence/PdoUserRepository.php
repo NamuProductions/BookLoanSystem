@@ -40,7 +40,7 @@ class PdoUserRepository implements UserRepository
                 'userId' => $user->userId(),
                 'userName' => $user->userName()->value(),
                 'password' => $user->password(),
-                'email' => $user->email(),
+                'email' => $user->email()->value(),
                 'fullName' => $user->fullName(),
                 'age' => $user->age()->value(),
                 'role' => $user->role(),
