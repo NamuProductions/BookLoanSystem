@@ -40,9 +40,11 @@ readonly class RegisterUserAction
             throw new ValidationException($errors);
         }
 
+        $hashedPassword = password_hash($password->value(), PASSWORD_DEFAULT);
+
         $user = new User(
             $userName,
-            $password,
+            new Password($hashedPassword),
             $email,
             $fullName,
             $age,

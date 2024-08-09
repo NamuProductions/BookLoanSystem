@@ -7,6 +7,8 @@ namespace App\Infrastructure\Persistence;
 use App\Domain\Model\User;
 use App\Domain\Repository\UserRepository;
 use App\Domain\ValueObject\Age;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\Password;
 use App\Domain\ValueObject\UserName;
 use DateTime;
 use PDO;
@@ -64,8 +66,8 @@ class PdoUserRepository implements UserRepository
     {
         return new User(
             userName: new UserName($row['user_name']),
-            password: $row['password'],
-            email: $row['email'],
+            password: new Password($row['password']),
+            email: new Email($row['email']),
             fullName: $row['full_name'],
             age: new Age((int)$row['age']),
             role: $row['role'],
