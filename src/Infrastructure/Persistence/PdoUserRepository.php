@@ -22,7 +22,7 @@ class PdoUserRepository implements UserRepository
         $this->pdo = $pdo;
     }
 
-    public function findById(string $userId): ?User
+    public function ofId(string $userId): ?User
     {
         $stmt = $this->pdo->prepare('SELECT * FROM users WHERE user_id = :user_id');
         $stmt->execute(['user_id' => $userId]);
@@ -36,30 +36,17 @@ class PdoUserRepository implements UserRepository
 
     public function save(User $user): void
     {
-            $stmt = $this->pdo->prepare('REPLACE INTO users (user_id, user_name, password, email, full_name, age, role) 
-                                         VALUES (:userId, :userName, :password, :email, :fullName, :age, :role)');
-            $stmt->execute([
-                'userId' => $user->userId(),
-                'userName' => $user->userName()->value(),
-                'password' => $user->password(),
-                'email' => $user->email()->value(),
-                'fullName' => $user->fullName(),
-                'age' => $user->age()->value(),
-                'role' => $user->role(),
-            ]);
-    }
-
-    public function findByUserName(UserName $username): ?User
-    {
-        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE user_name = :user_name');
-        $stmt->execute(['user_name' => $username->value()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($row === false) {
-            return null;
-        }
-
-        return $this->mapRowToUser($row);
+        $stmt = $this->pdo->prepare('REPLACE INTO users (user_id, user_name, password, email, full_name, age, role) 
+                                     VALUES (:userId, :userName, :password, :email, :fullName, :age, :role)');
+        $stmt->execute([
+            'userId' => $user->userId(),
+            'userName' => $user->userName()->value(),
+            'password' => $user->password(),
+            'email' => $user->email()->value(),
+            'fullName' => $user->fullName(),
+            'age' => $user->age()->value(),
+            'role' => $user->role(),
+        ]);
     }
 
     private function mapRowToUser(array $row): User
